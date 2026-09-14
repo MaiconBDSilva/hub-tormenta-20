@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@theme {
+  /* Tons de Cinza Pedra */
+  --color-pedra-fundo: #0f1015;
+  --color-pedra-card: #181a20;
+  --color-pedra-borda: #2a2d37;
+
+  /* Tons de Rubi */
+  --color-rubi: #9b111e;
+  --color-rubi-hover: #c41e3a;
+
+  /* Tons de Dourado */
+  --color-dourado: #d4af37;
+  --color-dourado-hover: #f3c623;
+}
+
+body {
+  background-color: var(--color-pedra-fundo);
+  color: #e2e8f0;
+}
+
+/* ==========================================================================
+   ESTILOS DO HEADER FIXO & NAVEGAÇÃO
+   ========================================================================== */
+
+/* Imagem do Logo no Header */ 
+.header-logo-img { 
+  @apply h-12 w-auto object-contain; 
+}
+
+/* Barra Superior Fixa com efeito Translúcido */
+.header-fixo {
+  @apply sticky top-0 z-50 w-full backdrop-blur-md bg-pedra-fundo/80 border-b border-pedra-borda px-6 py-2 flex items-center justify-between;
+}
+
+/* Logo do Canto Esquerdo */
+.header-logo {
+  @apply text-xl font-bold text-dourado hover:text-dourado-hover transition-colors flex items-center gap-2;
+}
+
+/* Container dos Links de Navegação */
+.header-nav {
+  @apply hidden md:flex items-center gap-6;
+}
+
+/* Links Individuais do Menu */
+.header-link {
+  @apply text-gray-300 hover:text-dourado transition-colors font-medium text-sm;
+}
+
+/* Botão de Status e Entrada no Foundry VTT */
+.btn-foundry {
+  @apply bg-rubi hover:bg-rubi-hover text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors flex items-center gap-2 border border-rubi/50 shadow-lg shadow-rubi/20;
+}
+
+/* Ponto Luminoso de Status Online (Verde) */
+.status-online {
+  @apply w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse;
+}
+
+/* ==========================================================================
+   ESTILOS DO CONTEÚDO PRINCIPAL
+   ========================================================================== */
+
+.hero-container {
+  @apply min-h-screen p-8 flex flex-col items-center justify-center text-center;
+}
+
+.titulo-principal {
+  @apply text-5xl font-bold text-dourado mb-4 tracking-wide;
+}
+
+.subtitulo-campanha {
+  @apply text-xl text-gray-400 max-w-xl mb-8;
+}

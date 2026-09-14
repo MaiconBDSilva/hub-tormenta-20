@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 @theme {
   /* Tons de Cinza Pedra */
   --color-pedra-fundo: #0f1015;
@@ -21,42 +22,75 @@ body {
 }
 
 /* ==========================================================================
-   ESTILOS DO HEADER FIXO & NAVEGAÇÃO
+   COMPONENTES DO HEADER (DARK FANTASY)
    ========================================================================== */
 
-/* Imagem do Logo no Header */ 
-.header-logo-img { 
-  @apply h-12 w-auto object-contain; 
-}
 
-/* Barra Superior Fixa com efeito Translúcido */
+/* Header Fixo com Desfoque de Fundo */
 .header-fixo {
-  @apply sticky top-0 z-50 w-full backdrop-blur-md bg-pedra-fundo/80 border-b border-pedra-borda px-6 py-2 flex items-center justify-between;
+  @apply fixed top-0 left-0 right-0 z-50 flex items-center justify-between gap-2 border-b border-amber-400/80 bg-stone-950/90 px-3 py-2.5 backdrop-blur-md md:px-8;
 }
 
-/* Logo do Canto Esquerdo */
-.header-logo {
-  @apply text-xl font-bold text-dourado hover:text-dourado-hover transition-colors flex items-center gap-2;
+/* Logos Responsivas */
+.header-logo-mobile {
+  @apply block h-8 w-8 object-contain md:hidden;
 }
 
-/* Container dos Links de Navegação */
-.header-nav {
-  @apply hidden md:flex items-center gap-6;
+.header-logo-desktop {
+  @apply hidden h-10 w-auto object-contain md:block;
 }
 
-/* Links Individuais do Menu */
+/* Navegação Principal */
+.header-nav-desktop {
+  @apply hidden items-center gap-6 md:flex;
+}
+
 .header-link {
-  @apply text-gray-300 hover:text-dourado transition-colors font-medium text-sm;
+  @apply text-sm font-medium text-stone-300 transition-colors hover:text-amber-400;
 }
 
-/* Botão de Status e Entrada no Foundry VTT */
+/* Botão do Foundry VTT */
 .btn-foundry {
-  @apply bg-rubi hover:bg-rubi-hover text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors flex items-center gap-2 border border-rubi/50 shadow-lg shadow-rubi/20;
+  @apply flex shrink-0 items-center gap-2 rounded-lg border border-amber-400/80 bg-stone-900/90 px-2.5 py-1.5 text-xs transition-all hover:border-amber-600 hover:bg-stone-800 md:px-4 md:py-2 md:text-sm;
 }
 
-/* Ponto Luminoso de Status Online (Verde) */
-.status-online {
-  @apply w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse;
+.btn-foundry-text {
+  @apply hidden font-semibold text-stone-200;
+}
+
+/* Exibe o texto somente em telas a partir de 640px (sm) */
+@media (min-width: 640px) {
+  .btn-foundry-text {
+    display: inline;
+  }
+}
+
+/* Luzes do Status do Servidor */
+.status-dot {
+  @apply h-2.5 w-2.5 shrink-0 rounded-full;
+}
+
+.status-dot-checking {
+  @apply animate-pulse bg-yellow-500;
+}
+
+.status-dot-online {
+  @apply animate-pulse bg-green-500;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6)
+}
+
+.status-dot-offline {
+  @apply bg-red-500;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+/* Menu Hambúrguer Mobile */
+.btn-menu-mobile {
+  @apply flex h-8 w-8 items-center justify-center rounded-lg border border-amber-400/80 bg-stone-900 text-amber-500 md:hidden;
+}
+
+.menu-mobile-dropdown {
+  @apply absolute top-full right-3 w-max min-w-40 flex flex-col gap-3 rounded-lg border border-amber-400/80 bg-stone-950/95 p-4 shadow-2xl backdrop-blur-md md:hidden;
 }
 
 /* ==========================================================================

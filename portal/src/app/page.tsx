@@ -33,6 +33,8 @@ export default function Home() {
     return () => clearInterval(intervalo);
   }, []);
 
+  const [menuAberto, setMenuAberto] = useState(false);
+
 
   // Array configurável com os 5 links do menu
   const linksMenu = [
@@ -45,19 +47,24 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* 🛡️ CABEÇALHO FIXO */}
+      /* 🛡️ CABEÇALHO FIXO */
       <header className="header-fixo">
-        {/* Canto Esquerdo: Logo / Nome (Volta para o início) */}
-        <a href="/" className="header-logo">
+        {/* Logo Dinâmica: Quadrada no Celular / Retangular no PC */}
+        <a href="/" className="shrink-0">
+          <img
+            src="/logo-mobile.png"
+            alt="Logo Invocação do Herói"
+            className="header-logo-mobile"
+          />
           <img
             src="/logo-rpg.png"
             alt="Logo Invocação do Herói"
-            className="header-logo-img"
+            className="header-logo-desktop"
           />
         </a>
 
-        {/* Centro: Links de Navegação */}
-        <nav className="header-nav">
+        {/* Centro: Links de Navegação desktop */}
+        <nav className="header-nav-desktop">
           {linksMenu.map((item) => (
             <a key={item.nome} href={item.href} className="header-link">
               {item.nome}
@@ -65,32 +72,60 @@ export default function Home() {
           ))}
         </nav>
 
-        {/* Canto Direito: Status & Acesso ao Foundry */}
-        {/* 🟢 BOTÃO INTELIGENTE DO FOUNDRY VTT */}
-        <a
-          href={URL_FOUNDRY}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-foundry"
-        >
-          {/* Luz Indicadora Dinâmica \*/}
-          <span
-            className={`w-2.5 h-2.5 rounded-full ${isOnline === null
-              ? "bg-yellow-500 animate-pulse" // Amarelo: Verificando 
-              : isOnline
-                ? "bg-green-500 animate-pulse" // Verde: Online 
-                : "bg-red-500" // Vermelho: Offline 
-              }`}
+        {/* Canto Direito: Botão do Foundry VTT */}
+        <div className="flex items-center gap-2">
+          <a
+            href={URL_FOUNDRY}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={isOnline ? "Foundry Online" : "Mesa Offline"}
+            className="btn-foundry"
           >
-          </span>
-          <span>
-            {isOnline === null
-              ? "Checando..."
-              : isOnline
-                ? "Foundry Online"
-                : "Mesa Offline"}
-          </span>
-        </a>
+            {/* Indicador Luminoso */}
+            <span
+              className={`status-dot ${isOnline === null
+                ? "status-dot-checking"
+                : isOnline
+                  ? "status-dot-online"
+                  : "status-dot-offline"
+                }`}
+            ></span>
+
+            {/* Texto do Status */}
+            <span className="btn-foundry-text">
+              {isOnline === null
+                ? "Checando..."
+                : isOnline
+                  ? "Foundry Online"
+                  : "Mesa Offline"}
+            </span>
+          </a>
+
+          {/* Botão Hambúrguer (Visível apenas no celular) */}
+          <button
+            onClick={() => setMenuAberto(!menuAberto)}
+            className="btn-menu-mobile"
+            aria-label="Abrir Menu"
+          >
+            {menuAberto ? "✕" : "☰"}
+          </button>
+        </div>
+
+        {/* Dropdown do Menu Mobile */}
+        {menuAberto && (
+          <nav className="menu-mobile-dropdown">
+            {linksMenu.map((item) => (
+              <a
+                key={item.nome}
+                href={item.href}
+                className="header-link py-1 text-base"
+                onClick={() => setMenuAberto(false)}
+              >
+                {item.nome}
+              </a>
+            ))}
+          </nav>
+        )}
 
       </header>
 

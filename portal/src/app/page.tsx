@@ -1,6 +1,8 @@
 "use client"; // Necessário no Next.js para usar estado e efeitos do React
 
 import { useState, useEffect } from "react";
+import { HeroSection } from "../componentes/HeroSection";
+import campaignData from "../data/campanha.json"
 
 export default function Home() {
 
@@ -38,10 +40,10 @@ export default function Home() {
 
   // Array configurável com os 5 links do menu
   const linksMenu = [
-    { nome: "Personagens", href: "/personagens" },
-    { nome: "Mapas", href: "/mapas" },
-    { nome: "Livros", href: "/livros" },
-    { nome: "Agenda", href: "/agenda" },
+    { nome: "Personagens", href: "/" },
+    { nome: "Mapas", href: "/" },
+    { nome: "Livros", href: "/" },
+    { nome: "Agenda", href: "/" },
     { nome: "Wiki", href: "https://invocacaodoheroi.vercel.app/wiki/wiki.html" },
   ];
 
@@ -75,9 +77,7 @@ export default function Home() {
         {/* Canto Direito: Botão do Foundry VTT */}
         <div className="flex items-center gap-2">
           <a
-            href={URL_FOUNDRY}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#acessofoundry"
             title={isOnline ? "Foundry Online" : "Mesa Offline"}
             className="btn-foundry"
           >
@@ -131,12 +131,7 @@ export default function Home() {
 
       {/* ⚔️ HERO SECTION */}
       <main className="hero-container">
-        <h1 className="titulo-principal">
-          Coração de Rubi
-        </h1>
-        <p className="subtitulo-campanha">
-          Portal de Campanha de Tormenta 20 — Registros de sessão, lore do mundo e acesso à mesa do Foundry VTT.
-        </p>
+        <HeroSection/>
       </main>
     </div>
   );

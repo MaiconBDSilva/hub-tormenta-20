@@ -38,11 +38,11 @@ export default function Home() {
 
   // Array configurável com os 5 links do menu
   const linksMenu = [
-    { nome: "Personagens", href: "#personagens" },
-    { nome: "Diários", href: "#diarios" },
-    { nome: "Mapas", href: "#mapas" },
-    { nome: "Livros", href: "#livros" },
-    { nome: "Agenda", href: "#agenda" },
+    { nome: "Personagens", href: "/personagens" },
+    { nome: "Mapas", href: "/mapas" },
+    { nome: "Livros", href: "/livros" },
+    { nome: "Agenda", href: "/agenda" },
+    { nome: "Wiki", href: "/wiki" },
   ];
 
   return (

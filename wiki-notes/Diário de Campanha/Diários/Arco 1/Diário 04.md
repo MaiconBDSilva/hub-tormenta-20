@@ -1,0 +1,19 @@
+Diário de Campanha: Sessão 4
+
+Data: 20 de Caravana 1420
+
+Localização: Fundo do Mar (Interior da Casa Azul)
+
+NPCs Relevantes: Seguidores de Nerites, Nerites (Clériga de Oceano).
+
+📝 Registro de Acontecimentos
+
+O Despertar do Poder e a Invasão: A manhã sob as águas calmas da Velha Malpetrim trouxe mais do que luz para o acampamento no telhado da Casa Azul; trouxe o florescer do verdadeiro poder. Sentindo o vigor de suas novas habilidades pulsando nas veias após as provações dos dias anteriores, os heróis debateram seus planos e escolheram o caminho da espada. Sabendo que haviam sido avistados na véspera, mergulharam pelo buraco na parede preparados para o pior. Encontraram dois elfos-do-mar já em alerta máximo e com sangue nos olhos. A brutalidade do grupo foi implacável: em um combate rápido e letal, abateram os guardas, com um dos heróis interceptando magistralmente o elfo que tentou fugir para alertar o resto da casa, garantindo o silêncio da invasão.
+
+O Lodo, a Fome e o Saque: Com a entrada assegurada, o grupo se dividiu para varrer a mansão. Uma parte subiu aos antigos aposentos, encontrando apenas musgo e abandono em sua busca inicial. Os que desceram enfrentaram um desafio onde a força bruta era inútil: o antigo saguão havia se tornado um traiçoeiro manguezal. O lodo escuro engoliu alguns aventureiros, forçando os companheiros a agirem em conjunto para arrancá-los do atoleiro fétido. Em uma latrina adjacente, um Lacedon mutilado — ostentando apenas a parte superior de seu tronco apodrecido — tentou um bote desesperado, mas foi rapidamente despachado de volta ao mundo dos mortos.
+
+O Banquete Interrompido: Ao superarem a lama, invadiram a cozinha e se depararam com uma cena dantesca: um colossal caranguejo (Canceronte) devorava violentamente os restos de um humanoide. Sem hesitação, o grupo investiu contra a carapaça dura da fera. A batalha exigiu suor e sangue, mas a vitória sorriu para os invasores, rendendo-lhes um molho de chaves vital. Aproveitando a calmaria pós-combate, o grupo retornou ao quarto no andar de cima com um olhar mais clínico, desenterrando tesouros há muito esquecidos nas entranhas da casa.
+
+O Caminho Oculto e a Fúria de Oceano: Com as chaves em mãos, destrancaram a pesada porta dupla, apenas para recuar instintivamente ao verem os clarões mortais de enguias elétricas dominando o corredor inundado. Demonstrando sabedoria tática, ignoraram a armadilha letal e optaram pelo túnel secreto e estreito encontrado na cozinha. A passagem os cuspiu diretamente no coração da mansão: o santuário alagado de Nerites e seus seguidores. Palavras tensas foram trocadas na penumbra líquida, mas a simples menção ao nome do contrabandista "Takifugo" acendeu a fúria cega da clériga de Oceano.
+
+O Banho de Sangue no Santuário: O combate que se seguiu foi uma verdadeira epopeia tática. Aproveitando a geografia do campo de batalha, os arcanistas se entrincheiraram na segurança do túnel, conjurando suas magias, enquanto a linha de frente batia de encontro à fúria aquática de Nerites e seus devotos no salão principal. O choque de aço e magia tingiu as águas de vermelho. Um dos caçadores do grupo tombou sob os golpes implacáveis dos defensores, mas a irmandade falou mais alto e ele foi rapidamente salvo por seus irmãos de armas. Ao fim do embate brutal, a líder e seus acólitos sucumbiram. A sessão se encerra em um silêncio sepulcral quebrado apenas pelo movimento da água. O grupo respira pesadamente no salão alagado, cercado pelos corpos flutuantes de seus inimigos, cientes de que o inexplorado Trono de Oceano — e o lendário colar da Voz das Marés — estão finalmente ao seu alcance.

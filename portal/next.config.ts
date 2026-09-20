@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
      { source: "/wiki", destination: "/wiki/index.html", }, 
      { source: "/wiki/", destination: "/wiki/index.html", },
       // 2\. Mapeia qualquer subrota da wiki (ex: /wiki/iniciopage) para o arquivo correspondente 
-      { source: "/wiki/:path*", destination: "/wiki/:path*",
+      { source: "/wiki/:path((?!.*\\.).*)", destination: "/wiki/:path*.html",
 
        }, 
       ]; 

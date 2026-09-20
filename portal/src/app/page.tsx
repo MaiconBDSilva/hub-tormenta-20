@@ -42,7 +42,7 @@ export default function Home() {
     { nome: "Mapas", href: "/mapas" },
     { nome: "Livros", href: "/livros" },
     { nome: "Agenda", href: "/agenda" },
-    { nome: "Wiki", href: "/wiki" },
+    { nome: "Wiki", href: "https://invocacaodoheroi.vercel.app/wiki/wiki.html" },
   ];
 
   return (

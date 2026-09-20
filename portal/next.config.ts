@@ -2,11 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
 
-  async redirects() { 
-    return [ 
-      // Força o navegador a redirecionar /wiki -&gt; /wiki/ (com a barra no final) 
-      { source: "/wiki", destination: "/wiki/", permanent: true, }, ]; },
-
 
   async rewrites() { 
     return [ 

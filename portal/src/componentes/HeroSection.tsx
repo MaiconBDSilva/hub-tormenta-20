@@ -442,7 +442,7 @@ export function HeroSection({
                 O guardião liberou a passagem! Entrando no Foundry VTT...
               </p>
               <a 
-              href="{foundryUrl}" 
+              href="http://rpgtormenta.servegame.com:30000" 
               target="\_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 w-full py-3 px-6 bg-linear-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-500 text-stone-950 font-bold text-sm rounded-xl shadow-lg shadow-amber-900/40 transition-all transform hover:scale-105 active:scale-95 border border-amber-300/40">

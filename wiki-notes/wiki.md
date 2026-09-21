@@ -1,5 +1,5 @@
 ---
-title: "Invocação do Herói - Wiki da Campanha"
+title: "Wiki Invocação do Herói"
 aliases:
   - Homepage
   - Index
@@ -10,7 +10,6 @@ tags:
   - tormenta20
   - index
 ---
-
 # ⚔️ Invocação do Herói — Campanha de Tormenta 20
 
 > [!abstract] Bem-vindo ao Cofre da Campanha
@@ -33,11 +32,11 @@ A narrativa acompanha a jornada do grupo desde seus primeiros trabalhos locais a
 
 | Seção | Descrição | Link Direto |
 | :--- | :--- | :--- |
-| **🌍 O Mundo** | Atlas de Arton, reinos, cidades (como Yuvalin e seus distritos), geografia e pontos de interesse. | [[O mundo]] |
+| **🌍 O Mundo** | Atlas de Arton, reinos, cidades (como Yuvalin e seus distritos), geografia e pontos de interesse. | [[Mundo/index\|Mundo]] |
 | **⚡ Os Deuses** | O Panteão Maior, divindades de Arton, dogmas, bênçãos e a fé dos heróis. | [[Os Deuses]] |
-| **🛡️ Personagens** | Fichas, antecedentes, características raciais e arcos pessoais dos jogadores. | [[Personagens]] |
+| **🛡️ Personagens** | Fichas, antecedentes, características raciais e arcos pessoais dos jogadores. | [[Personagens/index\|Personagens]] |
 | **👥 NPCs** | Aliados, autoridades, mercadores, testemunhas e antagonistas encontrados na jornada. | [[NPCs]] |
-| **📜 Campanha** | Diários de sessão ordenados, resumos narrativos ("Previously on...") e marcos de história. | [[Campanha]] |
+| **📜 Campanha** | Diários de sessão ordenados, resumos e marcos de história. | [[Campanha]] |
 | **⚙️ Mecânicas** | Sistema de reputação, mecânica do julgamento, regras da mesa e guias para o Foundry VTT. | [[Mecânicas]] |
 
 ---

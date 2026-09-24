@@ -1,0 +1,123 @@
+/* STREAMING_CHUNK:Referencing Tailwind globals with relative path */
+@reference "../../app/globals.css";
+
+/* STREAMING_CHUNK:Styling hero layout container and ambient ruby glows */
+.heroSection {
+@apply relative w-full py-10 pt-16 px-4 flex flex-col items-center justify-center text-stone-100 overflow-hidden;
+}
+
+.ambientGlowRuby {
+@apply absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-900/20 blur-3xl rounded-full pointer-events-none;
+}
+
+.ambientGlowAmber {
+@apply absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-600/15 blur-2xl rounded-full pointer-events-none;
+}
+
+.heroContentStack {
+@apply relative z-10 max-w-4xl w-full flex flex-col items-center text-center space-y-8;
+}
+
+/* STREAMING_CHUNK:Styling main campaign logo box */
+.mainLogoWrapper {
+@apply relative transition-transform hover:scale-105 duration-300 w-full max-w-lg h-20 md:h-32;
+}
+
+.mainLogoImage {
+@apply drop-shadow-[0_10px_25px_rgba(220,38,38,0.35)] object-contain;
+}
+
+/* STREAMING_CHUNK:Styling session info card */
+.sessionCard {
+@apply w-full max-w-lg bg-stone-900/90 border border-stone-800 rounded-xl p-6 shadow-2xl backdrop-blur-md relative overflow-hidden;
+}
+
+.sessionCardHeaderStripe {
+@apply absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-red-600 via-amber-500 to-red-600;
+}
+
+.sessionCardBadge {
+@apply flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400 mb-2;
+}
+
+.sessionCardBadgeDot {
+@apply h-2 w-2 rounded-full bg-amber-400 animate-pulse;
+}
+
+.sessionTitle {
+@apply text-xl sm:text-2xl font-bold text-stone-100 font-serif mb-1;
+}
+
+.sessionDateText {
+@apply text-sm text-stone-400 flex items-center justify-center gap-2 mt-2;
+}
+
+.sessionFooterRow {
+@apply mt-4 pt-3 border-t border-stone-800/80 flex items-center justify-between text-xs text-stone-400;
+}
+
+.statusConfirmed {
+@apply text-emerald-400 font-bold;
+}
+
+.statusPending {
+@apply text-red-500 font-bold;
+}
+
+/* STREAMING_CHUNK:Styling D20 Foundry Challenge card and Canvas */
+.challengeCard {
+@apply w-full max-w-md bg-stone-900/50 border border-amber-900/40 rounded-2xl p-6 flex flex-col items-center space-y-4 shadow-xl;
+}
+
+.challengeTitle {
+@apply text-lg font-bold text-amber-300 font-serif;
+}
+
+.challengeDescription {
+@apply text-xs text-stone-400 mt-1;
+}
+
+.canvasWrapper {
+@apply flex justify-center items-center;
+}
+
+.d20CanvasElement {
+@apply cursor-pointer touch-none drop-shadow-[0_0_20px_rgba(217,119,6,0.4)] transition-transform hover:scale-105 active:scale-95;
+}
+
+/* STREAMING_CHUNK:Styling feedback status messages and Foundry enter button */
+.feedbackIdle {
+@apply text-xs text-stone-400 animate-pulse;
+}
+
+.feedbackRolling {
+@apply text-xs text-amber-400 font-semibold tracking-wide animate-pulse;
+}
+
+.feedbackSuccessWrapper {
+@apply text-center space-y-1 animate-bounce w-full;
+}
+
+.feedbackSuccessTitle {
+@apply text-sm font-bold text-emerald-400;
+}
+
+.feedbackSuccessSubtitle {
+@apply text-xs text-stone-300;
+}
+
+.enterFoundryButton {
+@apply inline-flex items-center justify-center gap-2 w-full py-3 px-6 bg-linear-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-500 text-stone-950 font-bold text-sm rounded-xl shadow-lg shadow-amber-900/40 transition-all transform hover:scale-105 active:scale-95 border border-amber-300/40 mt-2;
+}
+
+.feedbackFailWrapper {
+@apply text-center space-y-1;
+}
+
+.feedbackFailTitle {
+@apply text-sm font-bold text-red-500;
+}
+
+.feedbackFailSubtitle {
+@apply text-xs text-stone-400;
+}

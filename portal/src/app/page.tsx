@@ -1,9 +1,9 @@
 "use client"; // Necessário no Next.js para usar estado e efeitos do React
 
-import { useState, useEffect } from "react";
-import { HeroSection } from "../componentes/HeroSection";
-import campaignData from "../data/campanha.json"
-import MenuFixo from "../componentes/MenuFixo";
+import React from "react";
+import  HeroSection  from "../componentes/hero/HeroSection";
+//import campaignData from "../data/campanha.json"
+import MenuFixo from "../componentes/menu/MenuFixo";
 
 export default function Home() {
 
@@ -14,7 +14,7 @@ export default function Home() {
     </header>
 
       {/* ⚔️ HERO SECTION */}
-      <main className="hero-container">
+      <main>
         <HeroSection/>
       </main>
     </div>

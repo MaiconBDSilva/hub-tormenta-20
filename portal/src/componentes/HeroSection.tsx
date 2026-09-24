@@ -333,6 +333,11 @@ export function HeroSection({
   foundryUrl = campaingData.servidor,
   dataProximaSessao = campaingData.proximaSessao.data,
   tituloSessao = campaingData.proximaSessao.titulo,
+  statusDaSessao = campaingData.proximaSessao.status,
+  sessaoAnteriorNumero = campaingData.ultimaSessao.numero,
+  sessaoAnteriorTitulo = campaingData.ultimaSessao.titulo,
+  sessaoAnteriorResumo = campaingData.ultimaSessao.resumo,
+  sessaoAnteriorLink = campaingData.ultimaSessao.linkWiki,
 }) {
   const [d20Value, setD20Value] = useState<number | null>(null);
   const [isRolling, setIsRolling] = useState(false);
@@ -358,7 +363,7 @@ export function HeroSection({
   };
 
   return (
-    <section className="relative w-full py-12 px-4 flex flex-col items-center justify-center bg-stone-950 text-stone-100 overflow-hidden">
+    <section className="relative w-full py-12 px-4 flex flex-col items-center justify-center text-stone-100 overflow-hidden">
       {/* Luzes de Fundo em tons de Rubi (#dc2626) e Dourado (#d97706) */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-900/20 blur-3xl rounded-full pointer-events-none" />
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-600/15 blur-2xl rounded-full pointer-events-none" />
@@ -366,13 +371,13 @@ export function HeroSection({
       <div className="relative z-10 max-w-4xl w-full flex flex-col items-center text-center space-y-8">
         
         {/* 1. Logo Principal da Campanha */}
-        <div className="relative group transition-transform hover:scale-105 duration-300">
+        <div className="relative group transition-transform hover:scale-105 duration-300 w-full max-w-lg h-20 md:h-32">
           <Image
             src="/logo-rpg.png"
             alt="Invocação do Herói — Tormenta 20"
-            width={380}
-            height={160}
+            fill
             priority
+            sizes="(max-width: 768px) 100vw, 42vw"
             className="drop-shadow-[0_10px_25px_rgba(220,38,38,0.35)] object-contain"
           />
         </div>
@@ -383,7 +388,7 @@ export function HeroSection({
           
           <div className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400 mb-2">
             <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-            Próxima Sessão Agendada
+            Próxima Sessão
           </div>
 
           <h2 className="text-xl sm:text-2xl font-bold text-stone-100 font-serif mb-1">
@@ -396,7 +401,11 @@ export function HeroSection({
 
           <div className="mt-4 pt-3 border-t border-stone-800/80 flex items-center justify-between text-xs text-stone-400">
             <span><strong className="text-stone-200">Tormenta 20:</strong> Arco 2</span>
-            <span>Status: <strong className="text-emerald-400"> Confirmada</strong></span>
+            <span>Status: <strong className={statusDaSessao === "Confirmada" ? "text-emerald-400" : "text-red-500"}> {statusDaSessao}</strong></span>
+          </div>
+          <div className="mt-4 pt-3 border-t border-stone-800/80 flex items-center justify-between text-xs text-stone-400">
+            <span><strong className="text-stone-200">Diário Anterior: </strong></span>
+            <span className="text-amber-400"><a href= {sessaoAnteriorLink}><strong>Sessão {sessaoAnteriorNumero} - </strong> {sessaoAnteriorTitulo}</a></span>
           </div>
         </div>
 

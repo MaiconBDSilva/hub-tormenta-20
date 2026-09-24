@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HUB Tormenta 20",
+  title: "Invocação do Herói",
   description: "Tudo sobre a Campanha Tormenta 20",
 };
 

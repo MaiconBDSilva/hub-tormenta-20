@@ -1,8 +1,8 @@
 {
   "proximaSessao": {
-    "titulo": "Sessão 11: A Mina Inexplorada",
-    "data": "Domingo, 20 de Setembro • 20:00",
-    "status": "Confirmada",
+    "titulo": "Sessão 12: A Mina Inexplorada",
+    "data": "A Definir",
+    "status": "Em Agendamento",
     "dtTesteFoundry": 13
 
   },
@@ -10,9 +10,9 @@
     "foundryUrl": "http://rpgtormenta.servegame.com:30000"
   },
   "ultimaSessao": {
-    "numero": 10,
-    "titulo": "O Resgate nas Minas de Ouro",
-    "resumo": "O grupo enfrentou a horda de puristas nas galerias inferiores e recuperou a relíquia.",
-    "linkWiki": "/wiki/diarios/sessao-10"
+    "numero": 11,
+    "titulo": "Teias de Sombras e Ouro",
+    "resumo": "O desenrolar da trama política de Yuvalin começa a se aprofundar",
+    "linkWiki": "/wiki/diário-de-campanha/arco-2/diário-11"
   }
 }

@@ -12,7 +12,7 @@ const LINKS_MENU = [
   { nome: "Agenda", href: "/agenda" },
   {
     nome: "Wiki",
-    href: "wiki/wiki.html",
+    href: "/wiki",
   },
 ];
 

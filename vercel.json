@@ -1,5 +1,0 @@
-{
-  "framework": "nextjs",
-  "buildCommand": "npm --prefix portal run build",
-  "outputDirectory": "portal/.next"
-}

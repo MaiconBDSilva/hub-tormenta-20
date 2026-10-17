@@ -5,10 +5,9 @@
   "scripts": {
     "build:wiki": "cd ../wiki-quartz && npx quartz build -d content -o ../portal/public/wiki",
     "prebuild": "npm run build:wiki",
-    "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "dev": "next dev",
+    "start": "next start"
   },
   "dependencies": {
     "@react-three/fiber": "^9.8.0",

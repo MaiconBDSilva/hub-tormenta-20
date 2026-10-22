@@ -1,37 +1,40 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import campaignData from "../../data/campanha.json";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { DadosCampanha } from "@/tipos/campanha";
 import SessionCard from "./SessionCard";
 import FoundryChallengeCard from "./FoundryChallengeCard";
 import styles from "./HeroSection.module.css";
 
-export interface HeroSectionProps {
-  foundryUrl?: string;
-  dataProximaSessao?: string;
-  tituloSessao?: string;
-  statusDaSessao?: string;
-  sessaoAnteriorNumero?: number;
-  sessaoAnteriorTitulo?: string;
-  sessaoAnteriorResumo?: string;
-  sessaoAnteriorLink?: string;
-}
+export function HeroSection() {
+  const [dados, setDados] = useState<DadosCampanha | null>(null);
+  const [carregando, setCarregando] = useState<boolean>(true);
 
-export function HeroSection({
-  foundryUrl = campaignData.servidor.foundryUrl,
-  dataProximaSessao = campaignData.proximaSessao.data,
-  tituloSessao = campaignData.proximaSessao.titulo,
-  statusDaSessao = campaignData.proximaSessao.status,
-  sessaoAnteriorNumero = campaignData.ultimaSessao.numero,
-  sessaoAnteriorTitulo = campaignData.ultimaSessao.titulo,
-  sessaoAnteriorLink = campaignData.ultimaSessao.linkWiki,
-}: HeroSectionProps) {
-  const cdTeste = campaignData.proximaSessao.dtTesteFoundry;
+  useEffect(() => {
+    async function carregarDadosFirestore() {
+      try {
+        const docRef = doc(db, "configuracoes", "campanha");
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setDados(docSnap.data() as DadosCampanha);
+        }
+      } catch (erro) {
+        console.error("Erro ao recuperar os registros da campanha:", erro);
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarDadosFirestore();
+  }, []);
 
   return (
     <section className={styles.heroSection}>
-      {/* Luzes de Fundo em tons de Rubi e Dourado de Arton */}
+      {/* Halos de iluminação temática Tormenta 20 */}
       <div aria-hidden="true" className={styles.ambientGlowRuby} />
       <div aria-hidden="true" className={styles.ambientGlowAmber} />
 
@@ -48,20 +51,21 @@ export function HeroSection({
           />
         </div>
 
-        {/* 2. Informações da Próxima Sessão */}
+        {/* 2. Informações da Próxima Sessão (com estado de carregamento integrado) */}
         <SessionCard
-          tituloSessao={tituloSessao}
-          dataProximaSessao={dataProximaSessao}
-          statusDaSessao={statusDaSessao}
-          sessaoAnteriorNumero={sessaoAnteriorNumero}
-          sessaoAnteriorTitulo={sessaoAnteriorTitulo}
-          sessaoAnteriorLink={sessaoAnteriorLink}
+          carregando={carregando}
+          tituloSessao={dados?.proximaSessao?.titulo}
+          dataProximaSessao={dados?.proximaSessao?.data}
+          statusDaSessao={dados?.proximaSessao?.status}
+          sessaoAnteriorNumero={dados?.ultimaSessao?.numero}
+          sessaoAnteriorTitulo={dados?.ultimaSessao?.titulo}
+          sessaoAnteriorLink={dados?.ultimaSessao?.linkWiki}
         />
 
-        {/* 3. Desafio Interativo com o D20 3D em Canvas */}
+        {/* 3. Desafio Interativo com o D20 Canvas */}
         <FoundryChallengeCard
-          cd={cdTeste}
-          foundryUrl={foundryUrl}
+          cd={dados?.proximaSessao?.dtTesteFoundry ?? 13}
+          foundryUrl={dados?.servidor?.foundryUrl ?? ""}
         />
       </div>
     </section>

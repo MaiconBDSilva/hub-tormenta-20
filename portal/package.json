@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build:wiki": "cd wiki-quartz && npm ci --include=dev && npm run install-plugins && npx quartz build -d content -o ../public/wiki",
-    "prebuild": "npm run build:wiki",
+    "build:wiki": "cd wiki-quartz && npx quartz build -d content -o ../public/wiki",
     "build": "next build",
     "dev": "next dev",
     "start": "next start"

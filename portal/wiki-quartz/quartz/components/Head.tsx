@@ -5,6 +5,7 @@ import { googleFontHref, googleFontSubsetHref } from "../util/theme"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { unescapeHTML } from "../util/escape"
 
+/* STREAMING_CHUNK:Defining Head component factory and metadata variables */
 export default (() => {
   const Head: QuartzComponent = ({
     cfg,
@@ -27,7 +28,6 @@ export default (() => {
     const baseDir = fileData.slug === "404" ? path : pathToRoot(fileData.slug!)
     const iconPath = joinSegments(baseDir, "static/icon.png")
 
-    // Url of current page
     const socialUrl =
       fileData.slug === "404" ? url.toString() : joinSegments(url.toString(), fileData.slug!)
 
@@ -39,6 +39,158 @@ export default (() => {
       (r) => r.loadTime === "beforeDOMReady" && r.contentType === "external",
     )
 
+    /* STREAMING_CHUNK:Configuring anti-SPA-hijack interception and custom header injection */
+    const customHeaderScript = `
+      (function() {
+        // Intercepta qualquer clique em links do Portal ANTES que o SPA do Quartz (micromorph) capture
+        document.addEventListener('click', function(e) {
+          var link = e.target.closest('a');
+          if (!link) return;
+
+          var href = link.getAttribute('href');
+          if (!href) return;
+
+          // Se o link é uma rota do Portal (fora da raiz da wiki)
+          var ehLinkDoPortal = 
+            href === '/' ||
+            href.startsWith('/personagens') ||
+            href.startsWith('/mapas') ||
+            href.startsWith('/livros') ||
+            href.startsWith('/agenda') ||
+            link.hasAttribute('data-portal-link');
+
+          if (ehLinkDoPortal) {
+            // Trava imediatamente a propagação para os scripts internos do Quartz
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+
+            // Faz a navegação real e limpa do navegador, destruindo o estado do Quartz
+            window.location.assign(link.href);
+          }
+        }, true); // 'true' = Fase de Captura (prioridade máxima antes de qualquer outro script)
+
+        // Função de montagem do cabeçalho
+        function injetarMenuFixo() {
+          if (document.getElementById('header-fixo-portal')) return;
+
+          var header = document.createElement('header');
+          header.id = 'header-fixo-portal';
+          header.className = 'header-fixo-portal';
+
+          header.innerHTML = \`
+            <a href="/" class="portal-brand-link" data-portal-link="true" rel="external" title="Voltar ao Hub Principal">
+              <img src="/logo-mobile.png" alt="Logo Invocação do Herói" class="portal-logo-mobile" onerror="this.style.display='none'" />
+              <img src="/logo-rpg.png" alt="Logo Invocação do Herói" class="portal-logo-desktop" onerror="this.style.display='none'" />
+            </a>
+
+            <nav class="portal-nav-links">
+              <a href="/personagens" class="portal-link" data-portal-link="true" rel="external">Personagens</a>
+              <a href="/mapas" class="portal-link" data-portal-link="true" rel="external">Mapas</a>
+              <a href="/livros" class="portal-link" data-portal-link="true" rel="external">Livros</a>
+              <a href="/agenda" class="portal-link" data-portal-link="true" rel="external">Agenda</a>
+            </nav>
+          \`;
+
+          if (document.body) {
+            document.body.prepend(header);
+          }
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', injetarMenuFixo);
+        } else {
+          injetarMenuFixo();
+        }
+
+        document.addEventListener('nav', injetarMenuFixo);
+      })();
+    `
+
+    /* STREAMING_CHUNK:Defining responsive styling tokens for the injected fixed header */
+    const customHeaderStyles = `
+      body {
+        padding-top: 3.6rem !important;
+      }
+
+      .header-fixo-portal {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 3.6rem !important;
+        z-index: 99999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 0 1.5rem !important;
+        background-color: rgba(12, 10, 9, 0.95) !important;
+        border-bottom: 1px solid rgba(251, 191, 36, 0.7) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7) !important;
+        font-family: inherit !important;
+        box-sizing: border-box !important;
+      }
+
+      .portal-brand-link {
+        display: flex !important;
+        align-items: center !important;
+        text-decoration: none !important;
+        border-bottom: none !important;
+      }
+
+      .portal-logo-mobile {
+        display: block !important;
+        height: 2rem !important;
+        width: 2rem !important;
+        object-fit: contain !important;
+      }
+
+      .portal-logo-desktop {
+        display: none !important;
+        height: 2.25rem !important;
+        width: auto !important;
+        object-fit: contain !important;
+      }
+
+      .portal-nav-links {
+        display: flex !important;
+        align-items: center !important;
+        gap: 1.25rem !important;
+      }
+
+      .portal-link {
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: #d6d3d1 !important;
+        text-decoration: none !important;
+        border-bottom: none !important;
+        transition: color 0.15s ease !important;
+      }
+
+      .portal-link:hover {
+        color: #fbbf24 !important;
+      }
+
+      .portal-link-ativo {
+        color: #fbbf24 !important;
+      }
+
+      @media (min-width: 768px) {
+        .portal-logo-mobile {
+          display: none !important;
+        }
+        .portal-logo-desktop {
+          display: block !important;
+        }
+        .portal-nav-links {
+          gap: 1.75rem !important;
+        }
+      }
+    `
+
+    /* STREAMING_CHUNK:Rendering full HTML head structure */
     return (
       <head>
         <title>{title}</title>
@@ -92,6 +244,9 @@ export default (() => {
         <link rel="icon" href={iconPath} />
         <meta name="description" content={description} />
         <meta name="generator" content="Quartz" />
+
+        <style dangerouslySetInnerHTML={{ __html: customHeaderStyles }} />
+        <script dangerouslySetInnerHTML={{ __html: customHeaderScript }} />
 
         {css.map((resource) => CSSResourceToStyleElement(resource, true))}
         {js

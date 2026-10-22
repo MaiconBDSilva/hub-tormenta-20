@@ -2,25 +2,64 @@
 
 @theme {
   /* Tons de Cinza Pedra */
-  --color-pedra-fundo: #0f1015;
-  --color-pedra-card: #181a20;
-  --color-pedra-borda: #2a2d37;
+  --color-pedra-fundo: #0c0a09; /* stone-950 */
+  --color-pedra-card: #1c1917;  /* stone-900 */
+  --color-pedra-borda: #292524; /* stone-800 */
 
   /* Tons de Rubi */
-  --color-rubi: #9b111e;
-  --color-rubi-hover: #c41e3a;
+  --color-rubi: #dc2626;        /* red-600 */
+  --color-rubi-escuro: #7f1d1d; /* red-900 */
 
   /* Tons de Dourado */
-  --color-dourado: #d4af37;
-  --color-dourado-hover: #f3c623;
+  --color-dourado: #f59e0b;       /* amber-500 */
+  --color-dourado-claro: #fbbf24; /* amber-400 */
+  --color-dourado-escuro: #d97706;/* amber-600 */
 }
 
 body {
   background-color: var(--color-pedra-fundo);
-  color: #e2e8f0;
+  color: #e7e5e4;
   font-family: sans-serif;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
+/* ==========================================================================
+   DNA VISUAL GLOBAL DE TORMENTA 20 (Utilitários Compartilhados)
+   ========================================================================== */
+@layer utilities {
+  /* Brilhos ambientes de fundo */
+  .t20-glow-ruby {
+    @apply absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-900/20 blur-3xl rounded-full pointer-events-none;
+  }
 
+  .t20-glow-amber {
+    @apply absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-600/15 blur-2xl rounded-full pointer-events-none;
+  }
+
+  /* Card medieval com efeito de vidro fosco */
+  .t20-card {
+    @apply relative bg-stone-900/90 border border-stone-800 rounded-xl shadow-2xl backdrop-blur-md overflow-hidden;
+  }
+
+  /* Stripe decorativa no topo dos cards */
+  .t20-stripe {
+    @apply absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-red-600 via-amber-500 to-red-600;
+  }
+
+  /* Botão principal com degradê dourado */
+  .t20-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 py-3 px-6 bg-linear-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-500 text-stone-950 font-bold text-sm rounded-xl shadow-lg shadow-amber-900/40 transition-all transform hover:scale-105 active:scale-95 border border-amber-300/40 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Botão secundário / ghost */
+  .t20-btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-stone-900 border border-stone-800 text-stone-300 hover:bg-stone-800 hover:border-amber-500/50 hover:text-stone-100 transition-all text-sm font-medium shadow-md cursor-pointer;
+  }
+
+  /* Inputs de formulário padronizados */
+  .t20-input {
+    @apply w-full px-4 py-2.5 rounded-lg bg-stone-950 border border-stone-800 text-stone-100 text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors;
+  }
+}

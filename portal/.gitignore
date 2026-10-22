@@ -40,5 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Estaticos da wiki
-/public/wiki/
+# dependências internas do quartz
+wiki-quartz/node_modules/
+wiki-quartz/.quartz-cache/

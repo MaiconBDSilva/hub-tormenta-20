@@ -1,0 +1,122 @@
+.header-fixo-quartz {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.6rem;
+  z-index: 9999;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(251, 191, 36, 0.8) !important; /* Dourado */
+  background-color: rgba(15, 16, 21, 0.95) !important;         /* Dark Stone */
+  padding: 0 1.5rem !important;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  font-family: var(--bodyFont), sans-serif;
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+/* Logo Mobile (Quadrada) */
+.logo-mobile {
+  display: block;
+  height: 2rem;
+  width: 2rem;
+  object-fit: contain;
+
+  @media (min-width: 768px) {
+    display: none !important;
+  }
+}
+
+/* Logo Desktop (Retangular) */
+.logo-desktop {
+  display: none !important;
+  height: 2.25rem;
+  width: auto;
+  object-fit: contain;
+
+  @media (min-width: 768px) {
+    display: block !important;
+  }
+}
+
+/* Links de Navegação Desktop */
+.nav-desktop {
+  display: none;
+  align-items: center;
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    display: flex !important;
+  }
+}
+
+.nav-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #d6d3d1 !important; /* Stone 300 */
+  text-decoration: none !important;
+  border-bottom: none !important;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: #fbbf24 !important; /* Dourado */
+  }
+}
+
+/* Botão Menu Mobile (Hambúrguer) */
+.btn-mobile-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  width: 2rem;
+  background: transparent;
+  border: 1px solid rgba(251, 191, 36, 0.8);
+  color: #fbbf24;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+
+  @media (min-width: 768px) {
+    display: none !important;
+  }
+}
+
+/* Dropdown Mobile */
+.nav-mobile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 1rem;
+  min-width: 11rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: rgba(15, 16, 21, 0.98);
+  border: 1px solid rgba(251, 191, 36, 0.8);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+
+  &.oculto {
+    display: none !important;
+  }
+
+  .nav-link {
+    padding: 0.25rem 0;
+  }
+}
+
+/* Compensação do espaço do cabeçalho no corpo do Quartz */
+body {
+  padding-top: 3.6rem !important;
+}

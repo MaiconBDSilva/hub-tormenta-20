@@ -91,6 +91,7 @@ plugins:
     enabled: true
     options:
       markdownLinkResolution: shortest
+      prettyLinks: false
     order: 60
   - source: "@quartz-community/description"
     enabled: true

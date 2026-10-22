@@ -7,10 +7,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-stone-950">
-    <header>
-      <MenuFixo/>
-    </header>
-
+    
       {/* ⚔️ HERO SECTION */}
       <main className="flex-1 w-full bg-stone-950 flex flex-col">
         <iframe

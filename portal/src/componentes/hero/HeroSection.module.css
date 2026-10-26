@@ -84,12 +84,13 @@
   @apply text-xs text-stone-400 mt-1;
 }
 
+/* Contêiner com dimensões e proporção rígidas para evitar estouro no mobile */
 .canvasWrapper {
-  @apply flex justify-center items-center;
+  @apply relative flex justify-center items-center w-[240px] h-[240px] max-w-full my-1 overflow-hidden select-none;
 }
 
 .d20CanvasElement {
-  @apply cursor-pointer touch-none drop-shadow-[0_0_20px_rgba(217,119,6,0.4)] transition-transform hover:scale-105 active:scale-95;
+  @apply w-full h-full cursor-pointer touch-none drop-shadow-[0_0_20px_rgba(217,119,6,0.4)] transition-transform hover:scale-105 active:scale-95;
 }
 
 /* ==========================================================================

@@ -6,8 +6,11 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contextos/AuthContext";
 import { DadosCampanha } from "@/tipos/campanha";
+import { AbaPainelMestre } from "@/tipos/personagem";
 import { TelaAcessoNegado } from "@/componentes/painel/TelaAcessoNegado";
 import { FormCampanha } from "@/componentes/painel/FormCampanha";
+import { GerenciadorPersonagens } from "@/componentes/painel/GerenciadorPersonagens";
+import { GerenciadorUsuarios } from "@/componentes/painel/GerenciadorUsuarios";
 import styles from "@/componentes/painel/painel.module.css";
 import {
   ArrowLeft,
@@ -15,13 +18,20 @@ import {
   AlertCircle,
   Loader2,
   Scroll,
+  Shield,
+  Users,
+  Compass,
 } from "lucide-react";
 
 export default function PainelMestrePage() {
   const { ehMestre, carregando: carregandoAuth } = useAuth();
 
-  const [carregandoDados, setCarregandoDados] = useState<boolean>(true);
-  const [salvando, setSalvando] = useState<boolean>(false);
+  // Navegação entre as abas do Painel
+  const [abaAtiva, setAbaAtiva] = useState<AbaPainelMestre>("campanha");
+
+  // Estados da Aba Campanha
+  const [carregandoDados, setCarregandoDados] = useState(true);
+  const [salvando, setSalvando] = useState(false);
   const [mensagemSucesso, setMensagemSucesso] = useState<string | null>(null);
   const [mensagemErro, setMensagemErro] = useState<string | null>(null);
 
@@ -167,7 +177,7 @@ export default function PainelMestrePage() {
       <div aria-hidden="true" className="t20-glow-amber" />
 
       <div className={styles.painelContainer}>
-        {/* Cabeçalho Temático */}
+        {/* Cabeçalho do Painel */}
         <div className={styles.painelHeader}>
           <div>
             <h1 className={styles.painelTitulo}>
@@ -175,7 +185,7 @@ export default function PainelMestrePage() {
               Painel do Mestre
             </h1>
             <p className={styles.painelSubtitulo}>
-              Gerencie em tempo real as diretrizes da campanha e o próximo encontro em Arton.
+              Gerencie a campanha, modere fichas de personagens e vincule os aventureiros aos heróis de Arton.
             </p>
           </div>
 
@@ -185,37 +195,89 @@ export default function PainelMestrePage() {
           </Link>
         </div>
 
-        {/* Notificações visuais */}
-        {mensagemSucesso && (
-          <div className={styles.alertaSucesso}>
-            <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
-            <span className="font-medium">{mensagemSucesso}</span>
+        {/* Barra de Navegação em Abas do Mestre */}
+        <nav
+          aria-label="Abas do Painel"
+          className="flex border-b border-stone-800 gap-2 mb-8 overflow-x-auto pb-1"
+        >
+          <button
+            type="button"
+            onClick={() => setAbaAtiva("campanha")}
+            className={`flex items-center gap-2 px-5 py-3 font-serif font-semibold text-sm transition-all duration-200 border-b-2 whitespace-nowrap ${
+              abaAtiva === "campanha"
+                ? "border-amber-500 text-amber-400 bg-stone-900/60"
+                : "border-transparent text-stone-400 hover:text-stone-200 hover:border-stone-700"
+            }`}
+          >
+            <Compass className="w-4 h-4" />
+            Campanha & Sessões
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setAbaAtiva("personagens")}
+            className={`flex items-center gap-2 px-5 py-3 font-serif font-semibold text-sm transition-all duration-200 border-b-2 whitespace-nowrap ${
+              abaAtiva === "personagens"
+                ? "border-amber-500 text-amber-400 bg-stone-900/60"
+                : "border-transparent text-stone-400 hover:text-stone-200 hover:border-stone-700"
+            }`}
+          >
+            <Shield className="w-4 h-4" />
+            Gestão de Personagens
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setAbaAtiva("usuarios")}
+            className={`flex items-center gap-2 px-5 py-3 font-serif font-semibold text-sm transition-all duration-200 border-b-2 whitespace-nowrap ${
+              abaAtiva === "usuarios"
+                ? "border-amber-500 text-amber-400 bg-stone-900/60"
+                : "border-transparent text-stone-400 hover:text-stone-200 hover:border-stone-700"
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            Vínculo de Usuários
+          </button>
+        </nav>
+
+        {/* Renderização Condicional por Aba */}
+        {abaAtiva === "campanha" && (
+          <div>
+            {mensagemSucesso && (
+              <div className={styles.alertaSucesso}>
+                <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
+                <span className="font-medium">{mensagemSucesso}</span>
+              </div>
+            )}
+
+            {mensagemErro && (
+              <div className={styles.alertaErro}>
+                <AlertCircle className="w-5 h-5 shrink-0 text-red-400" />
+                <span className="font-medium">{mensagemErro}</span>
+              </div>
+            )}
+
+            {carregandoDados ? (
+              <div className={styles.loadingBox}>
+                <Loader2 className="w-8 h-8 animate-spin text-amber-500 mb-3" />
+                <p className="text-sm font-serif">Carregando registros vigentes do Firestore...</p>
+              </div>
+            ) : (
+              <FormCampanha
+                dados={form}
+                salvando={salvando}
+                onCampoProximaSessaoChange={handleProximaSessaoChange}
+                onCampoUltimaSessaoChange={handleUltimaSessaoChange}
+                onCampoServidorChange={handleServidorChange}
+                onSubmit={handleSubmit}
+              />
+            )}
           </div>
         )}
 
-        {mensagemErro && (
-          <div className={styles.alertaErro}>
-            <AlertCircle className="w-5 h-5 shrink-0 text-red-400" />
-            <span className="font-medium">{mensagemErro}</span>
-          </div>
-        )}
+        {abaAtiva === "personagens" && <GerenciadorPersonagens />}
 
-        {/* Carregamento ou Formulário */}
-        {carregandoDados ? (
-          <div className={styles.loadingBox}>
-            <Loader2 className="w-8 h-8 animate-spin text-amber-500 mb-3" />
-            <p className="text-sm font-serif">Carregando registros vigentes do Firestore...</p>
-          </div>
-        ) : (
-          <FormCampanha
-            dados={form}
-            salvando={salvando}
-            onCampoProximaSessaoChange={handleProximaSessaoChange}
-            onCampoUltimaSessaoChange={handleUltimaSessaoChange}
-            onCampoServidorChange={handleServidorChange}
-            onSubmit={handleSubmit}
-          />
-        )}
+        {abaAtiva === "usuarios" && <GerenciadorUsuarios />}
       </div>
     </main>
   );

@@ -15,6 +15,9 @@ export interface PerfilUsuario {
 
 export type AbaFicha = "principal" | "poderes" | "pericias" | "magias" | "equipamentos" | "notas";
 
+// Tipo utilizado no Painel do Mestre (/painel)
+export type AbaPainelMestre = "campanha" | "personagens" | "usuarios";
+
 export type AtributoChaveSigla = "FOR" | "DES" | "CON" | "INT" | "SAB" | "CAR";
 
 export interface AtributosT20 {

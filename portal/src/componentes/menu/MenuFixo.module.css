@@ -6,7 +6,7 @@
 }
 
 .brandLink {
-@apply shrink-0 flex items-center;
+@apply shrink-0 flex items-center z-10;
 }
 
 .logoMobile {
@@ -19,7 +19,7 @@
 
 /* Navegação Desktop */
 .navDesktop {
-@apply hidden items-center gap-6 md:flex;
+@apply hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 pointer-events-auto;;
 }
 
 .navLink {
@@ -28,7 +28,7 @@
 
 /* Área de Ações à Direita */
 .actionsRight {
-@apply flex items-center gap-2 sm:gap-3;
+@apply flex items-center gap-2 sm:gap-3 z-10;
 }
 
 .btnFoundry {

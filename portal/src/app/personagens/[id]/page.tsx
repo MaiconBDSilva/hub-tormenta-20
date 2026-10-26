@@ -9,8 +9,12 @@ import { PersonagemRPG, AbaFicha } from "@/tipos/personagem";
 import { CabecalhoFicha } from "@/componentes/personagens/CabecalhoFicha";
 import { AbaPrincipal } from "@/componentes/personagens/abas/AbaPrincipal";
 import { AbaNotas } from "@/componentes/personagens/abas/AbaNotas";
+import { AbaPericias } from "@/componentes/personagens/abas/AbaPericias";
 import { AbaPlaceholder } from "@/componentes/personagens/abas/AbaPlaceholder";
 import styles from "@/componentes/personagens/personagens.module.css";
+import { AbaPoderes } from "@/componentes/personagens/abas/AbaPoderes";
+import { AbaMagias } from "@/componentes/personagens/abas/AbaMagias";
+import { AbaEquipamentos } from "@/componentes/personagens/abas/AbaEquipamentos";
 import {
   Shield,
   Sparkles,
@@ -24,7 +28,12 @@ import {
 
 export default function FichaPersonagemPage() {
   const { id } = useParams<{ id: string }>();
-  const { usuario, dadosPerfil, ehMestre, carregando: carregandoAuth } = useAuth();
+  const {
+    usuario,
+    dadosPerfil,
+    ehMestre,
+    carregando: carregandoAuth,
+  } = useAuth();
 
   const [personagem, setPersonagem] = useState<PersonagemRPG | null>(null);
   const [carregando, setCarregando] = useState(true);
@@ -80,7 +89,9 @@ export default function FichaPersonagemPage() {
   if (erro || !personagem) {
     return (
       <main className={styles.personagensMain}>
-        <div className={`${styles.personagensContainer} max-w-lg mx-auto pt-12`}>
+        <div
+          className={`${styles.personagensContainer} max-w-lg mx-auto pt-12`}
+        >
           <div className="p-6 rounded-xl bg-red-950/60 border border-red-800 text-red-300 text-sm flex items-center gap-3">
             <AlertCircle className="w-6 h-6 shrink-0 text-red-400" />
             <span>{erro || "Personagem inexistente."}</span>
@@ -93,7 +104,8 @@ export default function FichaPersonagemPage() {
   // Checagem de permissão de posse
   const ehDono = Boolean(
     usuario &&
-      (personagem.id === dadosPerfil?.personagemId || personagem.donoUid === usuario.uid)
+    (personagem.id === dadosPerfil?.personagemId ||
+      personagem.donoUid === usuario.uid),
   );
 
   const podeVerNotas = ehDono || ehMestre;
@@ -109,8 +121,7 @@ export default function FichaPersonagemPage() {
           personagem={personagem}
           ehDono={ehDono}
           ehMestre={ehMestre}
-          modoEdicao={modoEdicao}
-          onAlternarModoEdicao={() => setModoEdicao((prev) => !prev)}
+          onAtualizacao={carregarFicha}
         />
 
         {/* Barra de Navegação em Abas */}
@@ -180,7 +191,23 @@ export default function FichaPersonagemPage() {
               personagem={personagem}
               ehDono={ehDono}
               ehMestre={ehMestre}
-              modoEdicao={modoEdicao}
+              onAtualizacao={carregarFicha}
+            />
+          )}
+          {abaAtiva === "poderes" && (
+            <AbaPoderes
+              personagem={personagem}
+              ehDono={ehDono}
+              ehMestre={ehMestre}
+              onAtualizacao={carregarFicha}
+            />
+          )}
+
+          {abaAtiva === "pericias" && (
+            <AbaPericias
+              personagem={personagem}
+              ehDono={ehDono}
+              ehMestre={ehMestre}
               onAtualizacao={carregarFicha}
             />
           )}
@@ -193,8 +220,22 @@ export default function FichaPersonagemPage() {
             />
           )}
 
-          {["poderes", "pericias", "magias", "equipamentos"].includes(abaAtiva) && (
-            <AbaPlaceholder aba={abaAtiva} />
+          {abaAtiva === "magias" && (
+            <AbaMagias
+              personagem={personagem}
+              ehDono={ehDono}
+              ehMestre={ehMestre}
+              onAtualizacao={carregarFicha}
+            />
+          )}
+
+          {abaAtiva === "equipamentos" && (
+            <AbaEquipamentos
+              personagem={personagem}
+              ehDono={ehDono}
+              ehMestre={ehMestre}
+              onAtualizacao={carregarFicha}
+            />
           )}
         </section>
       </div>

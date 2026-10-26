@@ -1,18 +1,31 @@
-/**
- * Hub Tormenta 20 - Tipagens do Módulo de Personagens
- * Contratos de dados para o Firestore e regras de moderação
- */
+import { Timestamp } from "firebase/firestore";
 
-// Campos que o jogador Dono pode atualizar imediatamente sem mediação do Mestre
-export interface BlocoLivrePersonagem {
-  pvAtual: number;
-  pmAtual: number;
-  avatarUrl: string;       // URL direta da imagem (Imgur, Discord, etc.)
-  descricao: string;       // Lore, histórico e trejeitos visíveis para a mesa
-  anotacoes: string;       // Anotações secretas (visíveis exclusivamente para Dono e Mestre)
+export type PapelUsuario = "jogador" | "mestre";
+
+export interface PerfilUsuario {
+  uid: string;
+  nome: string;
+  email: string;
+  papel: PapelUsuario;
+  fotoUrl?: string;
+  personagemId?: string | null;
+  criadoEm?: string;
+  atualizadoEm?: string;
 }
 
-// Campos protegidos que exigem validação e aprovação do Mestre para jogadores
+export type AbaFicha = "principal" | "poderes" | "pericias" | "magias" | "equipamentos" | "notas";
+
+export type AtributoChaveSigla = "FOR" | "DES" | "CON" | "INT" | "SAB" | "CAR";
+
+export interface AtributosT20 {
+  forca: number;
+  destreza: number;
+  constituicao: number;
+  inteligencia: number;
+  sabedoria: number;
+  carisma: number;
+}
+
 export interface BlocoProtegidoPersonagem {
   nome: string;
   raca: string;
@@ -23,36 +36,141 @@ export interface BlocoProtegidoPersonagem {
   pvMaximo: number;
   pmMaximo: number;
   defesa: number;
+  atributos?: AtributosT20;
 }
 
-export type StatusSolicitacao = "pendente" | "recusada";
-
-// Estrutura do nó temporário de solicitação de edição
-export interface SolicitacaoEdicaoPendente {
-  status: StatusSolicitacao;
-  solicitadoEm: string;    // Data ISO do momento do envio
-  motivoRecusa?: string;   // Justificativa preenchida pelo Mestre caso recuse
-  campos: Partial<BlocoProtegidoPersonagem>; // Armazena apenas o que sofreu alteração
-}
-
-// Modelo completo da ficha no Firestore (coleção: "personagens")
-export interface PersonagemRPG extends BlocoLivrePersonagem, BlocoProtegidoPersonagem {
+export interface ItemPericia {
   id: string;
-  donoUid: string | null;  // UID do usuário autenticado no Firebase Auth
-  donoNome?: string;      // Cache do nome do jogador para listagens rápidas
-  criadoEm: string;        // Data ISO de criação
-  atualizadoEm: string;    // Data ISO da última modificação
-  solicitacaoPendente?: SolicitacaoEdicaoPendente | null;
+  nome: string;
+  atributoChave: AtributoChaveSigla;
+  treinada: boolean;
+  total: number;
+  ehOficioPersonalizado?: boolean;
 }
 
-// Identificadores das 6 abas modulares da ficha imersiva
-export type AbaFicha =
-  | "principal"
-  | "poderes"
-  | "pericias"
-  | "magias"
-  | "equipamentos"
-  | "notas";
+export type CategoriaPoder =
+  | "Classe"
+  | "Raça"
+  | "Origem"
+  | "Geral"
+  | "Concedido"
+  | "Tormenta";
 
-// Identificadores das abas superiores de navegação do Painel do Mestre
-export type AbaPainelMestre = "campanha" | "personagens" | "usuarios";
+export type TipoAcaoPoder =
+  | "Passiva"
+  | "Padrão"
+  | "Movimento"
+  | "Completa"
+  | "Livre"
+  | "Reação";
+
+export interface ItemPoder {
+  id: string;
+  origemId?: string;
+  nome: string;
+  tipo: CategoriaPoder;
+  subtipo?: string;
+  tipoAcao: TipoAcaoPoder;
+  custoPm: string;
+  descricao: string;
+  ehCustomizado?: boolean;
+}
+
+// ==========================================
+// Módulo de Magias & Grimório de Tormenta 20
+// ==========================================
+export type EscolaMagiaT20 =
+  | "Abjuração"
+  | "Adivinhação"
+  | "Convocação"
+  | "Encantamento"
+  | "Evocação"
+  | "Ilusão"
+  | "Necromancia"
+  | "Transmutação";
+
+export type TipoMagiaT20 = "Arcana" | "Divina" | "Universal";
+
+export interface AprimoramentoMagia {
+  id: string;
+  custoPm: string;
+  descricao: string;
+}
+
+export interface ItemMagiaPersonagem {
+  id: string;
+  origemId?: string;
+  nome: string;
+  circulo: number;
+  tipo: TipoMagiaT20;
+  escola: EscolaMagiaT20;
+  execucao: string;
+  alcance: string;
+  alvoOuArea?: string;
+  duracao: string;
+  resistencia: string;
+  custoPm: string;
+  descricao: string;
+  aprimoramentos?: AprimoramentoMagia[];
+  ehCustomizada?: boolean;
+}
+
+// ==========================================
+// Módulo de Equipamentos & Riquezas de Arton
+// ==========================================
+export type CategoriaEquipamento =
+  | "Arma"
+  | "Armadura"
+  | "Escudo"
+  | "Acessório"
+  | "Consumível"
+  | "Geral";
+
+export interface MoedasT20 {
+  tl: number; // Tibar de Platina (1 TL = 10 TO)
+  to: number; // Tibar de Ouro (Moeda padrão T$ / TO)
+  tp: number; // Tibar de Prata (10 TP = 1 TO)
+  tc: number; // Tibar de Cobre (100 TC = 1 TO)
+}
+
+export interface ItemEquipamento {
+  id: string;
+  origemId?: string;
+  nome: string;
+  categoria: CategoriaEquipamento;
+  subtipo?: string;
+  quantidade: number;
+  precoTexto?: string;
+  equipado: boolean;
+  descricao: string;
+  ehCustomizado?: boolean;
+}
+
+export interface SolicitacaoPendentePersonagem {
+  status: "pendente" | "recusada";
+  solicitadoEm: string;
+  motivoRecusa?: string;
+  campos: Partial<BlocoProtegidoPersonagem>;
+}
+
+export interface BlocoLivrePersonagem {
+  pvAtual: number;
+  pmAtual: number;
+  avatarUrl: string;
+  descricao: string;
+  anotacoes: string;
+  pericias?: ItemPericia[];
+  poderes?: ItemPoder[];
+  magias?: ItemMagiaPersonagem[];
+  equipamentos?: ItemEquipamento[];
+  moedas?: MoedasT20;
+}
+
+export interface PersonagemRPG extends BlocoProtegidoPersonagem, BlocoLivrePersonagem {
+  id: string;
+  donoUid?: string;
+  donoNome?: string;
+  criadoEm?: string | Timestamp;
+  atualizadoEm?: string | Timestamp;
+  solicitacaoPendente?: SolicitacaoPendentePersonagem | null;
+}

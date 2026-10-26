@@ -9,7 +9,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Shield, Plus, ArrowLeft, Loader2, AlertCircle } from "lucide-react";
+import { Shield, ArrowLeft, Loader2, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contextos/AuthContext";
 import { PersonagemRPG } from "@/tipos/personagem";
 import { CardPersonagemVitrine } from "@/componentes/personagens/CardPersonagemVitrine";
@@ -38,7 +38,7 @@ export default function PersonagensVitrinePage() {
           });
         });
 
-        // Ordenação preferencial: coloca o personagem do usuário autenticado no topo
+        // Ordenação preferencial: coloca o personagem do usuário autenticado no primeiro card
         if (dadosPerfil?.personagemId) {
           lista.sort((a, b) => {
             if (a.id === dadosPerfil.personagemId) return -1;
@@ -69,31 +69,20 @@ export default function PersonagensVitrinePage() {
 
       <div className={`${styles.personagensContainer} space-y-8`}>
         {/* Topo da Vitrine */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-stone-800">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-amber-500/20">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <Shield className="w-8 h-8 text-amber-500 drop-shadow-[0_0_10px_rgba(245,158,11,0.3)]" />
-              <h1 className="text-3xl font-serif font-bold text-stone-100 tracking-wide">
-                Heróis da Campanha
+              <Shield className="w-8 h-8 text-amber-500 drop-shadow-[0_0_12px_rgba(245,158,11,0.4)]" />
+              <h1 className="text-3xl font-serif font-black text-amber-100 tracking-wide">
+                Os Campeões de Arton
               </h1>
             </div>
-            <p className="text-sm text-stone-400 font-sans">
-              Conheça os aventureiros que desafiam os perigos e a corrupção de Arton.
+            <p className="text-sm text-stone-400 font-serif">
+              Conheça os aventureiros que desafiam os perigos e a corrupção do mundo.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            {ehMestre && (
-              <Link
-                href="/painel"
-                className="t20-btn-primary text-xs flex items-center gap-1.5"
-                title="Cadastrar novo herói pelo Painel do Mestre"
-              >
-                <Plus className="w-4 h-4" />
-                Novo Personagem
-              </Link>
-            )}
-
             <Link href="/" className="t20-btn-ghost text-xs flex items-center gap-1.5">
               <ArrowLeft className="w-4 h-4 text-amber-400" />
               Voltar ao Hub
@@ -109,12 +98,12 @@ export default function PersonagensVitrinePage() {
           </div>
         )}
 
-        {/* Loading ou Grade de Personagens */}
+        {/* Loading ou Grade de Cartas de Tarô */}
         {carregando || carregandoAuth ? (
           <div className="p-20 text-center flex flex-col items-center justify-center">
             <Loader2 className="w-10 h-10 animate-spin text-amber-500 mb-3" />
             <p className="text-sm font-serif text-stone-400 uppercase tracking-wider">
-              Buscando registros dos heróis nos Tomos de Arton...
+              Invocando registros dos campeões nos Tomos de Arton...
             </p>
           </div>
         ) : personagens.length === 0 ? (
@@ -131,7 +120,8 @@ export default function PersonagensVitrinePage() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-fade-in">
+          /* Grade responsiva em 5 colunas perfeitamente simétricas */
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 sm:gap-6 justify-center items-start animate-fade-in">
             {personagens.map((p) => {
               const ehDono = Boolean(
                 usuario &&

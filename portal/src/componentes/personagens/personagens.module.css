@@ -1,14 +1,14 @@
 /* ==========================================================================
-   Módulo Centralizado de Layout e Estrutura: Hub Tormenta 20
+   Design System Diegético: Ficha Tormenta 20 (Arton Hero Card)
    Localização: portal/src/componentes/personagens/personagens.module.css
    ========================================================================== */
 
-/* 1. Estrutura de Telas (Vitrine e Ficha) */
+/* 1. Estrutura Principal */
 .personagensMain {
   position: relative;
   min-height: 100vh;
-  padding-top: 7rem; /* Recuo seguro padrão do Menu Fixo */
-  padding-bottom: 4rem;
+  padding-top: 6.5rem;
+  padding-bottom: 5rem;
   padding-left: 1rem;
   padding-right: 1rem;
   background-color: var(--color-pedra-fundo, #0c0a09);
@@ -17,56 +17,280 @@
 
 @media (min-width: 640px) {
   .personagensMain {
-    padding-top: 7.5rem;
+    padding-top: 7rem;
     padding-left: 2rem;
     padding-right: 2rem;
   }
 }
 
 .personagensContainer {
-  max-width: 72rem; /* max-w-6xl */
+  max-width: 82rem;
   margin-left: auto;
   margin-right: auto;
   position: relative;
   z-index: 10;
 }
 
-/* 2. Casca dos Cards da Vitrine */
-.cardVitrine {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  background-color: rgba(28, 25, 23, 0.7);
-  border: 1px solid var(--color-pedra-borda, #292524);
-  backdrop-filter: blur(12px);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.cardVitrine:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.7),
-    0 0 16px rgba(245, 158, 11, 0.15);
-  border-color: rgba(245, 158, 11, 0.4);
-}
-
-/* Realce exclusivo para o card do herói do próprio jogador */
-.cardVitrineDono {
-  border-color: rgba(245, 158, 11, 0.75) !important;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2) !important;
-  background-color: rgba(28, 25, 23, 0.9) !important;
-}
-
-/* Recipiente do Avatar com máscara em gradiente */
-.avatarContainer {
+/* ==========================================================================
+   2. Cartas de Tarô dos Campeões de Arton (Vitrine)
+   ========================================================================== */
+.tarotCard {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  background-color: #0c0a09;
+  max-width: 15rem;
+  aspect-ratio: 9 / 16;
+  border-radius: 0.875rem;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: #0c0a09;
+  border: 2px solid rgba(217, 119, 6, 0.45);
+  box-shadow: 0 16px 32px -10px rgba(0, 0, 0, 0.9),
+              inset 0 1px 0 rgba(245, 158, 11, 0.3);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.tarotCard:hover {
+  transform: translateY(-6px);
+  border-color: rgba(245, 158, 11, 0.85);
+  box-shadow: 0 24px 40px -10px rgba(0, 0, 0, 0.95),
+              0 0 20px rgba(245, 158, 11, 0.3),
+              inset 0 0 15px rgba(245, 158, 11, 0.15);
+}
+
+/* Carta do Jogador Atual com Borda Dourada Pulsante */
+.tarotCardDono {
+  border-color: rgba(245, 158, 11, 0.85);
+  box-shadow: 0 16px 35px -8px rgba(0, 0, 0, 0.9),
+              0 0 20px rgba(245, 158, 11, 0.4),
+              inset 0 0 12px rgba(245, 158, 11, 0.2);
+}
+
+.tarotCardDono:hover {
+  box-shadow: 0 24px 45px -8px rgba(0, 0, 0, 0.95),
+              0 0 28px rgba(245, 158, 11, 0.55),
+              inset 0 0 18px rgba(245, 158, 11, 0.25);
+}
+
+/* Moldura Rúnica Interna com Recuo */
+.tarotBordaInterna {
+  position: absolute;
+  inset: 0.375rem;
+  border-radius: 0.625rem;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  pointer-events: none;
+  z-index: 15;
+  transition: border-color 0.3s ease;
+}
+
+.tarotCard:hover .tarotBordaInterna {
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+/* Cantoneiras Rúnicas nas Quatro Pontas */
+.tarotCornerTL,
+.tarotCornerTR,
+.tarotCornerBL,
+.tarotCornerBR {
+  position: absolute;
+  width: 0.75rem;
+  height: 0.75rem;
+  pointer-events: none;
+  border-color: rgba(245, 158, 11, 0.85);
+  border-style: solid;
+  z-index: 20;
+}
+
+.tarotCornerTL {
+  top: 0.5rem;
+  left: 0.5rem;
+  border-width: 2px 0 0 2px;
+}
+
+.tarotCornerTR {
+  top: 0.5rem;
+  right: 0.5rem;
+  border-width: 2px 2px 0 0;
+}
+
+.tarotCornerBL {
+  bottom: 0.5rem;
+  left: 0.5rem;
+  border-width: 0 0 2px 2px;
+}
+
+.tarotCornerBR {
+  bottom: 0.5rem;
+  right: 0.5rem;
+  border-width: 0 2px 2px 0;
+}
+
+/* Selo de Nível Estilo Brasão de Metal */
+.seloNivelTarot {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.5rem;
+  background: radial-gradient(circle at 50% 30%, rgba(41, 37, 36, 0.95), rgba(12, 10, 9, 0.98));
+  border: 1px solid rgba(245, 158, 11, 0.6);
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8),
+              inset 0 1px 0 rgba(254, 243, 199, 0.3);
+}
+
+/* Badge do Dono (Topo Esquerdo) */
+.badgeTarotDono {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.375rem;
+  background: linear-gradient(180deg, rgba(180, 83, 9, 0.9) 0%, rgba(120, 53, 15, 0.95) 100%);
+  border: 1px solid rgba(251, 191, 36, 0.7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(245, 158, 11, 0.35);
+  font-family: Georgia, serif;
+  font-size: 0.625rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #fef3c7;
+}
+
+/* Imagem de Fundo Completa */
+.tarotImagemContainer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.tarotImagem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tarotCard:hover .tarotImagem {
+  transform: scale(1.06);
+}
+
+/* Degradê Escuro da Base para Garantir Contraste Perfeito */
+.tarotDegradeBase {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(12, 10, 9, 0.1) 0%,
+    rgba(12, 10, 9, 0.3) 40%,
+    rgba(12, 10, 9, 0.85) 75%,
+    rgba(12, 10, 9, 0.98) 100%
+  );
+  pointer-events: none;
+}
+
+/* Placa Ornamental Inferior */
+.tarotPlacaInfo {
+  position: relative;
+  z-index: 20;
+  padding: 1rem 0.875rem 0.75rem 0.875rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ==========================================================================
+   3. Card de Identidade / Hero Frame com Moldura Temática (Ficha Interna)
+   ========================================================================== */
+.fichaCabecalho {
+  position: relative;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  background: radial-gradient(circle at 50% 0%, rgba(41, 37, 36, 0.85) 0%, rgba(18, 16, 15, 0.95) 80%);
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85),
+              inset 0 1px 0 rgba(245, 158, 11, 0.25),
+              inset 0 0 30px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(16px);
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .fichaCabecalho {
+    padding: 2rem;
+  }
+}
+
+/* Cantoneiras Rúnicas/Metálicas nos 4 vértices do Card */
+.cantoneiraTopoEsq,
+.cantoneiraTopoDir,
+.cantoneiraBaseEsq,
+.cantoneiraBaseDir {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: none;
+  border-color: rgba(245, 158, 11, 0.7);
+  border-style: solid;
+  z-index: 20;
+}
+
+.cantoneiraTopoEsq {
+  top: 0.5rem;
+  left: 0.5rem;
+  border-width: 2px 0 0 2px;
+}
+
+.cantoneiraTopoDir {
+  top: 0.5rem;
+  right: 0.5rem;
+  border-width: 2px 2px 0 0;
+}
+
+.cantoneiraBaseEsq {
+  bottom: 0.5rem;
+  left: 0.5rem;
+  border-width: 0 0 2px 2px;
+}
+
+.cantoneiraBaseDir {
+  bottom: 0.5rem;
+  right: 0.5rem;
+  border-width: 0 2px 2px 0;
+}
+
+/* Avatar com Moldura de Retrato Clássico */
+.fichaAvatarBox {
+  position: relative;
+  width: 13rem;
+  height: 16rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 2px solid rgba(245, 158, 11, 0.6);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.95),
+              0 0 15px rgba(245, 158, 11, 0.2);
+  background-color: #0c0a09;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .fichaAvatarBox {
+    width: 15rem;
+    height: 100%;
+    min-height: 19rem;
+  }
 }
 
 .avatarImagem {
@@ -77,58 +301,115 @@
   transition: transform 0.5s ease;
 }
 
-.cardVitrine:hover .avatarImagem {
-  transform: scale(1.05);
-}
-
-.avatarDegrade {
+.avatarImagemFicha {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(28, 25, 23, 1) 0%, rgba(28, 25, 23, 0.4) 40%, transparent 100%);
-  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.4s ease;
 }
 
-.cardConteudo {
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  justify-content: space-between;
-  margin-top: -1.5rem;
-  position: relative;
-  z-index: 10;
-}
-
-/* 3. Casca e Cabeçalho da Ficha Imersiva ([id]) */
-.fichaCabecalho {
-  position: relative;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  background-color: rgba(28, 25, 23, 0.75);
-  border: 1px solid var(--color-pedra-borda, #292524);
-  backdrop-filter: blur(12px);
-  margin-bottom: 1.5rem;
-  overflow: hidden;
-}
-
-.fichaAvatarBox {
-  position: relative;
-  width: 6.5rem;
-  height: 6.5rem;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  border: 2px solid var(--color-pedra-borda, #292524);
-  background-color: #0c0a09;
-  flex-shrink: 0;
+/* 4. Brasões Diegéticos dos 6 Atributos (Estilo Moeda/Medalhão Chanfrado) */
+.gradeAtributos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
 }
 
 @media (min-width: 640px) {
-  .fichaAvatarBox {
-    width: 8rem;
-    height: 8rem;
+  .gradeAtributos {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.75rem;
   }
 }
 
+.brasaoAtributo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 0.25rem;
+  background: linear-gradient(180deg, rgba(28, 25, 23, 0.9) 0%, rgba(12, 10, 9, 0.95) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6),
+              inset 0 1px 0 rgba(254, 243, 199, 0.15);
+  transition: all 0.2s ease-in-out;
+}
+
+.brasaoAtributo:hover {
+  border-color: rgba(245, 158, 11, 0.7);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.7),
+              0 0 12px rgba(245, 158, 11, 0.2);
+  transform: translateY(-2px);
+}
+
+.rotuloAtributo {
+  font-family: Georgia, serif;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #fbbf24;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  margin-bottom: 0.25rem;
+}
+
+.valorModificador {
+  font-family: Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+  line-height: 1;
+}
+
+/* 5. Escudo de Defesa de Metal */
+.escudoDefesa {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 30%, rgba(41, 37, 36, 0.95), rgba(12, 10, 9, 0.95));
+  border: 2px solid rgba(245, 158, 11, 0.5);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.7),
+              inset 0 1px 1px rgba(254, 243, 199, 0.25);
+  min-width: 6.5rem;
+}
+
+/* 6. Barras de Vitalidade Lapidadas (Gema Rubi e Gema Safira) */
+.trilhaVitalidade {
+  position: relative;
+  height: 0.875rem;
+  border-radius: 9999px;
+  background-color: rgba(12, 10, 9, 0.85);
+  border: 1px solid rgba(68, 64, 60, 0.7);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+}
+
+.barraPvGema {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #991b1b 0%, #dc2626 50%, #f87171 100%);
+  box-shadow: 0 0 10px rgba(220, 38, 38, 0.6);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.barraPmGema {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #075985 0%, #0284c7 50%, #38bdf8 100%);
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.6);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 7. Banners de Moderação */
 .bannerStatusAprovacao {
   display: flex;
   align-items: flex-start;
@@ -153,11 +434,11 @@
   color: #fecaca;
 }
 
-/* 4. Barra de Navegação em Abas */
+/* 8. Barra de Abas da Ficha */
 .fichaNavAbas {
   display: flex;
   gap: 0.5rem;
-  border-bottom: 1px solid var(--color-pedra-borda, #292524);
+  border-bottom: 1px solid rgba(217, 119, 6, 0.3);
   margin-bottom: 1.5rem;
   overflow-x: auto;
   padding-bottom: 0.25rem;
@@ -168,9 +449,9 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
-  font-family: serif;
+  font-family: Georgia, serif;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
   border-bottom: 2px solid transparent;
   color: #a8a29e;
@@ -181,56 +462,24 @@
 
 .abaBotao:hover {
   color: #f5f5f4;
-  border-color: #44403c;
+  border-color: #78716c;
 }
 
 .abaBotaoAtiva {
   color: #fbbf24 !important;
   border-color: #f59e0b !important;
-  background-color: rgba(41, 37, 36, 0.4);
-  border-top-left-radius: 0.375rem;
-  border-top-right-radius: 0.375rem;
+  background-color: rgba(41, 37, 36, 0.6);
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 
-/* 5. Conteúdo e Caixas das Abas */
-.fichaConteudo {
+/* 9. Moldura do Tomo para a Aba Biografia */
+.molduraTomo {
   position: relative;
+  background: radial-gradient(circle at 50% 0%, rgba(28, 25, 23, 0.8) 0%, rgba(12, 10, 9, 0.95) 100%);
+  border: 1px solid rgba(217, 119, 6, 0.25);
   border-radius: 0.75rem;
-  padding: 1.5rem;
-  background-color: rgba(28, 25, 23, 0.65);
-  border: 1px solid var(--color-pedra-borda, #292524);
-  backdrop-filter: blur(12px);
-  min-height: 24rem;
-}
-
-.caixaAtributo {
-  background-color: rgba(12, 10, 9, 0.6);
-  border: 1px solid var(--color-pedra-borda, #292524);
-  border-radius: 0.5rem;
-  padding: 0.875rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-}
-
-.labelCampo {
-  font-family: serif;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #a8a29e;
-  margin-bottom: 0.25rem;
-}
-
-.labelCampoProtegido {
-  color: #fbbf24;
-}
-
-.valorCampo {
-  font-size: 1.125rem;
-  font-weight: 700;
-  font-family: serif;
-  color: #f5f5f4;
+  padding: 2rem;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.7),
+              inset 0 1px 0 rgba(245, 158, 11, 0.15);
 }

@@ -4,6 +4,7 @@ export const MAPA_CATEGORIAS_PODER: Record<string, CategoriaPoder> = {
   classe: "Classe",
   raca: "Raça",
   raça: "Raça",
+  racial: "Raça",
   origem: "Origem",
   geral: "Geral",
   combate: "Geral",
@@ -60,24 +61,43 @@ export function converterItemFoundryParaPoder(item: any): ItemPoder {
   const ativacao = sys.ativacao || {};
 
   const tipoRaw = (sys.tipo || "").toLowerCase();
+  const subtipoRaw = (sys.subtipo || "").toLowerCase();
   const execucaoRaw = (ativacao.execucao || "").toLowerCase();
 
-  const categoria: CategoriaPoder = MAPA_CATEGORIAS_PODER[tipoRaw] || "Geral";
+  let categoria: CategoriaPoder = MAPA_CATEGORIAS_PODER[tipoRaw] || "Geral";
+
+  // Identificação robusta dos poderes da Tormenta
+  if (subtipoRaw.includes("tormenta") || tipoRaw.includes("tormenta")) {
+    categoria = "Tormenta";
+  }
+  // Identificação robusta de poderes de Raça
+  else if (
+    tipoRaw === "racial" ||
+    subtipoRaw.includes("racial") ||
+    tipoRaw === "raca" ||
+    tipoRaw === "raça"
+  ) {
+    categoria = "Raça";
+  }
+
   const tipoAcao: TipoAcaoPoder = MAPA_ACOES_PODER[execucaoRaw] || "Passiva";
 
   const custoNum = ativacao.custo;
   const custoPm =
     custoNum && Number(custoNum) > 0 ? `${custoNum} PM` : "-";
 
-  return {
+  const poderLimpo: ItemPoder = {
     id: item._id || `poder_${Date.now()}`,
-    origemId: item._id,
     nome: item.name || "Poder sem Nome",
     tipo: categoria,
-    subtipo: sys.subtipo || undefined,
     tipoAcao,
     custoPm,
     descricao: sanitizarTextoFoundry(sys.description?.value || ""),
     ehCustomizado: false,
   };
+
+  if (item._id) poderLimpo.origemId = item._id;
+  if (sys.subtipo) poderLimpo.subtipo = sys.subtipo;
+
+  return poderLimpo;
 }

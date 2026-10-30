@@ -147,6 +147,14 @@ export interface ItemEquipamento {
   equipado: boolean;
   descricao: string;
   ehCustomizado?: boolean;
+  dano?: string;
+  tipoDano?: string;
+  critico?: string;
+  empunhadura?: string;
+  alcance?: string;
+  bonusDefesa?: number;
+  penalidadeArmadura?: number;
+  espacos?: number;
 }
 
 export interface SolicitacaoPendentePersonagem {

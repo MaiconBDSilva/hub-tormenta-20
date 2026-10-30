@@ -71,28 +71,26 @@ export function AbaNotas({ personagem, onAtualizacao }: AbaNotasProps) {
   return (
     <div className="space-y-4">
       {/* Topo da Aba */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/20 pb-3">
-        <div className="flex items-center gap-2">
+      <div className="t20-section-header">
+        <h2 className="t20-section-title">
           <BookOpen className="w-5 h-5 text-amber-400" />
-          <h2 className="font-serif font-black text-lg text-stone-100 tracking-wide">
-            Diário & Anotações Secretas
-          </h2>
-        </div>
+          Diário & Anotações Secretas
+        </h2>
 
         {!editando && (
           <button
             type="button"
             onClick={() => setEditando(true)}
-            className="flex items-center gap-1.5 px-3 py-1 rounded border border-amber-500/40 bg-stone-900/80 hover:bg-stone-800 text-amber-300 font-serif font-semibold text-xs transition-all hover:scale-105"
+            className="t20-btn-secondary"
           >
-            <Edit3 className="w-3.5 h-3.5 text-amber-400" />
+            <Edit3 className="w-3.5 h-3.5" />
             Editar Diário
           </button>
         )}
       </div>
 
       {/* Aviso de Confidencialidade Diegético */}
-      <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-950/25 border border-amber-900/50 text-amber-300/90 text-xs">
+      <div className="t20-alert-warning">
         <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
         <span>
           <strong>Área Confidencial:</strong> Este diário é visível exclusivamente para você e para o Mestre da Campanha.
@@ -101,15 +99,15 @@ export function AbaNotas({ personagem, onAtualizacao }: AbaNotasProps) {
 
       {/* Alertas */}
       {mensagemSucesso && (
-        <div className="p-3 rounded-lg bg-emerald-950/70 border border-emerald-700 text-emerald-300 text-xs flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+        <div className="t20-alert-success">
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{mensagemSucesso}</span>
         </div>
       )}
 
       {erro && (
-        <div className="p-3 rounded-lg bg-red-950/70 border border-red-700 text-red-300 text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+        <div className="t20-alert-error">
+          <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{erro}</span>
         </div>
       )}
@@ -124,12 +122,12 @@ export function AbaNotas({ personagem, onAtualizacao }: AbaNotasProps) {
             linhas={12}
           />
 
-          <div className="flex justify-end items-center gap-2 pt-1 border-t border-stone-800">
+          <div className="t20-form-actions">
             <button
               type="button"
               onClick={handleCancelar}
               disabled={salvando}
-              className="px-3.5 py-1.5 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 font-serif font-bold text-xs flex items-center gap-1.5 transition-colors"
+              className="t20-btn-cancel"
             >
               <X className="w-4 h-4" />
               Cancelar
@@ -138,7 +136,7 @@ export function AbaNotas({ personagem, onAtualizacao }: AbaNotasProps) {
             <button
               type="submit"
               disabled={salvando}
-              className="t20-btn-primary px-4 py-1.5 text-xs flex items-center gap-1.5 font-serif font-bold"
+              className="t20-btn-primary !py-1.5 !px-4 !text-xs"
             >
               {salvando ? (
                 <>

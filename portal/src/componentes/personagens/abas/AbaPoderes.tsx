@@ -46,6 +46,43 @@ const CATEGORIAS_PODER: CategoriaPoder[] = [
   "Tormenta",
 ];
 
+const CLASSES_T20: string[] = [
+  "Arcanista",
+  "Bárbaro",
+  "Bardo",
+  "Bucaneiro",
+  "Caçador",
+  "Cavaleiro",
+  "Clérigo",
+  "Druida",
+  "Guerreiro",
+  "Inventor",
+  "Ladino",
+  "Lutador",
+  "Nobre",
+  "Paladino",
+];
+
+const RACAS_T20: string[] = [
+  "Anão",
+  "Dahllan",
+  "Elfo",
+  "Goblin",
+  "Golem",
+  "Humano",
+  "Hynne",
+  "Kliren",
+  "Lefou",
+  "Medusa",
+  "Minotauro",
+  "Osteon",
+  "Qareen",
+  "Sereia/tritão",
+  "Sílfide",
+  "Suraggel",
+  "Trog",
+];
+
 const TIPOS_ACAO: TipoAcaoPoder[] = [
   "Passiva",
   "Padrão",
@@ -84,6 +121,8 @@ export function AbaPoderes({
   const [modalAberto, setModalAberto] = useState(false);
   const [buscaCompendio, setBuscaCompendio] = useState("");
   const [categoriaCompendio, setCategoriaCompendio] = useState<string>("todas");
+  const [subcategoriaFiltro, setSubcategoriaFiltro] = useState<string>("todas");
+  const [subcategoriaCompendio, setSubcategoriaCompendio] = useState<string>("todas");
 
   // Sincroniza se o personagem mudar externamente
   useEffect(() => {
@@ -105,17 +144,29 @@ export function AbaPoderes({
     }
   }, []);
 
-  // Poderes exibidos na lista principal da aba com filtro de categoria
+  // Poderes exibidos na lista principal da aba com filtro de categoria e ordenação alfabética
   const poderesExibidos = useMemo(() => {
-    if (categoriaFiltro === "todas") return poderes;
-    return poderes.filter((p) => p.tipo === categoriaFiltro);
-  }, [poderes, categoriaFiltro]);
+    const filtrados = poderes.filter((p) => {
+      if (categoriaFiltro !== "todas" && p.tipo !== categoriaFiltro) return false;
+      if (categoriaFiltro === "Classe" && subcategoriaFiltro !== "todas") {
+        return (p.subtipo || "").toLowerCase() === subcategoriaFiltro.toLowerCase();
+      }
+      if (categoriaFiltro === "Raça" && subcategoriaFiltro !== "todas") {
+        return (p.subtipo || "").toLowerCase().includes(subcategoriaFiltro.toLowerCase());
+      }
+      return true;
+    });
+
+    return [...filtrados].sort((a, b) =>
+      a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" })
+    );
+  }, [poderes, categoriaFiltro, subcategoriaFiltro]);
 
   const poderAtivo = poderes.find((p) => p.id === poderSelecionadoId) || null;
 
-  // Filtra o catálogo dentro do modal
+  // Filtra o catálogo dentro do modal com subcategoria e ordenação alfabética
   const catalogoFiltrado = useMemo(() => {
-    return catalogoPoderes.filter((p) => {
+    const filtrados = catalogoPoderes.filter((p) => {
       const bateTexto =
         !buscaCompendio ||
         p.nome.toLowerCase().includes(buscaCompendio.toLowerCase()) ||
@@ -125,9 +176,22 @@ export function AbaPoderes({
       const bateCategoria =
         categoriaCompendio === "todas" || p.tipo === categoriaCompendio;
 
-      return bateTexto && bateCategoria;
+      if (!bateTexto || !bateCategoria) return false;
+
+      if (categoriaCompendio === "Classe" && subcategoriaCompendio !== "todas") {
+        return (p.subtipo || "").toLowerCase() === subcategoriaCompendio.toLowerCase();
+      }
+      if (categoriaCompendio === "Raça" && subcategoriaCompendio !== "todas") {
+        return (p.subtipo || "").toLowerCase().includes(subcategoriaCompendio.toLowerCase());
+      }
+
+      return true;
     });
-  }, [catalogoPoderes, buscaCompendio, categoriaCompendio]);
+
+    return filtrados.sort((a, b) =>
+      a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" })
+    );
+  }, [catalogoPoderes, buscaCompendio, categoriaCompendio, subcategoriaCompendio]);
 
   const handleCampoChange = (
     id: string,
@@ -196,10 +260,13 @@ export function AbaPoderes({
 
     try {
       const refDoc = doc(db, "personagens", personagem.id);
-      await updateDoc(refDoc, {
-        poderes: poderes,
-        atualizadoEm: new Date().toISOString(),
-      });
+      const payloadLimpo = JSON.parse(
+        JSON.stringify({
+          poderes: poderes,
+          atualizadoEm: new Date().toISOString(),
+        })
+      );
+      await updateDoc(refDoc, payloadLimpo);
 
       setMensagemSucesso("Poderes e habilidades gravados no tomo!");
       setEditando(false);
@@ -234,13 +301,13 @@ export function AbaPoderes({
   return (
     <div className="space-y-4">
       {/* Topo da Aba */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/20 pb-3">
+      <div className="t20-section-header">
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-amber-400" />
-          <h2 className="font-serif font-black text-lg text-stone-100 tracking-wide">
+          <h2 className="t20-section-title">
             Poderes & Habilidades
           </h2>
-          <span className="text-xs font-mono text-stone-400 bg-stone-900 border border-stone-800 px-2 py-0.5 rounded">
+          <span className="t20-badge-counter">
             Total: {poderes.length}
           </span>
         </div>
@@ -249,9 +316,9 @@ export function AbaPoderes({
           <button
             type="button"
             onClick={() => setEditando(true)}
-            className="flex items-center gap-1.5 px-3 py-1 rounded border border-amber-500/40 bg-stone-900/80 hover:bg-stone-800 text-amber-300 font-serif font-semibold text-xs transition-all hover:scale-105"
+            className="t20-btn-secondary"
           >
-            <Edit3 className="w-3.5 h-3.5 text-amber-400" />
+            <Edit3 className="w-3.5 h-3.5" />
             Editar Habilidades
           </button>
         )}
@@ -259,15 +326,15 @@ export function AbaPoderes({
 
       {/* Alertas */}
       {mensagemSucesso && (
-        <div className="p-3 rounded-lg bg-emerald-950/70 border border-emerald-700 text-emerald-300 text-xs flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+        <div className="t20-alert-success">
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{mensagemSucesso}</span>
         </div>
       )}
 
       {erro && (
-        <div className="p-3 rounded-lg bg-red-950/70 border border-red-700 text-red-300 text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+        <div className="t20-alert-error">
+          <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{erro}</span>
         </div>
       )}
@@ -277,10 +344,8 @@ export function AbaPoderes({
         <button
           type="button"
           onClick={() => setCategoriaFiltro("todas")}
-          className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-serif font-bold transition-all whitespace-nowrap border ${
-            categoriaFiltro === "todas"
-              ? "bg-amber-950/70 text-amber-300 border-amber-500/70 shadow-sm"
-              : "bg-stone-950/60 text-stone-400 border-stone-800 hover:text-stone-200 hover:border-stone-700"
+          className={`t20-filter-pill ${
+            categoriaFiltro === "todas" ? "t20-filter-pill-active" : ""
           }`}
         >
           <span>Todos</span>
@@ -297,11 +362,12 @@ export function AbaPoderes({
             <button
               key={cat}
               type="button"
-              onClick={() => setCategoriaFiltro(cat)}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-serif font-bold transition-all whitespace-nowrap border ${
-                selecionado
-                  ? "bg-amber-950/70 text-amber-300 border-amber-500/70 shadow-sm"
-                  : "bg-stone-950/60 text-stone-400 border-stone-800 hover:text-stone-200 hover:border-stone-700"
+              onClick={() => {
+                setCategoriaFiltro(cat);
+                setSubcategoriaFiltro("todas");
+              }}
+              className={`t20-filter-pill ${
+                selecionado ? "t20-filter-pill-active" : ""
               }`}
             >
               <span>{cat}</span>
@@ -312,6 +378,47 @@ export function AbaPoderes({
           );
         })}
       </div>
+
+      {/* Seletor secundário para Classe ou Raça na aba */}
+      {categoriaFiltro === "Classe" && (
+        <div className="flex items-center gap-2 pt-1 animate-in fade-in">
+          <label className="text-xs font-serif text-stone-400 font-semibold">
+            Classe:
+          </label>
+          <select
+            value={subcategoriaFiltro}
+            onChange={(e) => setSubcategoriaFiltro(e.target.value)}
+            className="bg-stone-900 border border-amber-500/40 text-amber-200 text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:border-amber-400"
+          >
+            <option value="todas">Todas as Classes</option>
+            {CLASSES_T20.map((cls) => (
+              <option key={cls} value={cls}>
+                {cls}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {categoriaFiltro === "Raça" && (
+        <div className="flex items-center gap-2 pt-1 animate-in fade-in">
+          <label className="text-xs font-serif text-stone-400 font-semibold">
+            Raça:
+          </label>
+          <select
+            value={subcategoriaFiltro}
+            onChange={(e) => setSubcategoriaFiltro(e.target.value)}
+            className="bg-stone-900 border border-amber-500/40 text-amber-200 text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:border-amber-400"
+          >
+            <option value="todas">Todas as Raças</option>
+            {RACAS_T20.map((rc) => (
+              <option key={rc} value={rc}>
+                {rc}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Formulário / Grid Principal */}
       <form onSubmit={handleSalvar} className="space-y-4">
@@ -428,7 +535,7 @@ export function AbaPoderes({
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                      <label className="t20-field-label">
                         Nome do Poder
                       </label>
                       <input
@@ -438,13 +545,13 @@ export function AbaPoderes({
                         onChange={(e) =>
                           handleCampoChange(poderAtivo.id, "nome", e.target.value)
                         }
-                        className="w-full bg-stone-900 border border-amber-500/40 rounded px-2 py-1 text-xs text-amber-200 font-serif font-bold focus:outline-none focus:border-amber-400"
+                        className="t20-field-input !border-amber-500/40 !text-amber-200 font-serif font-bold"
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Categoria
                         </label>
                         <select
@@ -456,7 +563,7 @@ export function AbaPoderes({
                               e.target.value as CategoriaPoder
                             )
                           }
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                          className="t20-field-select"
                         >
                           {CATEGORIAS_PODER.map((cat) => (
                             <option key={cat} value={cat}>
@@ -467,7 +574,7 @@ export function AbaPoderes({
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Subtipo (Opcional)
                         </label>
                         <input
@@ -481,14 +588,14 @@ export function AbaPoderes({
                             )
                           }
                           placeholder="Ex: Inventor, Combate..."
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                          className="t20-field-input"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Tipo de Ação
                         </label>
                         <select
@@ -500,7 +607,7 @@ export function AbaPoderes({
                               e.target.value as TipoAcaoPoder
                             )
                           }
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                          className="t20-field-select"
                         >
                           {TIPOS_ACAO.map((acao) => (
                             <option key={acao} value={acao}>
@@ -511,7 +618,7 @@ export function AbaPoderes({
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Custo de Mana (PM)
                         </label>
                         <input
@@ -525,13 +632,13 @@ export function AbaPoderes({
                             )
                           }
                           placeholder="Ex: 1 PM, 2 PM, ou -"
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-cyan-300 font-mono focus:outline-none focus:border-cyan-400"
+                          className="t20-field-input !text-cyan-300 font-mono focus:!border-cyan-400"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                      <label className="t20-field-label">
                         Descrição do Efeito
                       </label>
                       <textarea
@@ -545,7 +652,7 @@ export function AbaPoderes({
                             e.target.value
                           )
                         }
-                        className="w-full bg-stone-900 border border-stone-700 rounded p-2 text-xs font-serif text-stone-200 leading-relaxed resize-y focus:outline-none focus:border-amber-400"
+                        className="t20-field-input leading-relaxed resize-y font-serif"
                       />
                     </div>
                   </div>
@@ -593,7 +700,7 @@ export function AbaPoderes({
                 )}
               </div>
             ) : (
-              <div className="p-8 text-center bg-stone-950/40 border border-stone-800 rounded-xl text-stone-500 font-serif text-xs">
+              <div className="t20-empty-card">
                 Selecione um poder ao lado para inspecionar seus segredos.
               </div>
             )}
@@ -606,7 +713,7 @@ export function AbaPoderes({
             <button
               type="button"
               onClick={() => setModalAberto(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-dashed border-amber-500/50 bg-stone-900/50 hover:bg-stone-800 text-amber-300 font-serif text-xs font-semibold transition-colors"
+              className="t20-btn-dashed"
             >
               <BookOpen className="w-3.5 h-3.5 text-amber-400" />
               Aprender Poder (Compêndio)
@@ -617,7 +724,7 @@ export function AbaPoderes({
                 type="button"
                 onClick={handleCancelar}
                 disabled={salvando}
-                className="px-3.5 py-1.5 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 font-serif font-bold text-xs flex items-center gap-1.5 transition-colors"
+                className="t20-btn-cancel"
               >
                 <X className="w-4 h-4" />
                 Cancelar
@@ -626,7 +733,7 @@ export function AbaPoderes({
               <button
                 type="submit"
                 disabled={salvando}
-                className="t20-btn-primary px-4 py-1.5 text-xs flex items-center gap-1.5 font-serif font-bold"
+                className="t20-btn-primary !py-1.5 !px-4 !text-xs"
               >
                 {salvando ? (
                   <>
@@ -649,10 +756,10 @@ export function AbaPoderes({
       {/* MODAL DO COMPÊNDIO DE PODERES (PESQUISA + FILTROS DO JSON) */}
       {/* ========================================================= */}
       {modalAberto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="relative w-full max-w-3xl max-h-[90vh] bg-stone-950 border border-amber-500/50 rounded-xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="t20-modal-overlay animate-in fade-in">
+          <div className="t20-modal-container">
             {/* Topo do Modal */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-amber-500/20 bg-stone-900/60">
+            <div className="t20-modal-header">
               <div className="flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-amber-400" />
                 <h3 className="font-serif font-bold text-sm text-stone-100">
@@ -702,7 +809,10 @@ export function AbaPoderes({
                     <button
                       key={cat}
                       type="button"
-                      onClick={() => setCategoriaCompendio(cat)}
+                      onClick={() => {
+                        setCategoriaCompendio(cat);
+                        setSubcategoriaCompendio("todas");
+                      }}
                       className={`px-2 py-0.5 rounded border transition-colors ${
                         categoriaCompendio === cat
                           ? "bg-amber-950/80 text-amber-300 border-amber-500/70"
@@ -713,6 +823,43 @@ export function AbaPoderes({
                     </button>
                   ))}
                 </div>
+
+                {/* Subfiltro no Modal para Classe ou Raça */}
+                {categoriaCompendio === "Classe" && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-serif text-stone-400">Classe:</span>
+                    <select
+                      value={subcategoriaCompendio}
+                      onChange={(e) => setSubcategoriaCompendio(e.target.value)}
+                      className="bg-stone-900 border border-stone-700 text-amber-300 text-xs rounded px-2 py-1 focus:outline-none focus:border-amber-400"
+                    >
+                      <option value="todas">Todas as Classes</option>
+                      {CLASSES_T20.map((cls) => (
+                        <option key={cls} value={cls}>
+                          {cls}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {categoriaCompendio === "Raça" && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-serif text-stone-400">Raça:</span>
+                    <select
+                      value={subcategoriaCompendio}
+                      onChange={(e) => setSubcategoriaCompendio(e.target.value)}
+                      className="bg-stone-900 border border-stone-700 text-amber-300 text-xs rounded px-2 py-1 focus:outline-none focus:border-amber-400"
+                    >
+                      <option value="todas">Todas as Raças</option>
+                      {RACAS_T20.map((rc) => (
+                        <option key={rc} value={rc}>
+                          {rc}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -726,7 +873,7 @@ export function AbaPoderes({
                 catalogoFiltrado.map((item) => (
                   <div
                     key={item.id}
-                    className="p-3 rounded-lg bg-stone-900/60 border border-stone-800 hover:border-amber-500/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2.5"
+                    className="t20-compendio-card"
                   >
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-center gap-2 flex-wrap">

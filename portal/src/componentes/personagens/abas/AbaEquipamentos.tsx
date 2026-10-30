@@ -116,14 +116,20 @@ export function AbaEquipamentos({
   }, []);
 
   const itensExibidos = useMemo(() => {
-    if (categoriaFiltro === "todas") return itens;
-    return itens.filter((i) => i.categoria === categoriaFiltro);
+    const filtrados =
+      categoriaFiltro === "todas"
+        ? itens
+        : itens.filter((i) => i.categoria === categoriaFiltro);
+
+    return [...filtrados].sort((a, b) =>
+      a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" })
+    );
   }, [itens, categoriaFiltro]);
 
   const itemAtivo = itens.find((i) => i.id === itemSelecionadoId) || null;
 
   const catalogoFiltrado = useMemo(() => {
-    return catalogoEquipamentos.filter((i) => {
+    const filtrados = catalogoEquipamentos.filter((i) => {
       const bateTexto =
         !buscaCompendio ||
         i.nome.toLowerCase().includes(buscaCompendio.toLowerCase()) ||
@@ -134,6 +140,10 @@ export function AbaEquipamentos({
 
       return bateTexto && bateCat;
     });
+
+    return filtrados.sort((a, b) =>
+      a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" })
+    );
   }, [catalogoEquipamentos, buscaCompendio, categoriaCompendio]);
 
   const handleItemChange = (
@@ -237,11 +247,14 @@ export function AbaEquipamentos({
 
     try {
       const refDoc = doc(db, "personagens", personagem.id);
-      await updateDoc(refDoc, {
-        equipamentos: itens,
-        moedas,
-        atualizadoEm: new Date().toISOString(),
-      });
+      const payloadLimpo = JSON.parse(
+        JSON.stringify({
+          equipamentos: itens,
+          moedas,
+          atualizadoEm: new Date().toISOString(),
+        })
+      );
+      await updateDoc(refDoc, payloadLimpo);
 
       setMensagemSucesso("Inventário e riquezas guardados na mochila!");
       setEditando(false);
@@ -291,13 +304,13 @@ export function AbaEquipamentos({
   return (
     <div className="space-y-4">
       {/* Topo da Aba */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/20 pb-3">
+      <div className="t20-section-header">
         <div className="flex items-center gap-2">
           <Package className="w-5 h-5 text-amber-400" />
-          <h2 className="font-serif font-black text-lg text-stone-100 tracking-wide">
+          <h2 className="t20-section-title">
             Inventário & Equipamentos
           </h2>
-          <span className="text-xs font-mono text-stone-400 bg-stone-900 border border-stone-800 px-2 py-0.5 rounded">
+          <span className="t20-badge-counter">
             Itens: {itens.length}
           </span>
         </div>
@@ -306,9 +319,9 @@ export function AbaEquipamentos({
           <button
             type="button"
             onClick={() => setEditando(true)}
-            className="flex items-center gap-1.5 px-3 py-1 rounded border border-amber-500/40 bg-stone-900/80 hover:bg-stone-800 text-amber-300 font-serif font-semibold text-xs transition-all hover:scale-105"
+            className="t20-btn-secondary"
           >
-            <Edit3 className="w-3.5 h-3.5 text-amber-400" />
+            <Edit3 className="w-3.5 h-3.5" />
             Editar Inventário
           </button>
         )}
@@ -316,15 +329,15 @@ export function AbaEquipamentos({
 
       {/* Alertas */}
       {mensagemSucesso && (
-        <div className="p-3 rounded-lg bg-emerald-950/70 border border-emerald-700 text-emerald-300 text-xs flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+        <div className="t20-alert-success">
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{mensagemSucesso}</span>
         </div>
       )}
 
       {erro && (
-        <div className="p-3 rounded-lg bg-red-950/70 border border-red-700 text-red-300 text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+        <div className="t20-alert-error">
+          <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{erro}</span>
         </div>
       )}
@@ -432,10 +445,8 @@ export function AbaEquipamentos({
         <button
           type="button"
           onClick={() => setCategoriaFiltro("todas")}
-          className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-serif font-bold transition-all whitespace-nowrap border ${
-            categoriaFiltro === "todas"
-              ? "bg-amber-950/70 text-amber-300 border-amber-500/70 shadow-sm"
-              : "bg-stone-950/60 text-stone-400 border-stone-800 hover:text-stone-200"
+          className={`t20-filter-pill ${
+            categoriaFiltro === "todas" ? "t20-filter-pill-active" : ""
           }`}
         >
           <span>Todos</span>
@@ -453,10 +464,8 @@ export function AbaEquipamentos({
               key={cat}
               type="button"
               onClick={() => setCategoriaFiltro(cat)}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-serif font-bold transition-all whitespace-nowrap border ${
-                selecionado
-                  ? "bg-amber-950/70 text-amber-300 border-amber-500/70 shadow-sm"
-                  : "bg-stone-950/60 text-stone-400 border-stone-800 hover:text-stone-200"
+              className={`t20-filter-pill ${
+                selecionado ? "t20-filter-pill-active" : ""
               }`}
             >
               <span>{cat}</span>
@@ -526,6 +535,24 @@ export function AbaEquipamentos({
                           }`}
                         />
                       </div>
+
+                      {/* Estatísticas Rápidas de Combate */}
+                      {(item.dano || item.bonusDefesa !== undefined) && (
+                        <div className="flex items-center gap-2 text-[10px] font-mono">
+                          {item.dano && (
+                            <span className="text-red-300 font-bold">
+                              ⚔️ {item.dano} <span className="text-stone-500 font-normal">({item.critico || "x2"})</span>
+                            </span>
+                          )}
+                          {item.bonusDefesa !== undefined && (
+                            <span className="text-cyan-300 font-bold">
+                              🛡️ +{item.bonusDefesa} {item.penalidadeArmadura !== undefined && item.penalidadeArmadura !== 0 && (
+                                <span className="text-stone-500 font-normal">(Pen. {item.penalidadeArmadura})</span>
+                              )}
+                            </span>
+                          )}
+                        </div>
+                      )}
 
                       {/* Badges de Categoria, Equipado e Quantidade */}
                       <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
@@ -611,7 +638,7 @@ export function AbaEquipamentos({
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                      <label className="t20-field-label">
                         Nome do Item
                       </label>
                       <input
@@ -621,13 +648,13 @@ export function AbaEquipamentos({
                         onChange={(e) =>
                           handleItemChange(itemAtivo.id, "nome", e.target.value)
                         }
-                        className="w-full bg-stone-900 border border-amber-500/40 rounded px-2 py-1 text-xs text-amber-200 font-serif font-bold focus:outline-none focus:border-amber-400"
+                        className="t20-field-input !border-amber-500/40 !text-amber-200 font-serif font-bold"
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Categoria
                         </label>
                         <select
@@ -639,7 +666,7 @@ export function AbaEquipamentos({
                               e.target.value as CategoriaEquipamento
                             )
                           }
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                          className="t20-field-select"
                         >
                           {CATEGORIAS_EQUIPAMENTO.map((cat) => (
                             <option key={cat} value={cat}>
@@ -650,7 +677,7 @@ export function AbaEquipamentos({
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Quantidade
                         </label>
                         <input
@@ -664,14 +691,14 @@ export function AbaEquipamentos({
                               parseInt(e.target.value, 10) || 1
                             )
                           }
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400 font-mono"
+                          className="t20-field-input font-mono"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Preço Médio
                         </label>
                         <input
@@ -685,12 +712,12 @@ export function AbaEquipamentos({
                             )
                           }
                           placeholder="Ex: T$ 100"
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-amber-300 font-mono focus:outline-none focus:border-amber-400"
+                          className="t20-field-input !text-amber-300 font-mono"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Empunhado / Vestido
                         </label>
                         <button
@@ -713,8 +740,80 @@ export function AbaEquipamentos({
                       </div>
                     </div>
 
+                    {itemAtivo.categoria === "Arma" && (
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="t20-field-label">
+                            Dano (Ex: 1d8)
+                          </label>
+                          <input
+                            type="text"
+                            value={itemAtivo.dano || ""}
+                            onChange={(e) =>
+                              handleItemChange(itemAtivo.id, "dano", e.target.value)
+                            }
+                            placeholder="Ex: 1d8"
+                            className="t20-field-input !text-red-300 font-mono"
+                          />
+                        </div>
+                        <div>
+                          <label className="t20-field-label">
+                            Crítico (Ex: 19/x2)
+                          </label>
+                          <input
+                            type="text"
+                            value={itemAtivo.critico || ""}
+                            onChange={(e) =>
+                              handleItemChange(itemAtivo.id, "critico", e.target.value)
+                            }
+                            placeholder="Ex: 19/x2"
+                            className="t20-field-input !text-amber-300 font-mono"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {(itemAtivo.categoria === "Armadura" || itemAtivo.categoria === "Escudo") && (
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="t20-field-label">
+                            Bônus Defesa
+                          </label>
+                          <input
+                            type="number"
+                            value={itemAtivo.bonusDefesa ?? 0}
+                            onChange={(e) =>
+                              handleItemChange(
+                                itemAtivo.id,
+                                "bonusDefesa",
+                                parseInt(e.target.value, 10) || 0
+                              )
+                            }
+                            className="t20-field-input !text-cyan-300 font-mono"
+                          />
+                        </div>
+                        <div>
+                          <label className="t20-field-label">
+                            Penalidade
+                          </label>
+                          <input
+                            type="number"
+                            value={itemAtivo.penalidadeArmadura ?? 0}
+                            onChange={(e) =>
+                              handleItemChange(
+                                itemAtivo.id,
+                                "penalidadeArmadura",
+                                parseInt(e.target.value, 10) || 0
+                              )
+                            }
+                            className="t20-field-input font-mono"
+                          />
+                        </div>
+                      </div>
+                    )}
+
                     <div>
-                      <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                      <label className="t20-field-label">
                         Propriedades & Regras
                       </label>
                       <textarea
@@ -727,7 +826,7 @@ export function AbaEquipamentos({
                             e.target.value
                           )
                         }
-                        className="w-full bg-stone-900 border border-stone-700 rounded p-2 text-xs font-serif text-stone-200 leading-relaxed resize-y focus:outline-none focus:border-amber-400"
+                        className="t20-field-input leading-relaxed resize-y font-serif"
                       />
                     </div>
                   </div>
@@ -771,6 +870,71 @@ export function AbaEquipamentos({
                       </div>
                     </div>
 
+                    {/* Bloco de Atributos de Combate / Proteção (T20) */}
+                    {itemAtivo.categoria === "Arma" && (itemAtivo.dano || itemAtivo.critico || itemAtivo.alcance) && (
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2 bg-stone-900/80 border border-stone-800 rounded-lg text-center font-serif">
+                        {itemAtivo.dano && (
+                          <div>
+                            <span className="text-[10px] uppercase text-stone-500 font-bold block">Dano</span>
+                            <span className="text-xs font-mono font-bold text-red-300">
+                              {itemAtivo.dano} {itemAtivo.tipoDano && <span className="text-[10px] text-stone-400 font-normal">({itemAtivo.tipoDano})</span>}
+                            </span>
+                          </div>
+                        )}
+                        {itemAtivo.critico && (
+                          <div>
+                            <span className="text-[10px] uppercase text-stone-500 font-bold block">Crítico</span>
+                            <span className="text-xs font-mono font-bold text-amber-300">{itemAtivo.critico}</span>
+                          </div>
+                        )}
+                        {itemAtivo.alcance && (
+                          <div>
+                            <span className="text-[10px] uppercase text-stone-500 font-bold block">Alcance</span>
+                            <span className="text-xs text-stone-300">{itemAtivo.alcance}</span>
+                          </div>
+                        )}
+                        {itemAtivo.empunhadura && (
+                          <div>
+                            <span className="text-[10px] uppercase text-stone-500 font-bold block">Uso</span>
+                            <span className="text-xs text-stone-300">{itemAtivo.empunhadura}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {(itemAtivo.categoria === "Armadura" || itemAtivo.categoria === "Escudo") &&
+                      (itemAtivo.bonusDefesa !== undefined || itemAtivo.penalidadeArmadura !== undefined || itemAtivo.espacos !== undefined) && (
+                        <div className="grid grid-cols-3 gap-2 p-2 bg-stone-900/80 border border-stone-800 rounded-lg text-center font-serif">
+                          {itemAtivo.bonusDefesa !== undefined && (
+                            <div>
+                              <span className="text-[10px] uppercase text-stone-500 font-bold block">Bônus Defesa</span>
+                              <span className="text-xs font-mono font-bold text-cyan-300">+{itemAtivo.bonusDefesa}</span>
+                            </div>
+                          )}
+                          {itemAtivo.penalidadeArmadura !== undefined && (
+                            <div>
+                              <span className="text-[10px] uppercase text-stone-500 font-bold block">Penalidade</span>
+                              <span className={`text-xs font-mono font-bold ${itemAtivo.penalidadeArmadura < 0 ? "text-red-400" : "text-stone-300"}`}>
+                                {itemAtivo.penalidadeArmadura}
+                              </span>
+                            </div>
+                          )}
+                          {itemAtivo.espacos !== undefined && (
+                            <div>
+                              <span className="text-[10px] uppercase text-stone-500 font-bold block">Espaços</span>
+                              <span className="text-xs font-mono font-bold text-stone-300">{itemAtivo.espacos} esp.</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                    {itemAtivo.categoria !== "Arma" && itemAtivo.categoria !== "Armadura" && itemAtivo.categoria !== "Escudo" && itemAtivo.espacos !== undefined && (
+                      <div className="flex items-center gap-2 p-1.5 bg-stone-900/60 border border-stone-800 rounded font-serif text-[11px] text-stone-400">
+                        <span>Espaço ocupado:</span>
+                        <strong className="font-mono text-stone-200">{itemAtivo.espacos} espaço(s)</strong>
+                      </div>
+                    )}
+
                     <div className="text-xs font-serif text-stone-300 leading-relaxed whitespace-pre-line max-h-72 overflow-y-auto pr-1">
                       {itemAtivo.descricao || (
                         <span className="italic text-stone-500">
@@ -782,7 +946,7 @@ export function AbaEquipamentos({
                 )}
               </div>
             ) : (
-              <div className="p-8 text-center bg-stone-950/40 border border-stone-800 rounded-xl text-stone-500 font-serif text-xs">
+              <div className="t20-empty-card">
                 Selecione um item da mochila para examinar suas propriedades.
               </div>
             )}
@@ -796,7 +960,7 @@ export function AbaEquipamentos({
               <button
                 type="button"
                 onClick={() => setModalAberto(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-dashed border-amber-500/50 bg-stone-900/50 hover:bg-stone-800 text-amber-300 font-serif text-xs font-semibold transition-colors"
+                className="t20-btn-dashed"
               >
                 <BookOpen className="w-3.5 h-3.5 text-amber-400" />
                 Adicionar do Compêndio
@@ -805,9 +969,9 @@ export function AbaEquipamentos({
               <button
                 type="button"
                 onClick={handleCriarItemCustomizado}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-stone-700 bg-stone-900/60 hover:bg-stone-800 text-stone-300 font-serif text-xs transition-colors"
+                className="t20-btn-secondary"
               >
-                <Plus className="w-3.5 h-3.5 text-amber-400" />
+                <Plus className="w-3.5 h-3.5" />
                 Criar Item Personalizado
               </button>
             </div>
@@ -817,7 +981,7 @@ export function AbaEquipamentos({
                 type="button"
                 onClick={handleCancelar}
                 disabled={salvando}
-                className="px-3.5 py-1.5 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 font-serif font-bold text-xs flex items-center gap-1.5 transition-colors"
+                className="t20-btn-cancel"
               >
                 <X className="w-4 h-4" />
                 Cancelar
@@ -826,7 +990,7 @@ export function AbaEquipamentos({
               <button
                 type="submit"
                 disabled={salvando}
-                className="t20-btn-primary px-4 py-1.5 text-xs flex items-center gap-1.5 font-serif font-bold"
+                className="t20-btn-primary !py-1.5 !px-4 !text-xs"
               >
                 {salvando ? (
                   <>
@@ -849,10 +1013,10 @@ export function AbaEquipamentos({
       {/* MODAL DO COMPÊNDIO DE EQUIPAMENTOS (FOUNDRY JSON)          */}
       {/* ========================================================= */}
       {modalAberto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="relative w-full max-w-3xl max-h-[90vh] bg-stone-950 border border-amber-500/50 rounded-xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="t20-modal-overlay animate-in fade-in">
+          <div className="t20-modal-container">
             {/* Topo do Modal */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-amber-500/20 bg-stone-900/60">
+            <div className="t20-modal-header">
               <div className="flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-amber-400" />
                 <h3 className="font-serif font-bold text-sm text-stone-100">
@@ -923,7 +1087,7 @@ export function AbaEquipamentos({
                 catalogoFiltrado.map((item) => (
                   <div
                     key={item.id}
-                    className="p-3 rounded-lg bg-stone-900/60 border border-stone-800 hover:border-amber-500/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2.5"
+                    className="t20-compendio-card"
                   >
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-center gap-2 flex-wrap">
@@ -944,6 +1108,23 @@ export function AbaEquipamentos({
                           </span>
                         )}
                       </div>
+
+                      {/* Estatísticas resumidas de dano / armadura no Compêndio */}
+                      {(item.dano || item.bonusDefesa !== undefined) && (
+                        <div className="flex items-center gap-2.5 text-[10px] font-mono">
+                          {item.dano && (
+                            <span className="text-red-300 font-bold">
+                              ⚔️ Dano: {item.dano} {item.tipoDano && `(${item.tipoDano})`} | Crítico: {item.critico || "x2"}
+                            </span>
+                          )}
+                          {item.bonusDefesa !== undefined && (
+                            <span className="text-cyan-300 font-bold">
+                              🛡️ Defesa: +{item.bonusDefesa} {item.penalidadeArmadura !== undefined && `| Pen: ${item.penalidadeArmadura}`}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
                       <p className="text-[11px] font-serif text-stone-400 line-clamp-2">
                         {item.descricao || "Item sem descrição detalhada."}
                       </p>

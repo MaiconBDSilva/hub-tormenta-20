@@ -118,10 +118,16 @@ export function AbaMagias({
     }
   }, []);
 
-  // Filtra as magias da ficha pelo círculo ativo
+  // Filtra as magias da ficha pelo círculo ativo com ordenação alfabética
   const magiasExibidas = useMemo(() => {
-    if (circuloFiltro === 0) return magias;
-    return magias.filter((m) => m.circulo === circuloFiltro);
+    const filtradas =
+      circuloFiltro === 0
+        ? magias
+        : magias.filter((m) => m.circulo === circuloFiltro);
+
+    return [...filtradas].sort((a, b) =>
+      a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" })
+    );
   }, [magias, circuloFiltro]);
 
   // Magia atualmente inspecionada no Card de Detalhes
@@ -129,7 +135,7 @@ export function AbaMagias({
 
   // Filtra o catálogo do modal com base nos critérios de pesquisa
   const catalogoFiltrado = useMemo(() => {
-    return catalogoMagias.filter((m) => {
+    const filtradas = catalogoMagias.filter((m) => {
       const bateTexto =
         !buscaCompendio ||
         m.nome.toLowerCase().includes(buscaCompendio.toLowerCase()) ||
@@ -143,6 +149,10 @@ export function AbaMagias({
 
       return bateTexto && bateCirculo && bateEscola;
     });
+
+    return filtradas.sort((a, b) =>
+      a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" })
+    );
   }, [catalogoMagias, buscaCompendio, circuloCompendio, escolaCompendio]);
 
   const handleCampoChange = (
@@ -219,10 +229,13 @@ export function AbaMagias({
 
     try {
       const refDoc = doc(db, "personagens", personagem.id);
-      await updateDoc(refDoc, {
-        magias: magias,
-        atualizadoEm: new Date().toISOString(),
-      });
+      const payloadLimpo = JSON.parse(
+        JSON.stringify({
+          magias: magias,
+          atualizadoEm: new Date().toISOString(),
+        })
+      );
+      await updateDoc(refDoc, payloadLimpo);
 
       setMensagemSucesso("Grimório selado e atualizado no tomo!");
       setEditando(false);
@@ -262,13 +275,13 @@ export function AbaMagias({
   return (
     <div className="space-y-4">
       {/* Topo da Aba */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-500/20 pb-3">
+      <div className="t20-section-header">
         <div className="flex items-center gap-2">
           <Scroll className="w-5 h-5 text-amber-400" />
-          <h2 className="font-serif font-bold text-lg text-stone-100">
+          <h2 className="t20-section-title">
             Grimório & Magias de Arton
           </h2>
-          <span className="text-xs font-mono px-2 py-0.5 rounded bg-stone-900 border border-stone-800 text-stone-400">
+          <span className="t20-badge-counter">
             Total: {magias.length}
           </span>
         </div>
@@ -277,9 +290,9 @@ export function AbaMagias({
           <button
             type="button"
             onClick={() => setEditando(true)}
-            className="flex items-center gap-1.5 px-3 py-1 rounded border border-amber-500/40 bg-stone-900/80 hover:bg-stone-800 text-amber-300 font-serif font-semibold text-xs transition-all hover:scale-105"
+            className="t20-btn-secondary"
           >
-            <Edit3 className="w-3.5 h-3.5 text-amber-400" />
+            <Edit3 className="w-3.5 h-3.5" />
             Editar Grimório
           </button>
         )}
@@ -287,15 +300,15 @@ export function AbaMagias({
 
       {/* Alertas */}
       {mensagemSucesso && (
-        <div className="p-3 rounded-lg bg-emerald-950/70 border border-emerald-700 text-emerald-300 text-xs flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+        <div className="t20-alert-success">
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{mensagemSucesso}</span>
         </div>
       )}
 
       {erro && (
-        <div className="p-3 rounded-lg bg-red-950/70 border border-red-700 text-red-300 text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+        <div className="t20-alert-error">
+          <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{erro}</span>
         </div>
       )}
@@ -314,10 +327,8 @@ export function AbaMagias({
               key={c.valor}
               type="button"
               onClick={() => setCirculoFiltro(c.valor)}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-serif font-bold transition-all whitespace-nowrap border ${
-                selecionado
-                  ? "bg-amber-950/70 text-amber-300 border-amber-500/70 shadow-sm"
-                  : "bg-stone-950/60 text-stone-400 border-stone-800 hover:text-stone-200 hover:border-stone-700"
+              className={`t20-filter-pill ${
+                selecionado ? "t20-filter-pill-active" : ""
               }`}
             >
               <span>{c.label}</span>
@@ -438,7 +449,7 @@ export function AbaMagias({
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                      <label className="t20-field-label">
                         Nome da Magia
                       </label>
                       <input
@@ -448,13 +459,13 @@ export function AbaMagias({
                         onChange={(e) =>
                           handleCampoChange(magiaAtiva.id, "nome", e.target.value)
                         }
-                        className="w-full bg-stone-900 border border-amber-500/40 rounded px-2 py-1 text-xs text-amber-200 font-serif font-bold focus:outline-none focus:border-amber-400"
+                        className="t20-field-input !border-amber-500/40 !text-amber-200 font-serif font-bold"
                       />
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Círculo
                         </label>
                         <select
@@ -466,7 +477,7 @@ export function AbaMagias({
                               Number(e.target.value)
                             )
                           }
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                          className="t20-field-select"
                         >
                           {[1, 2, 3, 4, 5].map((c) => (
                             <option key={c} value={c}>
@@ -477,7 +488,7 @@ export function AbaMagias({
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Escola
                         </label>
                         <select
@@ -489,7 +500,7 @@ export function AbaMagias({
                               e.target.value as EscolaMagiaT20
                             )
                           }
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                          className="t20-field-select"
                         >
                           {ESCOLAS_LISTA.map((esc) => (
                             <option key={esc} value={esc}>
@@ -500,7 +511,7 @@ export function AbaMagias({
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Tipo
                         </label>
                         <select
@@ -512,7 +523,7 @@ export function AbaMagias({
                               e.target.value as TipoMagiaT20
                             )
                           }
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                          className="t20-field-select"
                         >
                           <option value="Arcana">Arcana</option>
                           <option value="Divina">Divina</option>
@@ -523,7 +534,7 @@ export function AbaMagias({
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Execução
                         </label>
                         <input
@@ -532,11 +543,11 @@ export function AbaMagias({
                           onChange={(e) =>
                             handleCampoChange(magiaAtiva.id, "execucao", e.target.value)
                           }
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                          className="t20-field-input"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Custo (PM)
                         </label>
                         <input
@@ -545,14 +556,14 @@ export function AbaMagias({
                           onChange={(e) =>
                             handleCampoChange(magiaAtiva.id, "custoPm", e.target.value)
                           }
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-cyan-300 font-mono focus:outline-none focus:border-cyan-400"
+                          className="t20-field-input !text-cyan-300 font-mono focus:!border-cyan-400"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Alcance
                         </label>
                         <input
@@ -561,11 +572,11 @@ export function AbaMagias({
                           onChange={(e) =>
                             handleCampoChange(magiaAtiva.id, "alcance", e.target.value)
                           }
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                          className="t20-field-input"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                        <label className="t20-field-label">
                           Duração
                         </label>
                         <input
@@ -574,13 +585,13 @@ export function AbaMagias({
                           onChange={(e) =>
                             handleCampoChange(magiaAtiva.id, "duracao", e.target.value)
                           }
-                          className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                          className="t20-field-input"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                      <label className="t20-field-label">
                         Resistência
                       </label>
                       <input
@@ -589,12 +600,12 @@ export function AbaMagias({
                         onChange={(e) =>
                           handleCampoChange(magiaAtiva.id, "resistencia", e.target.value)
                         }
-                        className="w-full bg-stone-900 border border-stone-700 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                        className="t20-field-input"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-serif uppercase text-stone-400 font-bold block mb-1">
+                      <label className="t20-field-label">
                         Descrição do Efeito
                       </label>
                       <textarea
@@ -604,7 +615,7 @@ export function AbaMagias({
                         onChange={(e) =>
                           handleCampoChange(magiaAtiva.id, "descricao", e.target.value)
                         }
-                        className="w-full bg-stone-900 border border-stone-700 rounded p-2 text-xs font-serif text-stone-200 leading-relaxed resize-y focus:outline-none focus:border-amber-400"
+                        className="t20-field-input leading-relaxed resize-y font-serif"
                       />
                     </div>
                   </div>
@@ -696,7 +707,7 @@ export function AbaMagias({
                 )}
               </div>
             ) : (
-              <div className="p-8 text-center bg-stone-950/40 border border-stone-800 rounded-xl text-stone-500 font-serif text-xs">
+              <div className="t20-empty-card">
                 Selecione uma magia na lista ao lado para ler os arcanos do grimório.
               </div>
             )}
@@ -709,7 +720,7 @@ export function AbaMagias({
             <button
               type="button"
               onClick={() => setModalAberto(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-dashed border-amber-500/50 bg-stone-900/50 hover:bg-stone-800 text-amber-300 font-serif text-xs font-semibold transition-colors"
+              className="t20-btn-dashed"
             >
               <BookOpen className="w-3.5 h-3.5 text-amber-400" />
               Aprender Magia (Compêndio)
@@ -720,7 +731,7 @@ export function AbaMagias({
                 type="button"
                 onClick={handleCancelar}
                 disabled={salvando}
-                className="px-3.5 py-1.5 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 font-serif font-bold text-xs flex items-center gap-1.5 transition-colors"
+                className="t20-btn-cancel"
               >
                 <X className="w-4 h-4" />
                 Cancelar
@@ -729,7 +740,7 @@ export function AbaMagias({
               <button
                 type="submit"
                 disabled={salvando}
-                className="t20-btn-primary px-4 py-1.5 text-xs flex items-center gap-1.5 font-serif font-bold"
+                className="t20-btn-primary !py-1.5 !px-4 !text-xs"
               >
                 {salvando ? (
                   <>
@@ -752,10 +763,10 @@ export function AbaMagias({
       {/* MODAL DO COMPÊNDIO DE MAGIAS (PESQUISA + FILTROS DO JSON) */}
       {/* ========================================================= */}
       {modalAberto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="relative w-full max-w-3xl max-h-[90vh] bg-stone-950 border border-amber-500/50 rounded-xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="t20-modal-overlay animate-in fade-in">
+          <div className="t20-modal-container">
             {/* Topo do Modal */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-amber-500/20 bg-stone-900/60">
+            <div className="t20-modal-header">
               <div className="flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-amber-400" />
                 <h3 className="font-serif font-bold text-sm text-stone-100">
@@ -832,7 +843,7 @@ export function AbaMagias({
                 catalogoFiltrado.map((item) => (
                   <div
                     key={item.id}
-                    className="p-3 rounded-lg bg-stone-900/60 border border-stone-800 hover:border-amber-500/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2.5"
+                    className="t20-compendio-card"
                   >
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-center gap-2">

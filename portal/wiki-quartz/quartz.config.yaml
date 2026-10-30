@@ -21,25 +21,25 @@ configuration:
       code: Fira Code
     colors:
       lightMode:
-        light: "#0f1015"
-        lightgray: "#2a2d37"
-        gray: "#94a3b8"
-        darkgray: "#e2e8f0"
-        dark: "#9b111e"
-        secondary: "#f3c623"
-        tertiary: "#c41e3a"
-        highlight: rgb(0,0,0,0)
-        textHighlight: black
+        light: "#0c0a09"
+        lightgray: "#1c1917"
+        gray: "#78716c"
+        darkgray: "#e7e5e4"
+        dark: "#f59e0b"
+        secondary: "#fbbf24"
+        tertiary: "#dc2626"
+        highlight: "rgba(245, 158, 11, 0.15)"
+        textHighlight: "#fde68a"
       darkMode:
-        light: "#0f1015"
-        lightgray: "#2a2d37"
-        gray: "#94a3b8"
-        darkgray: "#e2e8f0"
-        dark: "#9b111e"
-        secondary: "#f3c623"
-        tertiary: "#c41e3a"
-        highlight: rgb(0,0,0,0)
-        textHighlight: black
+        light: "#0c0a09"
+        lightgray: "#1c1917"
+        gray: "#78716c"
+        darkgray: "#e7e5e4"
+        dark: "#f59e0b"
+        secondary: "#fbbf24"
+        tertiary: "#dc2626"
+        highlight: "rgba(245, 158, 11, 0.15)"
+        textHighlight: "#fde68a"
 plugins:
   - source: "@quartz-community/created-modified-date"
     enabled: false
@@ -119,7 +119,7 @@ plugins:
     enabled: true
     options:
       theme: default
-      mode: both
+      mode: dark
   - source: "@quartz-community/remove-draft"
     enabled: true
   - source: "@quartz-community/explicit-publish"
@@ -168,7 +168,36 @@ plugins:
       position: left
       priority: 50
   - source: "@quartz-community/graph"
-    enabled: false
+    enabled: true
+    options:
+      localGraph:
+        drag: true
+        zoom: true
+        depth: 1
+        scale: 1.1
+        repelForce: 0.5
+        centerForce: 0.3
+        linkDistance: 30
+        fontSize: 0.6
+        opacityScale: 1
+        removeTags: []
+        showTags: true
+        focusOnHover: true
+        enableRadial: false
+      globalGraph:
+        drag: true
+        zoom: true
+        depth: 1
+        scale: 0.9
+        repelForce: 0.5
+        centerForce: 0.3
+        linkDistance: 30
+        fontSize: 0.6
+        opacityScale: 1
+        removeTags: []
+        showTags: true
+        focusOnHover: true
+        enableRadial: false
     layout:
       position: right
       priority: 10
@@ -206,7 +235,7 @@ plugins:
       position: left
       priority: 10
   - source: "@quartz-community/darkmode"
-    enabled: true
+    enabled: false
     layout:
       position: left
       priority: 30
@@ -263,7 +292,7 @@ plugins:
         - tags
         - aliases
       excludedProperties: []
-      hidePropertiesView: false
+      hidePropertiesView: true
       delimiters: ---
       language: yaml
     order: 5

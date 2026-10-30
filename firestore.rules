@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Função auxiliar: verifica se o usuário autenticado possui o cargo de "mestre"
+    function ehMestre() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/usuarios/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.role == "mestre";
+    }
+
+    // 1. Configurações da Campanha (substitui campanha.json)
+    // Leitura: pública (qualquer visitante pode ver a próxima sessão na Home)
+    // Escrita: exclusiva do Mestre
+    match /configuracoes/{documento} {
+      allow read: if true;
+      allow write: if ehMestre();
+    }
+
+    // 2. Coleção de Usuários (Blindagem contra escalação de privilégios)
+    match /usuarios/{userId} {
+      // Leitura: cada um lê o seu; o Mestre lê todos.
+      allow read: if request.auth != null && (request.auth.uid == userId || ehMestre());
+
+      // Criação: o próprio usuário cria seu perfil, MAS a role tem que ser obrigatoriamente "jogador"
+      allow create: if request.auth != null 
+        && request.auth.uid == userId 
+        && request.resource.data.role == "jogador";
+
+      // Atualização:
+      // - O Mestre pode atualizar tudo (inclusive promover cargos).
+      // - O jogador só pode atualizar o seu próprio documento E a role não pode sofrer alteração!
+      allow update: if request.auth != null && (
+        ehMestre() || 
+        (
+          request.auth.uid == userId && 
+          request.resource.data.role == resource.data.role
+        )
+      );
+    }
+
+    // 3. Fichas de Personagens (Preparação para os próximos módulos)
+    // Leitura: qualquer membro autenticado pode ver o grupo
+    // Escrita: permitida apenas para o dono da ficha ou para o Mestre
+    match /personagens/{personagemId} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        ehMestre() || 
+        (resource != null && resource.data.donoUid == request.auth.uid) ||
+        (resource == null && request.resource.data.donoUid == request.auth.uid)
+      );
+    }
+  }
+}
+

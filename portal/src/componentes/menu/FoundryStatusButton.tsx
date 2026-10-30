@@ -29,7 +29,7 @@ export default function FoundryStatusButton() {
 
   return (
     <a
-      href="#acessofoundry"
+      href="/#acessofoundry"
       title={isOnline ? "Foundry Online" : "Mesa Offline"}
       className={styles.btnFoundry}
     >

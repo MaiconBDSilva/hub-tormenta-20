@@ -124,6 +124,72 @@ body {
   color: #fbbf24;
 }
 
+/* Botões Complementares Semânticos */
+.t20-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  background-color: rgba(28, 25, 23, 0.8);
+  color: #fcd34d;
+  font-family: serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.t20-btn-secondary:hover:not(:disabled) {
+  background-color: #292524;
+  border-color: #f59e0b;
+  transform: scale(1.03);
+}
+
+.t20-btn-cancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 0.375rem;
+  background-color: #292524;
+  color: #d6d3d1;
+  font-family: serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.t20-btn-cancel:hover:not(:disabled) {
+  background-color: #44403c;
+}
+
+.t20-btn-dashed {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 0.375rem;
+  border: 1px dashed rgba(245, 158, 11, 0.5);
+  background-color: rgba(28, 25, 23, 0.5);
+  color: #fcd34d;
+  font-family: serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.t20-btn-dashed:hover:not(:disabled) {
+  background-color: #292524;
+  border-color: #f59e0b;
+}
+
 /* Campos de Formulário Padronizados */
 .t20-input {
   width: 100%;
@@ -144,6 +210,124 @@ body {
 
 .t20-input::placeholder {
   color: #78716c;
+}
+
+/* ==========================================================================
+   Alertas e Estados de Feedback
+   ========================================================================== */
+
+.t20-alert-success {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background-color: rgba(6, 78, 59, 0.5); /* emerald-950/50 */
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #a7f3d0;
+  font-size: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.t20-alert-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background-color: rgba(69, 10, 10, 0.5); /* red-950/50 */
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  font-size: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.t20-alert-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background-color: rgba(69, 26, 3, 0.4); /* amber-950/40 */
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fde68a;
+  font-size: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================================================
+   Layout Semântico de Seções & Formulários
+   ========================================================================== */
+
+.t20-section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+  padding-bottom: 0.75rem;
+}
+
+.t20-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: serif;
+  font-weight: 900;
+  font-size: 1.125rem;
+  color: #f5f5f4;
+  letter-spacing: 0.025em;
+  margin: 0;
+}
+
+.t20-badge-counter {
+  font-size: 0.75rem;
+  font-family: monospace;
+  color: #a8a29e;
+  background-color: #0c0a09;
+  border: 1px solid #292524;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.t20-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #292524;
+}
+
+/* Pílula / Filtro Rápido (ex: Categorias de Magias / Poderes) */
+.t20-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-family: serif;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid #292524;
+  background-color: rgba(12, 10, 9, 0.6);
+  color: #a8a29e;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.t20-filter-pill:hover {
+  color: #e7e5e4;
+  border-color: #44403c;
+}
+
+.t20-filter-pill-active {
+  background-color: rgba(69, 26, 3, 0.7);
+  color: #fcd34d;
+  border-color: rgba(245, 158, 11, 0.7);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
 }
 
 /* ==========================================================================
@@ -227,4 +411,131 @@ body {
   filter: blur(48px);
   pointer-events: none;
   z-index: 0;
+}
+
+/* ==========================================================================
+   Modais e Compêndio Tormenta 20
+   ========================================================================== */
+
+.t20-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+@media (min-width: 640px) {
+  .t20-modal-overlay {
+    padding: 1.5rem;
+  }
+}
+
+.t20-modal-container {
+  position: relative;
+  width: 100%;
+  max-width: 48rem; /* 3xl */
+  max-height: 90vh;
+  background-color: #0c0a09;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  border-radius: 0.75rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.t20-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+  background-color: rgba(28, 25, 23, 0.6);
+}
+
+.t20-compendio-card {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: rgba(28, 25, 23, 0.6);
+  border: 1px solid #292524;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+@media (min-width: 640px) {
+  .t20-compendio-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.t20-compendio-card:hover {
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+/* ==========================================================================
+   Controles Compactos de Ficha & Formulários
+   ========================================================================== */
+
+.t20-field-label {
+  display: block;
+  font-family: serif;
+  font-size: 0.625rem; /* 10px */
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #a8a29e;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.025em;
+}
+
+.t20-field-input {
+  width: 100%;
+  background-color: #1c1917;
+  border: 1px solid #44403c;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  color: #e7e5e4;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.t20-field-input:focus {
+  border-color: #fbbf24;
+  box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.3);
+}
+
+.t20-field-select {
+  width: 100%;
+  background-color: #1c1917;
+  border: 1px solid #44403c;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  color: #e7e5e4;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.t20-field-select:focus {
+  border-color: #fbbf24;
+}
+
+.t20-empty-card {
+  padding: 2rem;
+  text-align: center;
+  background-color: rgba(12, 10, 9, 0.4);
+  border: 1px solid #292524;
+  border-radius: 0.75rem;
+  color: #78716c;
+  font-family: serif;
+  font-size: 0.75rem;
 }

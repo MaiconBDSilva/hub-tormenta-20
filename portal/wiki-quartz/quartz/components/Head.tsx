@@ -5,7 +5,6 @@ import { googleFontHref, googleFontSubsetHref } from "../util/theme"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { unescapeHTML } from "../util/escape"
 
-/* STREAMING_CHUNK:Defining Head component factory and metadata variables */
 export default (() => {
   const Head: QuartzComponent = ({
     cfg,
@@ -39,10 +38,9 @@ export default (() => {
       (r) => r.loadTime === "beforeDOMReady" && r.contentType === "external",
     )
 
-    /* STREAMING_CHUNK:Configuring anti-SPA-hijack interception and custom header injection */
+    // Script de montagem do cabeçalho estético Tormenta 20 (idêntico ao MenuFixo do Portal)
     const customHeaderScript = `
       (function() {
-        // Intercepta qualquer clique em links do Portal ANTES que o SPA do Quartz (micromorph) capture
         document.addEventListener('click', function(e) {
           var link = e.target.closest('a');
           if (!link) return;
@@ -50,27 +48,23 @@ export default (() => {
           var href = link.getAttribute('href');
           if (!href) return;
 
-          // Se o link é uma rota do Portal (fora da raiz da wiki)
           var ehLinkDoPortal = 
             href === '/' ||
             href.startsWith('/personagens') ||
             href.startsWith('/mapas') ||
             href.startsWith('/livros') ||
             href.startsWith('/agenda') ||
+            href.startsWith('/painel') ||
             link.hasAttribute('data-portal-link');
 
           if (ehLinkDoPortal) {
-            // Trava imediatamente a propagação para os scripts internos do Quartz
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation();
-
-            // Faz a navegação real e limpa do navegador, destruindo o estado do Quartz
             window.location.assign(link.href);
           }
-        }, true); // 'true' = Fase de Captura (prioridade máxima antes de qualquer outro script)
+        }, true);
 
-        // Função de montagem do cabeçalho
         function injetarMenuFixo() {
           if (document.getElementById('header-fixo-portal')) return;
 
@@ -79,17 +73,22 @@ export default (() => {
           header.className = 'header-fixo-portal';
 
           header.innerHTML = \`
-            <a href="/" class="portal-brand-link" data-portal-link="true" rel="external" title="Voltar ao Hub Principal">
-              <img src="/logo-mobile.png" alt="Logo Invocação do Herói" class="portal-logo-mobile" onerror="this.style.display='none'" />
-              <img src="/logo-rpg.png" alt="Logo Invocação do Herói" class="portal-logo-desktop" onerror="this.style.display='none'" />
-            </a>
+            <div class="portal-brand-area">
+              <a href="/" class="portal-brand-link" data-portal-link="true" title="Voltar ao Hub Principal">
+                <img src="/logo-mobile.png" alt="Logo Invocação do Herói" class="portal-logo-mobile" onerror="this.style.display='none'" />
+                <img src="/logo-rpg.png" alt="Logo Invocação do Herói" class="portal-logo-desktop" onerror="this.style.display='none'" />
+              </a>
+            </div>
 
             <nav class="portal-nav-links">
-              <a href="/personagens" class="portal-link" data-portal-link="true" rel="external">Personagens</a>
-              <a href="/mapas" class="portal-link" data-portal-link="true" rel="external">Mapas</a>
-              <a href="/livros" class="portal-link" data-portal-link="true" rel="external">Livros</a>
-              <a href="/agenda" class="portal-link" data-portal-link="true" rel="external">Agenda</a>
+              <a href="/personagens" class="portal-link" data-portal-link="true">Personagens</a>
+              <a href="/mapas" class="portal-link" data-portal-link="true">Mapas</a>
+              <a href="/livros" class="portal-link" data-portal-link="true">Livros</a>
+              <a href="/agenda" class="portal-link" data-portal-link="true">Agenda</a>
+              <a href="/wikitormenta" class="portal-link portal-link-ativo" data-portal-link="true">Wiki</a>
             </nav>
+
+            <div class="portal-right-spacer"></div>
           \`;
 
           if (document.body) {
@@ -107,10 +106,19 @@ export default (() => {
       })();
     `
 
-    /* STREAMING_CHUNK:Defining responsive styling tokens for the injected fixed header */
+    // Estilos que espelham exatamente o MenuFixo do Portal
     const customHeaderStyles = `
+      /* Medidas idênticas ao MenuFixo do Portal (MenuFixo.module.css):
+         Mobile: py-2.5 (20px) + logo h-8 (32px) + 1px borda = 53px
+         Desktop: py-2.5 (20px) + logo h-10 (40px) + 1px borda = 61px */
       body {
-        padding-top: 3.6rem !important;
+        padding-top: 53px !important;
+      }
+
+      @media (min-width: 768px) {
+        body {
+          padding-top: 61px !important;
+        }
       }
 
       .header-fixo-portal {
@@ -118,19 +126,32 @@ export default (() => {
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
-        height: 3.6rem !important;
+        height: 53px !important;
         z-index: 99999 !important;
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 0 1.5rem !important;
-        background-color: rgba(12, 10, 9, 0.95) !important;
-        border-bottom: 1px solid rgba(251, 191, 36, 0.7) !important;
+        padding: 0 0.75rem !important; /* px-3 */
+        background-color: rgba(12, 10, 9, 0.9) !important; /* bg-stone-950/90 */
+        border-bottom: 1px solid rgba(251, 191, 36, 0.8) !important; /* border-amber-400/80 */
         backdrop-filter: blur(12px) !important;
         -webkit-backdrop-filter: blur(12px) !important;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7) !important;
-        font-family: inherit !important;
+        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.8) !important;
+        font-family: Inter, sans-serif !important;
         box-sizing: border-box !important;
+      }
+
+      @media (min-width: 768px) {
+        .header-fixo-portal {
+          height: 61px !important;
+          padding: 0 2rem !important; /* md:px-8 */
+        }
+      }
+
+      .portal-brand-area {
+        display: flex !important;
+        align-items: center !important;
+        z-index: 10 !important;
       }
 
       .portal-brand-link {
@@ -142,39 +163,50 @@ export default (() => {
 
       .portal-logo-mobile {
         display: block !important;
-        height: 2rem !important;
+        height: 2rem !important; /* h-8 = 32px */
         width: 2rem !important;
         object-fit: contain !important;
       }
 
       .portal-logo-desktop {
         display: none !important;
-        height: 2.25rem !important;
+        height: 2.5rem !important; /* h-10 = 40px */
         width: auto !important;
         object-fit: contain !important;
       }
 
+      /* Navegação Centralizada */
       .portal-nav-links {
-        display: flex !important;
+        display: none !important;
         align-items: center !important;
-        gap: 1.25rem !important;
+        gap: 1.5rem !important; /* gap-6 = 24px */
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+      }
+
+      .portal-right-spacer {
+        width: 2.5rem !important;
       }
 
       .portal-link {
-        font-size: 0.875rem !important;
-        font-weight: 600 !important;
-        color: #d6d3d1 !important;
+        font-size: 0.875rem !important; /* text-sm = 14px */
+        font-weight: 500 !important;
+        color: #d6d3d1 !important; /* text-stone-300 */
         text-decoration: none !important;
         border-bottom: none !important;
-        transition: color 0.15s ease !important;
+        transition: color 0.2s ease !important;
+        letter-spacing: 0.015em !important;
       }
 
       .portal-link:hover {
-        color: #fbbf24 !important;
+        color: #fbbf24 !important; /* hover:text-amber-400 */
       }
 
       .portal-link-ativo {
-        color: #fbbf24 !important;
+        color: #fbbf24 !important; /* text-amber-400 */
+        font-weight: 700 !important;
       }
 
       @media (min-width: 768px) {
@@ -185,15 +217,82 @@ export default (() => {
           display: block !important;
         }
         .portal-nav-links {
-          gap: 1.75rem !important;
+          display: flex !important;
         }
+      }
+
+      /* Tema escuro Tormenta 20 estrito */
+      html, body {
+        background-color: #0c0a09 !important;
+        color: #f5f5f4 !important;
+      }
+
+      :root, :root[saved-theme="dark"], :root[saved-theme="light"] {
+        --light: #0c0a09 !important;
+        --lightgray: #1c1917 !important;
+        --gray: #78716c !important;
+        --darkgray: #e7e5e4 !important;
+        --dark: #f59e0b !important;
+        --secondary: #fbbf24 !important;
+        --tertiary: #dc2626 !important;
+        --background-primary: #0c0a09 !important;
+        --background-primary-alt: #1c1917 !important;
+        --background-secondary: #141210 !important;
+        --background-secondary-alt: #1c1917 !important;
+        --text-normal: #f5f5f4 !important;
+        --text-muted: #a8a29e !important;
+        --interactive-accent: #f59e0b !important;
+        --interactive-accent-hover: #fbbf24 !important;
+      }
+
+      /* Links idênticos ao portal (âmbar dourado) */
+      a.internal, .internal-link, article a {
+        color: #fbbf24 !important;
+      }
+      a.internal:hover, .internal-link:hover, article a:hover {
+        color: #f59e0b !important;
+      }
+
+      /* Breadcrumbs */
+      .breadcrumb-container, .breadcrumbs {
+        color: #78716c !important;
+      }
+      .breadcrumb-container a, .breadcrumbs a {
+        color: #a8a29e !important;
+      }
+      .breadcrumb-container a:hover, .breadcrumbs a:hover {
+        color: #fbbf24 !important;
+      }
+
+      /* Ocultar visualização bruta de metadados / aliases */
+      .note-properties,
+      .metadata-container,
+      .metadata-properties {
+        display: none !important;
+      }
+
+      /* Grafo: manter somente local da página (ocultar botão de global) */
+      .graph-outer > .global-graph-icon {
+        display: none !important;
+      }
+      .graph > .graph-outer {
+        border: 1px solid #292524 !important;
+        background-color: #141210 !important;
       }
     `
 
-    /* STREAMING_CHUNK:Rendering full HTML head structure */
     return (
       <head>
         <title>{title}</title>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              document.documentElement.setAttribute('saved-theme', 'dark');
+              document.documentElement.setAttribute('data-theme', 'dark');
+              try { localStorage.setItem('theme', 'dark'); } catch(e) {}
+            `,
+          }}
+        />
         <meta charSet="utf-8" />
         {coreStylesheet && <link rel="preload" href={coreStylesheet} as="style" />}
         {coreScript && coreScript.contentType === "external" && (

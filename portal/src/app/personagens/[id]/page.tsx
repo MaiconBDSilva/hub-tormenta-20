@@ -10,7 +10,6 @@ import { CabecalhoFicha } from "@/componentes/personagens/CabecalhoFicha";
 import { AbaPrincipal } from "@/componentes/personagens/abas/AbaPrincipal";
 import { AbaNotas } from "@/componentes/personagens/abas/AbaNotas";
 import { AbaPericias } from "@/componentes/personagens/abas/AbaPericias";
-import { AbaPlaceholder } from "@/componentes/personagens/abas/AbaPlaceholder";
 import styles from "@/componentes/personagens/personagens.module.css";
 import { AbaPoderes } from "@/componentes/personagens/abas/AbaPoderes";
 import { AbaMagias } from "@/componentes/personagens/abas/AbaMagias";
@@ -39,9 +38,8 @@ export default function FichaPersonagemPage() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
 
-  // Controle de Abas e Modo Edição
+  // Controle de Abas
   const [abaAtiva, setAbaAtiva] = useState<AbaFicha>("principal");
-  const [modoEdicao, setModoEdicao] = useState(false);
 
   const carregarFicha = useCallback(async () => {
     if (!id) return;
@@ -215,7 +213,6 @@ export default function FichaPersonagemPage() {
           {abaAtiva === "notas" && podeVerNotas && (
             <AbaNotas
               personagem={personagem}
-              modoEdicao={modoEdicao}
               onAtualizacao={carregarFicha}
             />
           )}

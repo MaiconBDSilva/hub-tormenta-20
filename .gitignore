@@ -1,0 +1,65 @@
+# ==============================================================================
+# Hub Tormenta 20 - Root .gitignore
+# ==============================================================================
+
+# Dependências (Node / Yarn / Pnpm)
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Ambientes e Segredos (permitindo apenas arquivos de exemplo/template)
+.env*
+!.env.example
+!.env.template
+
+# Builds e Saídas de Compilação
+.next/
+out/
+build/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Logs e Depuração
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Arquivos de Sistema Operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Editores & IDEs
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# Vercel & Firebase Cache
+.vercel/
+.firebase/
+
+# Quartz / Wiki Cache e Saídas Antigas Acidentais
+portal/wiki-quartz/.quartz/
+portal/wiki-quartz/.quartz-cache/
+portal/wiki-quartz/portal/
+portal/wiki-quartz/node_modules/
+

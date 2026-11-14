@@ -115,7 +115,7 @@ export default function MenuFixo() {
                 {/* Dropdown do Usuário */}
                 {userDropdownAberto && (
                   <div className={styles.userDropdown}>
-                    <div className="px-3 py-1.5 text-[11px] text-stone-400 border-b border-stone-800">
+                    <div className={styles.dropdownUserInfo}>
                       Conectado como <strong className="text-stone-200 block truncate">{dadosPerfil.nome}</strong>
                     </div>
 
@@ -215,7 +215,7 @@ export default function MenuFixo() {
                 setMenuAberto(false);
                 logout();
               }}
-              className="flex items-center gap-2 py-1 text-xs text-red-400 font-medium cursor-pointer"
+              className={styles.mobileLogoutBtn}
             >
               <LogOut className="h-3.5 w-3.5" />
               <span>Sair da Conta</span>
@@ -223,7 +223,7 @@ export default function MenuFixo() {
           ) : (
             <Link
               href="/login"
-              className="flex items-center gap-2 py-1 text-xs text-amber-400 font-semibold"
+              className={styles.mobileLoginLink}
               onClick={() => setMenuAberto(false)}
             >
               <LogIn className="h-3.5 w-3.5" />

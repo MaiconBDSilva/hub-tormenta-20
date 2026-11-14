@@ -17,6 +17,7 @@ import {
   Eye,
   PenLine,
 } from "lucide-react";
+import styles from "./EditorTextoRicoT20.module.css";
 
 interface EditorTextoRicoT20Props {
   valor: string;
@@ -98,15 +99,15 @@ export function EditorTextoRicoT20({
   };
 
   return (
-    <div className="rounded-xl border border-amber-500/40 bg-stone-950/90 shadow-xl overflow-hidden focus-within:border-amber-400/80 transition-colors">
+    <div className={styles.editorContainer}>
       {/* Barra de Ferramentas / Toolbar Diegética */}
-      <div className="flex flex-wrap items-center justify-between gap-1 p-2 bg-stone-900/80 border-b border-stone-800">
-        <div className="flex flex-wrap items-center gap-0.5">
+      <div className={styles.toolbar}>
+        <div className={styles.toolbarGroup}>
           {/* Negrito */}
           <button
             type="button"
             onClick={() => aplicarFormatacao("**", "**")}
-            className="p-1.5 rounded hover:bg-stone-800 text-stone-300 hover:text-amber-300 transition-colors"
+            className={styles.toolbarBtn}
             title="Negrito (**texto**)"
           >
             <Bold className="w-3.5 h-3.5" />
@@ -116,7 +117,7 @@ export function EditorTextoRicoT20({
           <button
             type="button"
             onClick={() => aplicarFormatacao("*", "*")}
-            className="p-1.5 rounded hover:bg-stone-800 text-stone-300 hover:text-amber-300 transition-colors"
+            className={styles.toolbarBtn}
             title="Itálico (*texto*)"
           >
             <Italic className="w-3.5 h-3.5" />
@@ -126,19 +127,19 @@ export function EditorTextoRicoT20({
           <button
             type="button"
             onClick={() => aplicarFormatacao("<u>", "</u>")}
-            className="p-1.5 rounded hover:bg-stone-800 text-stone-300 hover:text-amber-300 transition-colors"
+            className={styles.toolbarBtn}
             title="Sublinhado (<u>texto</u>)"
           >
             <Underline className="w-3.5 h-3.5" />
           </button>
 
-          <span className="w-px h-4 bg-stone-800 mx-1" />
+          <span className={styles.toolbarDivider} />
 
           {/* Título H2 */}
           <button
             type="button"
             onClick={() => aplicarPrefixoLinha("## ")}
-            className="p-1.5 rounded hover:bg-stone-800 text-stone-300 hover:text-amber-300 transition-colors"
+            className={styles.toolbarBtn}
             title="Título de Seção (## Título)"
           >
             <Heading2 className="w-3.5 h-3.5" />
@@ -148,19 +149,19 @@ export function EditorTextoRicoT20({
           <button
             type="button"
             onClick={() => aplicarPrefixoLinha("### ")}
-            className="p-1.5 rounded hover:bg-stone-800 text-stone-300 hover:text-amber-300 transition-colors"
+            className={styles.toolbarBtn}
             title="Subtítulo (### Subtítulo)"
           >
             <Heading3 className="w-3.5 h-3.5" />
           </button>
 
-          <span className="w-px h-4 bg-stone-800 mx-1" />
+          <span className={styles.toolbarDivider} />
 
           {/* Lista com Marcadores */}
           <button
             type="button"
             onClick={() => aplicarPrefixoLinha("- ")}
-            className="p-1.5 rounded hover:bg-stone-800 text-stone-300 hover:text-amber-300 transition-colors"
+            className={styles.toolbarBtn}
             title="Lista com Marcadores (- Item)"
           >
             <List className="w-3.5 h-3.5" />
@@ -170,7 +171,7 @@ export function EditorTextoRicoT20({
           <button
             type="button"
             onClick={() => aplicarPrefixoLinha("1. ")}
-            className="p-1.5 rounded hover:bg-stone-800 text-stone-300 hover:text-amber-300 transition-colors"
+            className={styles.toolbarBtn}
             title="Lista Numerada (1. Item)"
           >
             <ListOrdered className="w-3.5 h-3.5" />
@@ -180,7 +181,7 @@ export function EditorTextoRicoT20({
           <button
             type="button"
             onClick={() => aplicarPrefixoLinha("> ")}
-            className="p-1.5 rounded hover:bg-stone-800 text-stone-300 hover:text-amber-300 transition-colors"
+            className={styles.toolbarBtn}
             title="Citação / Lore (> Citação)"
           >
             <Quote className="w-3.5 h-3.5" />
@@ -190,7 +191,7 @@ export function EditorTextoRicoT20({
           <button
             type="button"
             onClick={() => aplicarFormatacao("\n\n---\n\n")}
-            className="p-1.5 rounded hover:bg-stone-800 text-stone-300 hover:text-amber-300 transition-colors"
+            className={styles.toolbarBtn}
             title="Linha Divisória Rúnica (---)"
           >
             <Minus className="w-3.5 h-3.5" />
@@ -200,7 +201,7 @@ export function EditorTextoRicoT20({
           <button
             type="button"
             onClick={() => aplicarFormatacao("`", "`")}
-            className="p-1.5 rounded hover:bg-stone-800 text-stone-300 hover:text-amber-300 transition-colors"
+            className={styles.toolbarBtn}
             title="Código / Regra mecânica (`termo`)"
           >
             <Code className="w-3.5 h-3.5" />
@@ -208,14 +209,12 @@ export function EditorTextoRicoT20({
         </div>
 
         {/* Alternância: Escrever vs. Pré-visualizar */}
-        <div className="flex items-center gap-1 bg-stone-950 p-0.5 rounded-lg border border-stone-800 text-[11px] font-serif">
+        <div className={styles.modeSwitch}>
           <button
             type="button"
             onClick={() => setAbaVisualizacao("escrever")}
-            className={`flex items-center gap-1 px-2 py-0.5 rounded transition-colors ${
-              abaVisualizacao === "escrever"
-                ? "bg-amber-950/80 text-amber-300 font-bold border border-amber-500/50"
-                : "text-stone-400 hover:text-stone-200"
+            className={`${styles.modeBtn} ${
+              abaVisualizacao === "escrever" ? styles.modeBtnActive : ""
             }`}
           >
             <PenLine className="w-3 h-3" />
@@ -225,10 +224,8 @@ export function EditorTextoRicoT20({
           <button
             type="button"
             onClick={() => setAbaVisualizacao("visualizar")}
-            className={`flex items-center gap-1 px-2 py-0.5 rounded transition-colors ${
-              abaVisualizacao === "visualizar"
-                ? "bg-amber-950/80 text-amber-300 font-bold border border-amber-500/50"
-                : "text-stone-400 hover:text-stone-200"
+            className={`${styles.modeBtn} ${
+              abaVisualizacao === "visualizar" ? styles.modeBtnActive : ""
             }`}
           >
             <Eye className="w-3 h-3" />
@@ -245,14 +242,14 @@ export function EditorTextoRicoT20({
           value={valor}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full bg-stone-950/90 p-3.5 font-serif text-stone-200 text-sm leading-relaxed placeholder:text-stone-600 focus:outline-none resize-y selection:bg-amber-500/30 selection:text-amber-200"
+          className={styles.textarea}
         />
       ) : (
-        <div className="p-4 bg-stone-950/90 min-h-[14rem] max-h-[28rem] overflow-y-auto">
+        <div className={styles.previewArea}>
           {valor.trim() ? (
             <VisualizadorMarkdownT20 conteudo={valor} />
           ) : (
-            <p className="text-stone-600 italic font-serif text-xs">
+            <p className={styles.previewEmpty}>
               Nada para pré-visualizar ainda. Escreva algo na aba ao lado!
             </p>
           )}
@@ -267,64 +264,34 @@ export function EditorTextoRicoT20({
  */
 export function VisualizadorMarkdownT20({ conteudo }: { conteudo: string }) {
   return (
-    <div className="prose prose-invert max-w-none font-serif text-sm leading-relaxed space-y-2 text-stone-200">
+    <div className={styles.markdownProse}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          h1: ({ children }) => (
-            <h1 className="text-lg font-black text-amber-300 border-b border-amber-500/30 pb-1 mt-3 mb-1">
-              {children}
-            </h1>
-          ),
-          h2: ({ children }) => (
-            <h2 className="text-base font-black text-amber-300/90 mt-2.5 mb-1">
-              {children}
-            </h2>
-          ),
-          h3: ({ children }) => (
-            <h3 className="text-sm font-bold text-amber-400 mt-2 mb-0.5">
-              {children}
-            </h3>
-          ),
-          strong: ({ children }) => (
-            <strong className="font-bold text-stone-100">{children}</strong>
-          ),
-          em: ({ children }) => (
-            <em className="italic text-stone-300">{children}</em>
-          ),
+          h1: ({ children }) => <h1 className={styles.mdH1}>{children}</h1>,
+          h2: ({ children }) => <h2 className={styles.mdH2}>{children}</h2>,
+          h3: ({ children }) => <h3 className={styles.mdH3}>{children}</h3>,
+          strong: ({ children }) => <strong className={styles.mdStrong}>{children}</strong>,
+          em: ({ children }) => <em className={styles.mdEm}>{children}</em>,
           blockquote: ({ children }) => (
-            <blockquote className="border-l-2 border-amber-500/60 pl-3 py-1 my-2 bg-amber-950/20 text-stone-300 italic rounded-r">
-              {children}
-            </blockquote>
+            <blockquote className={styles.mdBlockquote}>{children}</blockquote>
           ),
-          ul: ({ children }) => (
-            <ul className="list-disc list-inside space-y-1 my-1.5 text-stone-300">
-              {children}
-            </ul>
-          ),
-          ol: ({ children }) => (
-            <ol className="list-decimal list-inside space-y-1 my-1.5 text-stone-300">
-              {children}
-            </ol>
-          ),
-          li: ({ children }) => <li className="leading-snug">{children}</li>,
-          hr: () => <hr className="border-t border-amber-500/30 my-3" />,
-          code: ({ children }) => (
-            <code className="bg-stone-900 border border-stone-800 text-amber-300 font-mono text-xs px-1.5 py-0.5 rounded">
-              {children}
-            </code>
-          ),
+          ul: ({ children }) => <ul className={styles.mdUl}>{children}</ul>,
+          ol: ({ children }) => <ol className={styles.mdOl}>{children}</ol>,
+          li: ({ children }) => <li className={styles.mdLi}>{children}</li>,
+          hr: () => <hr className={styles.mdHr} />,
+          code: ({ children }) => <code className={styles.mdCode}>{children}</code>,
           a: ({ href, children }) => (
             <a
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-amber-400 underline hover:text-amber-300 transition-colors"
+              className={styles.mdLink}
             >
               {children}
             </a>
           ),
-          p: ({ children }) => <p className="mb-2 leading-relaxed">{children}</p>,
+          p: ({ children }) => <p className={styles.mdP}>{children}</p>,
         }}
       >
         {conteudo}

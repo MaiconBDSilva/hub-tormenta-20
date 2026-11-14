@@ -7,14 +7,6 @@
   @apply relative w-full py-10 pt-16 px-4 flex flex-col items-center justify-center text-stone-100 overflow-hidden;
 }
 
-.ambientGlowRuby {
-  @apply absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-900/20 blur-3xl rounded-full pointer-events-none;
-}
-
-.ambientGlowAmber {
-  @apply absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-600/15 blur-2xl rounded-full pointer-events-none;
-}
-
 .heroContentStack {
   @apply relative z-10 max-w-4xl w-full flex flex-col items-center text-center space-y-8;
 }
@@ -35,10 +27,6 @@
    ========================================================================== */
 .sessionCard {
   @apply relative w-full max-w-lg bg-stone-900/90 border border-stone-800 rounded-xl p-6 shadow-2xl backdrop-blur-md overflow-hidden;
-}
-
-.sessionCardHeaderStripe {
-  @apply absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-red-600 via-amber-500 to-red-600;
 }
 
 .sessionCardBadge {
@@ -69,6 +57,38 @@
   @apply text-red-500 font-bold;
 }
 
+.statusVoting {
+  @apply text-amber-400 font-bold;
+}
+
+.skeletonStack {
+  @apply flex flex-col items-center animate-pulse space-y-4 py-2;
+}
+
+.skeletonLineSm {
+  @apply h-4 w-28 bg-stone-800 rounded;
+}
+
+.skeletonLineLg {
+  @apply h-7 w-3/4 bg-stone-800 rounded;
+}
+
+.skeletonLineMd {
+  @apply h-4 w-40 bg-stone-800 rounded;
+}
+
+.skeletonFooter {
+  @apply w-full pt-4 border-t border-stone-800/80 flex justify-between;
+}
+
+.skeletonRow {
+  @apply w-full flex justify-between;
+}
+
+.skeletonPill {
+  @apply h-4 w-24 bg-stone-800 rounded;
+}
+
 /* ==========================================================================
    D20 FOUNDRY CHALLENGE CARD
    ========================================================================== */
@@ -87,6 +107,10 @@
 /* Contêiner com dimensões e proporção rígidas para evitar estouro no mobile */
 .canvasWrapper {
   @apply relative flex justify-center items-center w-[240px] h-[240px] max-w-full my-1 overflow-hidden select-none;
+}
+
+.d20CanvasPlaceholder {
+  @apply w-[240px] h-[240px] rounded-full bg-stone-900/60 border border-stone-800/70 animate-pulse;
 }
 
 .d20CanvasElement {

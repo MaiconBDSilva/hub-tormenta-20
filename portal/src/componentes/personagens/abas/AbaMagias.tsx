@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 
 import { FoundryCompendioRaw } from "@/utilitarios/SanitizadorFoundry";
+import styles from "../personagens.module.css";
 
 interface AbaMagiasProps {
   personagem: PersonagemRPG;
@@ -134,6 +135,15 @@ export function AbaMagias({
   useEffect(() => {
     setLimiteExibicao(40);
   }, [buscaCompendio, circuloCompendio, escolaCompendio, modalAberto]);
+
+  useEffect(() => {
+    if (!modalAberto) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setModalAberto(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [modalAberto]);
 
   // Filtra as magias da ficha pelo círculo ativo com ordenação alfabética
   const magiasExibidas = useMemo(() => {
@@ -269,23 +279,23 @@ export function AbaMagias({
   const getBadgeEscola = (escola: EscolaMagiaT20) => {
     switch (escola) {
       case "Evocação":
-        return "bg-red-950/60 text-red-300 border-red-600/50";
+        return "t20-badge t20-badge-red";
       case "Abjuração":
-        return "bg-sky-950/60 text-sky-300 border-sky-600/50";
+        return "t20-badge t20-badge-sky";
       case "Adivinhação":
-        return "bg-amber-950/60 text-amber-300 border-amber-600/50";
+        return "t20-badge t20-badge-amber";
       case "Convocação":
-        return "bg-emerald-950/60 text-emerald-300 border-emerald-600/50";
+        return "t20-badge t20-badge-emerald";
       case "Encantamento":
-        return "bg-pink-950/60 text-pink-300 border-pink-600/50";
+        return "t20-badge t20-badge-pink";
       case "Ilusão":
-        return "bg-purple-950/60 text-purple-300 border-purple-600/50";
+        return "t20-badge t20-badge-purple";
       case "Necromancia":
-        return "bg-stone-900 text-stone-300 border-stone-600";
+        return "t20-badge t20-badge-stone";
       case "Transmutação":
-        return "bg-orange-950/60 text-orange-300 border-orange-600/50";
+        return "t20-badge t20-badge-orange";
       default:
-        return "bg-stone-800 text-stone-300 border-stone-700";
+        return "t20-badge t20-badge-stone";
     }
   };
 
@@ -344,9 +354,8 @@ export function AbaMagias({
               key={c.valor}
               type="button"
               onClick={() => setCirculoFiltro(c.valor)}
-              className={`t20-filter-pill ${
-                selecionado ? "t20-filter-pill-active" : ""
-              }`}
+              className={`t20-filter-pill ${selecionado ? "t20-filter-pill-active" : ""
+                }`}
             >
               <span>{c.label}</span>
               <span className="text-[10px] font-mono text-stone-500 font-normal">
@@ -363,7 +372,7 @@ export function AbaMagias({
           {/* Coluna 1 & 2: Lista das Magias em 2 colunas (lg:col-span-7) */}
           <div className="lg:col-span-7 space-y-2">
             {magiasExibidas.length === 0 ? (
-              <div className="p-8 text-center bg-stone-950/50 border border-dashed border-stone-800 rounded-lg">
+              <div className="t20-empty-state">
                 <Scroll className="w-8 h-8 text-stone-600 mx-auto mb-2" />
                 <p className="font-serif text-xs text-stone-400">
                   {circuloFiltro === 0
@@ -389,27 +398,22 @@ export function AbaMagias({
                     <div
                       key={m.id}
                       onClick={() => setMagiaSelecionadaId(m.id)}
-                      className={`cursor-pointer group relative p-2.5 rounded-lg border transition-all text-left flex flex-col justify-between gap-1.5 ${
-                        estaAtivo
-                          ? "bg-amber-950/30 border-amber-500/70 shadow-md ring-1 ring-amber-500/30"
-                          : "bg-stone-950/70 border-stone-800/80 hover:border-stone-700 hover:bg-stone-900/60"
-                      }`}
+                      className={`group ${styles.itemListCard} ${estaAtivo ? styles.itemListCardAtivo : ""
+                        }`}
                     >
                       <div className="flex items-start justify-between gap-1">
                         <span
-                          className={`font-serif text-xs font-bold truncate flex-1 ${
-                            estaAtivo ? "text-amber-300" : "text-stone-200"
-                          }`}
+                          className={`font-serif text-xs font-bold truncate flex-1 ${estaAtivo ? "text-amber-300" : "text-stone-200"
+                            }`}
                         >
                           {m.nome || "Sem Nome"}
                         </span>
 
                         <ChevronRight
-                          className={`w-3.5 h-3.5 shrink-0 transition-transform ${
-                            estaAtivo
+                          className={`w-3.5 h-3.5 shrink-0 transition-transform ${estaAtivo
                               ? "text-amber-400 translate-x-0.5"
                               : "text-stone-600 group-hover:text-stone-400"
-                          }`}
+                            }`}
                         />
                       </div>
 
@@ -419,11 +423,7 @@ export function AbaMagias({
                           {m.circulo}º Círculo
                         </span>
 
-                        <span
-                          className={`px-1.5 py-0.2 rounded border font-sans font-semibold ${getBadgeEscola(
-                            m.escola
-                          )}`}
-                        >
+                        <span className={getBadgeEscola(m.escola)}>
                           {m.escola}
                         </span>
 
@@ -444,8 +444,8 @@ export function AbaMagias({
           {/* Coluna 3: Card Detalhado do Grimório (lg:col-span-5) */}
           <div className="lg:col-span-5">
             {magiaAtiva ? (
-              <div className="p-4 rounded-xl bg-stone-950/90 border border-amber-500/40 shadow-xl space-y-3 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-bl-full pointer-events-none" />
+              <div className={`${styles.inspectorCard} p-4 space-y-3`}>
+                <div className={styles.inspectorGlow} />
 
                 {editando ? (
                   /* Modo Edição no Card de Detalhes */
@@ -476,7 +476,7 @@ export function AbaMagias({
                         onChange={(e) =>
                           handleCampoChange(magiaAtiva.id, "nome", e.target.value)
                         }
-                        className="t20-field-input !border-amber-500/40 !text-amber-200 font-serif font-bold"
+                        className="t20-field-input border-amber-500/40 text-amber-200 font-serif font-bold"
                       />
                     </div>
 
@@ -573,7 +573,7 @@ export function AbaMagias({
                           onChange={(e) =>
                             handleCampoChange(magiaAtiva.id, "custoPm", e.target.value)
                           }
-                          className="t20-field-input !text-cyan-300 font-mono focus:!border-cyan-400"
+                          className="t20-field-input text-cyan-300 font-mono"
                         />
                       </div>
                     </div>
@@ -649,11 +649,7 @@ export function AbaMagias({
                           {magiaAtiva.circulo}º Círculo
                         </span>
 
-                        <span
-                          className={`px-2 py-0.5 rounded text-xs font-bold border ${getBadgeEscola(
-                            magiaAtiva.escola
-                          )}`}
-                        >
+                        <span className={getBadgeEscola(magiaAtiva.escola)}>
                           {magiaAtiva.escola}
                         </span>
 
@@ -671,7 +667,7 @@ export function AbaMagias({
                     </div>
 
                     {/* Fita de Parâmetros de Lançamento */}
-                    <div className="grid grid-cols-2 gap-2 text-xs bg-stone-900/60 p-2.5 rounded-lg border border-stone-800/80">
+                    <div className={`${styles.statStripGrid} grid-cols-2 sm:grid-cols-2`}>
                       <div className="flex items-center gap-1.5 text-stone-300">
                         <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                         <span><strong>Execução:</strong> {magiaAtiva.execucao}</span>
@@ -705,7 +701,7 @@ export function AbaMagias({
                           {magiaAtiva.aprimoramentos.map((apr, idx) => (
                             <div
                               key={apr.id || idx}
-                              className="text-xs bg-stone-900/40 border border-stone-800/80 p-2 rounded flex items-start gap-2"
+                              className={styles.aprimoramentoItem}
                             >
                               {apr.custoPm && (
                                 <span className="font-mono text-[10px] text-cyan-300 bg-cyan-950/60 border border-cyan-800/60 px-1.5 py-0.5 rounded shrink-0">
@@ -757,7 +753,7 @@ export function AbaMagias({
               <button
                 type="submit"
                 disabled={salvando}
-                className="t20-btn-primary !py-1.5 !px-4 !text-xs"
+                className="t20-btn-primary t20-btn-sm"
               >
                 {salvando ? (
                   <>
@@ -780,7 +776,15 @@ export function AbaMagias({
       {/* MODAL DO COMPÊNDIO DE MAGIAS (PESQUISA + FILTROS DO JSON) */}
       {/* ========================================================= */}
       {modalAberto && (
-        <div className="t20-modal-overlay animate-in fade-in">
+        <div
+          className="t20-modal-overlay animate-fade-in"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Compêndio Arcano de Arton"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setModalAberto(false);
+          }}
+        >
           <div className="t20-modal-container">
             {/* Topo do Modal */}
             <div className="t20-modal-header">
@@ -789,29 +793,30 @@ export function AbaMagias({
                 <h3 className="font-serif font-bold text-sm text-stone-100">
                   Compêndio Arcano de Arton
                 </h3>
-                <span className="text-[10px] font-mono text-stone-400 bg-stone-900 border border-stone-800 px-1.5 py-0.5 rounded">
+                <span className="t20-badge t20-badge-stone font-mono">
                   {catalogoFiltrado.length} disponíveis
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setModalAberto(false)}
-                className="p-1 text-stone-400 hover:text-stone-200 transition-colors"
+                className="p-1 text-stone-400 hover:text-stone-200 transition-colors cursor-pointer"
+                aria-label="Fechar modal"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Filtros de Busca */}
-            <div className="p-3 border-b border-stone-800/80 bg-stone-900/30 space-y-2.5">
-              <div className="relative">
-                <Search className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <div className="t20-modal-toolbar">
+              <div className="t20-search-wrapper">
+                <Search className="t20-search-icon" />
                 <input
                   type="text"
                   placeholder="Pesquisar magia pelo nome ou descrição..."
                   value={buscaCompendio}
                   onChange={(e) => setBuscaCompendio(e.target.value)}
-                  className="w-full bg-stone-900 border border-stone-700 rounded-lg pl-9 pr-3 py-1.5 text-xs text-stone-200 placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                  className="t20-search-input"
                 />
               </div>
 
@@ -823,11 +828,8 @@ export function AbaMagias({
                       key={c.valor}
                       type="button"
                       onClick={() => setCirculoCompendio(c.valor)}
-                      className={`px-2 py-0.5 rounded border transition-colors ${
-                        circuloCompendio === c.valor
-                          ? "bg-amber-950/80 text-amber-300 border-amber-500/70"
-                          : "bg-stone-900 text-stone-400 border-stone-800 hover:text-stone-200"
-                      }`}
+                      className={`${styles.pillFiltroModal} ${circuloCompendio === c.valor ? styles.pillFiltroModalAtiva : ""
+                        }`}
                     >
                       {c.label}
                     </button>
@@ -838,7 +840,7 @@ export function AbaMagias({
                 <select
                   value={escolaCompendio}
                   onChange={(e) => setEscolaCompendio(e.target.value)}
-                  className="bg-stone-900 border border-stone-700 text-stone-300 text-xs rounded px-2 py-1 focus:outline-none focus:border-amber-400"
+                  className={styles.subfiltroSelect}
                 >
                   <option value="todas">Todas as Escolas</option>
                   {ESCOLAS_LISTA.map((esc) => (
@@ -851,14 +853,14 @@ export function AbaMagias({
             </div>
 
             {/* Lista dos Cards do Compêndio */}
-            <div className="flex-1 overflow-y-auto p-3 space-y-2">
+            <div className="t20-modal-body">
               {carregandoCatalogo ? (
-                <div className="p-8 flex items-center justify-center gap-2 text-stone-400 font-serif text-xs">
+                <div className="t20-loading-box py-8">
                   <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
-                  Carregando grimório de magias...
+                  <span>Carregando grimório de magias...</span>
                 </div>
               ) : catalogoFiltrado.length === 0 ? (
-                <div className="p-8 text-center text-stone-500 font-serif text-xs">
+                <div className="t20-empty-state">
                   Nenhuma magia encontrada com esses termos.
                 </div>
               ) : (
@@ -868,45 +870,41 @@ export function AbaMagias({
                       key={item.id}
                       className="t20-compendio-card"
                     >
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <strong className="font-serif text-xs text-amber-300">
-                          {item.nome}
-                        </strong>
-                        <span className="font-mono text-[10px] text-stone-400 bg-stone-950 px-1.5 py-0.5 rounded border border-stone-800">
-                          {item.circulo}º Círculo
-                        </span>
-                        <span
-                          className={`text-[10px] px-1.5 py-0.2 rounded border font-semibold ${getBadgeEscola(
-                            item.escola
-                          )}`}
-                        >
-                          {item.escola}
-                        </span>
-                        <span className="text-[10px] text-cyan-300 font-mono">
-                          {item.custoPm}
-                        </span>
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <strong className="font-serif text-xs text-amber-300">
+                            {item.nome}
+                          </strong>
+                          <span className="font-mono text-[10px] text-stone-400 bg-stone-950 px-1.5 py-0.5 rounded border border-stone-800">
+                            {item.circulo}º Círculo
+                          </span>
+                          <span className={getBadgeEscola(item.escola)}>
+                            {item.escola}
+                          </span>
+                          <span className="text-[10px] text-cyan-300 font-mono">
+                            {item.custoPm}
+                          </span>
+                        </div>
+                        <p className="text-[11px] font-serif text-stone-400 line-clamp-2">
+                          {item.descricao}
+                        </p>
                       </div>
-                      <p className="text-[11px] font-serif text-stone-400 line-clamp-2">
-                        {item.descricao}
-                      </p>
-                    </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleAprenderDoCatalogo(item)}
-                      className="shrink-0 flex items-center justify-center gap-1 px-3 py-1.5 rounded bg-amber-950/60 hover:bg-amber-900/80 border border-amber-600/50 text-amber-300 font-serif text-xs font-bold transition-all hover:scale-105"
-                    >
-                      <Plus className="w-3.5 h-3.5 text-amber-400" />
-                      Aprender
-                    </button>
-                  </div>
+                      <button
+                        type="button"
+                        onClick={() => handleAprenderDoCatalogo(item)}
+                        className={styles.btnAprenderCompendio}
+                      >
+                        <Plus className="w-3.5 h-3.5 text-amber-400" />
+                        Aprender
+                      </button>
+                    </div>
                   ))}
                   {catalogoFiltrado.length > limiteExibicao && (
                     <button
                       type="button"
                       onClick={() => setLimiteExibicao((prev) => prev + 40)}
-                      className="w-full py-2 rounded border border-stone-800 bg-stone-900/70 hover:bg-stone-800 text-amber-300 font-serif text-xs font-semibold transition-colors"
+                      className={styles.btnMostrarMais}
                     >
                       Mostrar mais ({catalogoFiltrado.length - limiteExibicao} restantes)
                     </button>
@@ -916,11 +914,11 @@ export function AbaMagias({
             </div>
 
             {/* Rodapé do Modal com Opção de Magia Customizada */}
-            <div className="p-3 border-t border-stone-800 bg-stone-900/40 flex items-center justify-between">
+            <div className="t20-modal-footer">
               <button
                 type="button"
                 onClick={handleCriarMagiaCustomizada}
-                className="text-xs font-serif text-amber-400 hover:text-amber-300 underline font-semibold flex items-center gap-1"
+                className="text-xs font-serif text-amber-400 hover:text-amber-300 underline font-semibold flex items-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Criar Magia Personalizada (Homebrew)
@@ -929,7 +927,7 @@ export function AbaMagias({
               <button
                 type="button"
                 onClick={() => setModalAberto(false)}
-                className="px-3 py-1 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 font-serif text-xs font-bold"
+                className="t20-btn-cancel t20-btn-sm"
               >
                 Fechar
               </button>

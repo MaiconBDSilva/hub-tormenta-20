@@ -249,7 +249,7 @@ export function CabecalhoFicha({
       <div className="flex items-center justify-between">
         <Link
           href="/personagens"
-          className="t20-btn-ghost text-xs flex items-center gap-1.5 py-1.5 px-3"
+          className="t20-btn-ghost t20-btn-sm flex items-center gap-1.5"
         >
           <ArrowLeft className="w-4 h-4 text-amber-400" />
           <span>Voltar para a Vitrine</span>
@@ -259,7 +259,7 @@ export function CabecalhoFicha({
           <button
             type="button"
             onClick={() => setEditando(true)}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-amber-500/50 bg-stone-900/90 hover:bg-stone-800 text-amber-300 font-serif font-bold text-xs shadow-md transition-all hover:scale-[1.02]"
+            className={styles.btnEditarHeroi}
           >
             <Edit3 className="w-4 h-4 text-amber-400" />
             Editar Herói
@@ -269,14 +269,14 @@ export function CabecalhoFicha({
 
       {/* Alertas */}
       {mensagemSucesso && (
-        <div className="p-3 rounded-lg bg-emerald-950/70 border border-emerald-600/60 text-emerald-300 text-xs flex items-center gap-2 shadow-lg">
+        <div className="t20-alert-success">
           <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
           <span>{mensagemSucesso}</span>
         </div>
       )}
 
       {erro && (
-        <div className="p-3 rounded-lg bg-red-950/70 border border-red-600/60 text-red-300 text-xs flex items-center gap-2 shadow-lg">
+        <div className="t20-alert-error">
           <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
           <span>{erro}</span>
         </div>
@@ -367,7 +367,7 @@ export function CabecalhoFicha({
                     value={form.avatarUrl}
                     onChange={(e) => handleChange("avatarUrl", e.target.value)}
                     placeholder="https://..."
-                    className="w-full bg-stone-950 border border-stone-700 rounded px-2 py-1 text-[11px] text-stone-200 placeholder:text-stone-600 focus:outline-none focus:border-amber-400"
+                    className={`${styles.inputCompactoFicha} w-full text-[11px]`}
                   />
                 </div>
               )}
@@ -385,7 +385,7 @@ export function CabecalhoFicha({
                       value={form.nome}
                       onChange={(e) => handleChange("nome", e.target.value)}
                       placeholder="Nome do Herói"
-                      className="font-serif font-bold text-2xl text-amber-200 bg-stone-950/70 border-b border-amber-500 px-2 py-0.5 rounded focus:outline-none w-full"
+                      className={styles.inputNomeHeroi}
                     />
                   ) : (
                     <h1 className="font-serif font-black text-2xl sm:text-3xl text-stone-100 tracking-wide drop-shadow-md">
@@ -402,7 +402,7 @@ export function CabecalhoFicha({
                 </div>
 
                 {/* Selo de Nível */}
-                <div className="flex items-center gap-2 bg-linear-to-r from-stone-900 to-stone-950 px-3 py-1 rounded-md border border-amber-500/40 shadow-inner">
+                <div className={styles.seloNivelFicha}>
                   <span className="text-[11px] font-serif uppercase tracking-widest font-bold text-amber-400">
                     Nível
                   </span>
@@ -416,7 +416,7 @@ export function CabecalhoFicha({
                       onChange={(e) =>
                         handleChange("nivel", parseInt(e.target.value, 10) || 1)
                       }
-                      className="w-12 text-center font-serif font-bold text-amber-400 bg-stone-950 border border-amber-500/60 rounded px-1 py-0.5 text-sm focus:outline-none"
+                      className={styles.inputNivelFicha}
                     />
                   ) : (
                     <span className="font-serif font-black text-lg text-amber-300">
@@ -438,7 +438,7 @@ export function CabecalhoFicha({
                       required
                       value={form.raca}
                       onChange={(e) => handleChange("raca", e.target.value)}
-                      className="w-full bg-stone-950/80 border border-stone-800 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                      className={`${styles.inputCompactoFicha} w-full text-xs`}
                     />
                   </div>
                   <div>
@@ -450,7 +450,7 @@ export function CabecalhoFicha({
                       required
                       value={form.classe}
                       onChange={(e) => handleChange("classe", e.target.value)}
-                      className="w-full bg-stone-950/80 border border-stone-800 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                      className={`${styles.inputCompactoFicha} w-full text-xs`}
                     />
                   </div>
                   <div>
@@ -461,7 +461,7 @@ export function CabecalhoFicha({
                       type="text"
                       value={form.origem}
                       onChange={(e) => handleChange("origem", e.target.value)}
-                      className="w-full bg-stone-950/80 border border-stone-800 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                      className={`${styles.inputCompactoFicha} w-full text-xs`}
                     />
                   </div>
                   <div>
@@ -474,7 +474,7 @@ export function CabecalhoFicha({
                       onChange={(e) =>
                         handleChange("divindade", e.target.value)
                       }
-                      className="w-full bg-stone-950/80 border border-stone-800 rounded px-2 py-1 text-xs text-stone-200 focus:outline-none focus:border-amber-400"
+                      className={`${styles.inputCompactoFicha} w-full text-xs`}
                     />
                   </div>
                 </div>
@@ -514,7 +514,7 @@ export function CabecalhoFicha({
                               parseInt(e.target.value, 10) || 0,
                             )
                           }
-                          className="w-full text-center font-serif font-black text-base text-stone-100 bg-stone-950 border border-amber-500/40 rounded py-0.5 focus:outline-none focus:border-amber-400"
+                          className={styles.inputAtributoMedalhao}
                         />
                       ) : (
                         <span className={styles.valorModificador}>
@@ -548,7 +548,7 @@ export function CabecalhoFicha({
                                 parseInt(e.target.value, 10) || 0,
                               )
                             }
-                            className="w-12 text-center text-red-400 bg-stone-950 border border-stone-800 rounded px-1 py-0.5 focus:border-red-500 focus:outline-none"
+                            className={`${styles.inputVitalidade} ${styles.inputVitalidadePv}`}
                           />
                           <span className="text-stone-500">/</span>
                           <input
@@ -561,7 +561,7 @@ export function CabecalhoFicha({
                                 parseInt(e.target.value, 10) || 1,
                               )
                             }
-                            className="w-12 text-center text-stone-300 bg-stone-950 border border-stone-800 rounded px-1 py-0.5 focus:border-amber-500 focus:outline-none"
+                            className={`${styles.inputVitalidade} ${styles.inputVitalidadePv}`}
                           />
                         </div>
                       ) : (
@@ -599,7 +599,7 @@ export function CabecalhoFicha({
                                 parseInt(e.target.value, 10) || 0,
                               )
                             }
-                            className="w-12 text-center text-sky-400 bg-stone-950 border border-stone-800 rounded px-1 py-0.5 focus:border-sky-500 focus:outline-none"
+                            className={`${styles.inputVitalidade} ${styles.inputVitalidadePm}`}
                           />
                           <span className="text-stone-500">/</span>
                           <input
@@ -612,7 +612,7 @@ export function CabecalhoFicha({
                                 parseInt(e.target.value, 10) || 0,
                               )
                             }
-                            className="w-12 text-center text-stone-300 bg-stone-950 border border-stone-800 rounded px-1 py-0.5 focus:border-amber-500 focus:outline-none"
+                            className={`${styles.inputVitalidade} ${styles.inputVitalidadePm}`}
                           />
                         </div>
                       ) : (
@@ -665,7 +665,7 @@ export function CabecalhoFicha({
               </div>
 
               {/* Rodapé do Card */}
-              <div className="pt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-stone-500 border-t border-stone-800/80">
+              <div className={styles.rodapeCabecalhoFicha}>
                 <span className="flex items-center gap-1.5">
                   <User className="w-3.5 h-3.5 text-amber-500/80" />
                   Jogador:{" "}
@@ -680,7 +680,7 @@ export function CabecalhoFicha({
                       type="button"
                       onClick={handleCancelar}
                       disabled={salvando}
-                      className="px-3 py-1 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 font-serif font-bold text-xs flex items-center gap-1 transition-colors"
+                      className="t20-btn-cancel t20-btn-sm flex items-center gap-1"
                     >
                       <X className="w-3.5 h-3.5" />
                       Cancelar
@@ -689,7 +689,7 @@ export function CabecalhoFicha({
                     <button
                       type="submit"
                       disabled={salvando}
-                      className="t20-btn-primary px-3.5 py-1 text-xs flex items-center gap-1.5 font-serif font-bold"
+                      className="t20-btn-primary t20-btn-sm flex items-center gap-1.5"
                     >
                       {salvando ? (
                         <>

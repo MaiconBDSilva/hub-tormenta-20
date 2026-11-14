@@ -28,26 +28,26 @@ export default function SessionCard({
   const getStatusClass = () => {
     if (ehConfirmada) return styles.statusConfirmed;
     if (ehCancelada) return styles.statusPending;
-    return "text-amber-400 font-bold"; // Em votação / Padrão
+    return styles.statusVoting;
   };
 
   if (carregando) {
     return (
       <div className={styles.sessionCard}>
-        <div className={styles.sessionCardHeaderStripe} />
-        
+        <div className="t20-stripe" />
+
         {/* Esqueleto pulsante temático enquanto carrega do Firestore */}
-        <div className="flex flex-col items-center animate-pulse space-y-4 py-2">
-          <div className="h-4 w-28 bg-stone-800 rounded" />
-          <div className="h-7 w-3/4 bg-stone-800 rounded" />
-          <div className="h-4 w-40 bg-stone-800 rounded" />
-          <div className="w-full pt-4 border-t border-stone-800/80 flex justify-between">
-            <div className="h-4 w-24 bg-stone-800 rounded" />
-            <div className="h-4 w-24 bg-stone-800 rounded" />
+        <div className={styles.skeletonStack}>
+          <div className={styles.skeletonLineSm} />
+          <div className={styles.skeletonLineLg} />
+          <div className={styles.skeletonLineMd} />
+          <div className={styles.skeletonFooter}>
+            <div className={styles.skeletonPill} />
+            <div className={styles.skeletonPill} />
           </div>
-          <div className="w-full flex justify-between">
-            <div className="h-4 w-28 bg-stone-800 rounded" />
-            <div className="h-4 w-36 bg-stone-800 rounded" />
+          <div className={styles.skeletonRow}>
+            <div className={styles.skeletonLineSm} />
+            <div className={styles.skeletonLineMd} />
           </div>
         </div>
       </div>
@@ -56,7 +56,7 @@ export default function SessionCard({
 
   return (
     <div className={styles.sessionCard}>
-      <div className={styles.sessionCardHeaderStripe} />
+      <div className="t20-stripe" />
       
       <div className={styles.sessionCardBadge}>
         <span className={styles.sessionCardBadgeDot} />

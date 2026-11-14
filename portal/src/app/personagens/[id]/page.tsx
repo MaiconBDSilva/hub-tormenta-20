@@ -74,7 +74,7 @@ export default function FichaPersonagemPage() {
   if (carregando || carregandoAuth) {
     return (
       <main className={styles.personagensMain}>
-        <div className="p-20 text-center flex flex-col items-center justify-center">
+        <div className="t20-loading-box">
           <Loader2 className="w-10 h-10 animate-spin text-amber-500 mb-3" />
           <p className="text-sm font-serif text-stone-400 uppercase tracking-wider">
             Consultando registros heroicos...
@@ -90,7 +90,7 @@ export default function FichaPersonagemPage() {
         <div
           className={`${styles.personagensContainer} max-w-lg mx-auto pt-12`}
         >
-          <div className="p-6 rounded-xl bg-red-950/60 border border-red-800 text-red-300 text-sm flex items-center gap-3">
+          <div className="t20-alert-error">
             <AlertCircle className="w-6 h-6 shrink-0 text-red-400" />
             <span>{erro || "Personagem inexistente."}</span>
           </div>
@@ -123,11 +123,11 @@ export default function FichaPersonagemPage() {
         />
 
         {/* Barra de Navegação em Abas */}
-        <nav aria-label="Abas da Ficha" className={styles.fichaNavAbas}>
+        <nav aria-label="Abas da Ficha" className="t20-tabs-nav">
           <button
             type="button"
             onClick={() => setAbaAtiva("principal")}
-            className={`${styles.abaBotao} ${abaAtiva === "principal" ? styles.abaBotaoAtiva : ""}`}
+            className={`t20-tab-btn ${abaAtiva === "principal" ? "t20-tab-btn-active" : ""}`}
           >
             <Shield className="w-4 h-4" />
             Principal
@@ -136,7 +136,7 @@ export default function FichaPersonagemPage() {
           <button
             type="button"
             onClick={() => setAbaAtiva("poderes")}
-            className={`${styles.abaBotao} ${abaAtiva === "poderes" ? styles.abaBotaoAtiva : ""}`}
+            className={`t20-tab-btn ${abaAtiva === "poderes" ? "t20-tab-btn-active" : ""}`}
           >
             <Sparkles className="w-4 h-4" />
             Poderes
@@ -145,7 +145,7 @@ export default function FichaPersonagemPage() {
           <button
             type="button"
             onClick={() => setAbaAtiva("pericias")}
-            className={`${styles.abaBotao} ${abaAtiva === "pericias" ? styles.abaBotaoAtiva : ""}`}
+            className={`t20-tab-btn ${abaAtiva === "pericias" ? "t20-tab-btn-active" : ""}`}
           >
             <Compass className="w-4 h-4" />
             Perícias
@@ -154,7 +154,7 @@ export default function FichaPersonagemPage() {
           <button
             type="button"
             onClick={() => setAbaAtiva("magias")}
-            className={`${styles.abaBotao} ${abaAtiva === "magias" ? styles.abaBotaoAtiva : ""}`}
+            className={`t20-tab-btn ${abaAtiva === "magias" ? "t20-tab-btn-active" : ""}`}
           >
             <Scroll className="w-4 h-4" />
             Magias
@@ -163,7 +163,7 @@ export default function FichaPersonagemPage() {
           <button
             type="button"
             onClick={() => setAbaAtiva("equipamentos")}
-            className={`${styles.abaBotao} ${abaAtiva === "equipamentos" ? styles.abaBotaoAtiva : ""}`}
+            className={`t20-tab-btn ${abaAtiva === "equipamentos" ? "t20-tab-btn-active" : ""}`}
           >
             <Sword className="w-4 h-4" />
             Equipamentos
@@ -174,7 +174,7 @@ export default function FichaPersonagemPage() {
             <button
               type="button"
               onClick={() => setAbaAtiva("notas")}
-              className={`${styles.abaBotao} ${abaAtiva === "notas" ? styles.abaBotaoAtiva : ""}`}
+              className={`t20-tab-btn ${abaAtiva === "notas" ? "t20-tab-btn-active" : ""}`}
             >
               <BookOpen className="w-4 h-4" />
               Notas
@@ -183,7 +183,7 @@ export default function FichaPersonagemPage() {
         </nav>
 
         {/* Caixa de Conteúdo da Aba Ativa */}
-        <section className={styles.fichaConteudo}>
+        <section className="animate-fade-in">
           {abaAtiva === "principal" && (
             <AbaPrincipal
               personagem={personagem}

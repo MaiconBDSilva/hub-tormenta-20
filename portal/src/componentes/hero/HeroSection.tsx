@@ -35,8 +35,8 @@ export function HeroSection() {
   return (
     <section className={styles.heroSection}>
       {/* Halos de iluminação temática Tormenta 20 */}
-      <div aria-hidden="true" className={styles.ambientGlowRuby} />
-      <div aria-hidden="true" className={styles.ambientGlowAmber} />
+      <div aria-hidden="true" className="t20-glow-ruby" />
+      <div aria-hidden="true" className="t20-glow-amber" />
 
       <div className={styles.heroContentStack}>
         {/* 1. Logo Principal da Campanha */}

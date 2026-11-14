@@ -6,9 +6,7 @@ import styles from "./HeroSection.module.css";
 
 const D203DCanvas = dynamic(() => import("./D203DCanvas"), {
   ssr: false,
-  loading: () => (
-    <div className="w-[240px] h-[240px] rounded-full bg-stone-900/60 border border-stone-800/70 animate-pulse" />
-  ),
+  loading: () => <div className={styles.d20CanvasPlaceholder} />,
 });
 
 export interface FoundryChallengeCardProps {

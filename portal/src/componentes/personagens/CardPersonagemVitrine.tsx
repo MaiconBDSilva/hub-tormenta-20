@@ -84,22 +84,22 @@ export function CardPersonagemVitrine({
         {/* Placa Ornamental Inferior com Nome e Linhagem */}
         <div className={styles.tarotPlacaInfo}>
           {/* Nome do Campeão */}
-          <h3 className="font-serif font-black text-lg text-amber-100 group-hover:text-amber-300 transition-colors tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] truncate text-center">
+          <h3 className={styles.tarotNome}>
             {personagem.nome}
           </h3>
 
           {/* Linhagem: Raça • Classe */}
-          <p className="text-[11px] font-serif uppercase tracking-wider text-amber-200/80 text-center truncate mb-1">
+          <p className={styles.tarotLinhagem}>
             {personagem.raca} • {personagem.classe}
           </p>
 
           {/* Devoção / Origem */}
           {personagem.divindade ? (
-            <p className="text-[10px] font-serif italic text-stone-400 text-center truncate mb-2.5">
+            <p className={styles.tarotDevocao}>
               Devoto de {personagem.divindade}
             </p>
           ) : (
-            <p className="text-[10px] font-serif italic text-stone-500 text-center truncate mb-2.5">
+            <p className={styles.tarotDevocao}>
               {personagem.origem || "Aventureiro de Arton"}
             </p>
           )}
@@ -109,9 +109,9 @@ export function CardPersonagemVitrine({
             {/* PV */}
             <div className="flex items-center gap-1.5">
               <span className="text-[9px] font-mono font-bold text-red-400 w-4 shrink-0">PV</span>
-              <div className="h-1.5 flex-1 rounded-full bg-stone-950/80 border border-stone-800 overflow-hidden">
+              <div className={`${styles.tarotMiniBarraTrilha} flex-1`}>
                 <div
-                  className="h-full rounded-full bg-linear-to-r from-red-700 to-red-500 transition-all duration-300"
+                  className={styles.tarotMiniBarraPv}
                   style={{ width: `${pctPv}%` }}
                 />
               </div>
@@ -120,9 +120,9 @@ export function CardPersonagemVitrine({
             {/* PM */}
             <div className="flex items-center gap-1.5">
               <span className="text-[9px] font-mono font-bold text-sky-400 w-4 shrink-0">PM</span>
-              <div className="h-1.5 flex-1 rounded-full bg-stone-950/80 border border-stone-800 overflow-hidden">
+              <div className={`${styles.tarotMiniBarraTrilha} flex-1`}>
                 <div
-                  className="h-full rounded-full bg-linear-to-r from-sky-700 to-sky-400 transition-all duration-300"
+                  className={styles.tarotMiniBarraPm}
                   style={{ width: `${pctPm}%` }}
                 />
               </div>
@@ -130,7 +130,7 @@ export function CardPersonagemVitrine({
           </div>
 
           {/* Jogador Responsável */}
-          <div className="mt-2 pt-1.5 border-t border-stone-800/60 flex items-center justify-between text-[10px] text-stone-400 w-full">
+          <div className={styles.tarotRodapeDono}>
             <span className="flex items-center gap-1 truncate max-w-[90%]">
               <User className="w-3 h-3 text-amber-500/80 shrink-0" />
               <span className="truncate">{personagem.donoNome || "Sem Jogador"}</span>
@@ -143,7 +143,7 @@ export function CardPersonagemVitrine({
       {/* Botão Placa de Metal "Ver Ficha" Externo ao Card */}
       <Link
         href={`/personagens/${personagem.id}`}
-        className="mt-3.5 px-4 py-1.5 rounded-lg border border-amber-600/40 bg-linear-to-b from-stone-900 to-stone-950 text-amber-300 hover:text-amber-200 font-serif font-bold text-xs uppercase tracking-widest shadow-md transition-all hover:border-amber-400 hover:scale-105 hover:shadow-[0_0_12px_rgba(245,158,11,0.25)] flex items-center gap-1"
+        className={`${styles.btnVerFichaPlaca} mt-3.5 max-w-[15rem]`}
       >
         <span>Ver Ficha</span>
       </Link>

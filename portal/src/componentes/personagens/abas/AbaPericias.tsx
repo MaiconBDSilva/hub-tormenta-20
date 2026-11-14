@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { doc, updateDoc } from "firebase/firestore";
+import styles from "../personagens.module.css";
 import { db } from "@/lib/firebase";
 import {
   PersonagemRPG,
@@ -244,10 +245,8 @@ export function AbaPericias({
           {listaPericias.map((pericia) => (
             <div
               key={pericia.id}
-              className={`flex items-center justify-between gap-2 p-2.5 rounded-lg border transition-all ${
-                pericia.treinada
-                  ? "bg-amber-950/20 border-amber-500/40 shadow-sm"
-                  : "bg-stone-950/60 border-stone-800/80"
+              className={`${styles.periciaCard} ${
+                pericia.treinada ? styles.periciaCardTreinada : ""
               }`}
             >
               {/* Esquerda: Treino + Nome */}
@@ -256,10 +255,8 @@ export function AbaPericias({
                   <button
                     type="button"
                     onClick={() => handleTreinadaToggle(pericia.id)}
-                    className={`w-5 h-5 rounded flex items-center justify-center shrink-0 border transition-all ${
-                      pericia.treinada
-                        ? "bg-amber-500 border-amber-400 text-stone-950"
-                        : "bg-stone-900 border-stone-700 hover:border-amber-400 text-transparent"
+                    className={`${styles.btnCheckTreino} ${
+                      pericia.treinada ? styles.btnCheckTreinoAtivo : ""
                     }`}
                     title={
                       pericia.treinada ? "Perícia Treinada" : "Não Treinada"
@@ -269,10 +266,8 @@ export function AbaPericias({
                   </button>
                 ) : (
                   <span
-                    className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                      pericia.treinada
-                        ? "bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.8)]"
-                        : "bg-stone-800 border border-stone-700"
+                    className={`${styles.dotTreino} ${
+                      pericia.treinada ? styles.dotTreinoAtivo : ""
                     }`}
                     title={pericia.treinada ? "Treinada" : "Não Treinada"}
                   />
@@ -287,7 +282,7 @@ export function AbaPericias({
                       handleNomeOficioChange(pericia.id, e.target.value)
                     }
                     placeholder="Nome do Ofício"
-                    className="w-full bg-stone-900 border border-amber-500/50 rounded px-1.5 py-0.5 font-serif text-xs text-amber-200 focus:outline-none"
+                    className={styles.inputOficio}
                   />
                 ) : (
                   <span
@@ -314,7 +309,7 @@ export function AbaPericias({
                         e.target.value as AtributoChaveSigla,
                       )
                     }
-                    className="bg-stone-900 border border-stone-700 rounded px-1 py-0.5 text-[10px] font-mono text-amber-300 font-bold focus:outline-none focus:border-amber-400"
+                    className={styles.selectAtributoPericia}
                   >
                     {OPCOES_ATRIBUTOS.map((attr) => (
                       <option key={attr} value={attr}>
@@ -339,14 +334,12 @@ export function AbaPericias({
                         parseInt(e.target.value, 10) || 0,
                       )
                     }
-                    className="w-12 text-center bg-stone-900 border border-amber-500/40 rounded px-1 py-0.5 font-serif font-black text-xs text-amber-300 focus:outline-none focus:border-amber-400"
+                    className={styles.inputTotalPericia}
                   />
                 ) : (
                   <span
-                    className={`min-w-8 text-center font-serif font-black text-sm px-1.5 py-0.5 rounded ${
-                      pericia.treinada
-                        ? "text-amber-300 bg-amber-950/40 border border-amber-500/30"
-                        : "text-stone-300 bg-stone-900/80 border border-stone-800"
+                    className={`${styles.badgeTotalPericia} ${
+                      pericia.treinada ? styles.badgeTotalPericiaTreinada : ""
                     }`}
                   >
                     {pericia.total >= 0 ? `+${pericia.total}` : pericia.total}
@@ -358,7 +351,7 @@ export function AbaPericias({
                   <button
                     type="button"
                     onClick={() => handleRemoverOficio(pericia.id)}
-                    className="p-1 rounded text-red-400 hover:bg-red-950/50 transition-colors"
+                    className={styles.btnRemoverIcone}
                     title="Remover Ofício"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -395,7 +388,7 @@ export function AbaPericias({
               <button
                 type="submit"
                 disabled={salvando}
-                className="t20-btn-primary !py-1.5 !px-4 !text-xs"
+                className="t20-btn-primary t20-btn-sm"
               >
                 {salvando ? (
                   <>

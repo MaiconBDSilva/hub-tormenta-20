@@ -1,16 +1,37 @@
 @import "tailwindcss";
 
 @theme {
-  --color-pedra-fundo: #0c0a09; /* stone-950 */
-  --color-pedra-card: #1c1917;  /* stone-900 */
-  --color-pedra-borda: #292524; /* stone-800 */
+  /* Superfícies e Bordas */
+  --color-pedra-fundo: #0c0a09;         /* stone-950 */
+  --color-pedra-card: #1c1917;          /* stone-900 */
+  --color-pedra-borda: #292524;         /* stone-800 */
+  --color-pedra-borda-clara: #44403c;   /* stone-700 */
 
-  --color-rubi: #dc2626;        /* red-600 */
-  --color-rubi-escuro: #7f1d1d; /* red-900 */
+  /* Tipografia */
+  --color-texto-primario: #f5f5f4;      /* stone-100 */
+  --color-texto-secundario: #d6d3d1;    /* stone-300 */
+  --color-texto-mutado: #a8a29e;        /* stone-400 */
+  --color-texto-sutil: #78716c;         /* stone-500 */
 
-  --color-dourado: #f59e0b;        /* amber-500 */
-  --color-dourado-claro: #fbbf24;  /* amber-400 */
-  --color-dourado-escuro: #d97706; /* amber-600 */
+  /* Destaques Dourados */
+  --color-dourado-palido: #fde68a;      /* amber-200 */
+  --color-dourado-claro: #fbbf24;       /* amber-400 */
+  --color-dourado: #f59e0b;             /* amber-500 */
+  --color-dourado-escuro: #d97706;      /* amber-600 */
+
+  /* Rubi / Tormenta / PV */
+  --color-rubi-claro: #f87171;          /* red-400 */
+  --color-rubi: #dc2626;                /* red-600 */
+  --color-rubi-escuro: #7f1d1d;         /* red-900 */
+
+  /* Mana / Safira */
+  --color-mana-claro: #38bdf8;          /* sky-400 */
+  --color-mana: #0284c7;                /* sky-600 */
+  --color-mana-escuro: #075985;         /* sky-800 */
+
+  /* Feedback */
+  --color-esmeralda: #10b981;           /* emerald-500 */
+  --color-esmeralda-claro: #a7f3d0;     /* emerald-200 */
 }
 
 /* ==========================================================================
@@ -20,8 +41,8 @@
 html,
 body {
   min-height: 100vh;
-  background-color: var(--color-pedra-fundo, #0c0a09);
-  color: #f5f5f4;
+  background-color: var(--color-pedra-fundo);
+  color: var(--color-texto-primario);
   color-scheme: dark;
   margin: 0;
   padding: 0;
@@ -34,7 +55,7 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 [role="button"]:focus-visible {
-  outline: 2px solid var(--color-dourado-claro, #fbbf24);
+  outline: 2px solid var(--color-dourado-claro);
   outline-offset: 2px;
 }
 
@@ -45,6 +66,27 @@ textarea:focus-visible,
 
 .scrollbar-none::-webkit-scrollbar {
   display: none;
+}
+
+@keyframes t20-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: t20-fade-in 0.25s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in {
+    animation: none;
+  }
 }
 
 /* ==========================================================================
@@ -69,7 +111,7 @@ textarea:focus-visible,
   left: 0;
   right: 0;
   height: 0.25rem;
-  background: linear-gradient(90deg, #dc2626 0%, #f59e0b 50%, #dc2626 100%);
+  background: linear-gradient(90deg, var(--color-rubi) 0%, var(--color-dourado) 50%, var(--color-rubi) 100%);
   z-index: 20;
 }
 
@@ -80,24 +122,27 @@ textarea:focus-visible,
   left: 0;
   right: 0;
   height: 0.25rem;
-  background: linear-gradient(90deg, #d97706 0%, #fde68a 50%, #d97706 100%);
+  background: linear-gradient(90deg, var(--color-dourado-escuro) 0%, var(--color-dourado-palido) 50%, var(--color-dourado-escuro) 100%);
   box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
   z-index: 20;
 }
 
-/* Botões do Sistema */
+/* ==========================================================================
+   Botões do Sistema
+   ========================================================================== */
+
 .t20-btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
-  font-family: serif;
+  font-family: Georgia, serif;
   font-weight: 700;
   font-size: 0.875rem;
   letter-spacing: 0.025em;
-  color: #0c0a09;
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  color: var(--color-pedra-fundo);
+  background: linear-gradient(135deg, var(--color-dourado-claro) 0%, var(--color-dourado) 50%, var(--color-dourado-escuro) 100%);
   border-radius: 0.5rem;
   box-shadow: 0 4px 14px 0 rgba(245, 158, 11, 0.35);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -121,16 +166,21 @@ textarea:focus-visible,
   filter: grayscale(0.5);
 }
 
+.t20-btn-sm {
+  padding: 0.375rem 0.875rem;
+  font-size: 0.75rem;
+}
+
 .t20-btn-ghost {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   padding: 0.625rem 1rem;
-  font-family: serif;
+  font-family: Georgia, serif;
   font-weight: 600;
   font-size: 0.875rem;
-  color: #e7e5e4;
+  color: var(--color-texto-primario);
   background-color: rgba(28, 25, 23, 0.6);
   border: 1px solid var(--color-pedra-borda);
   border-radius: 0.5rem;
@@ -141,10 +191,14 @@ textarea:focus-visible,
 .t20-btn-ghost:hover:not(:disabled) {
   background-color: rgba(41, 37, 36, 0.8);
   border-color: rgba(245, 158, 11, 0.5);
-  color: #fbbf24;
+  color: var(--color-dourado-claro);
 }
 
-/* Botões Complementares Semânticos */
+.t20-btn-ghost:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .t20-btn-secondary {
   display: inline-flex;
   align-items: center;
@@ -155,7 +209,7 @@ textarea:focus-visible,
   border: 1px solid rgba(245, 158, 11, 0.4);
   background-color: rgba(28, 25, 23, 0.8);
   color: #fcd34d;
-  font-family: serif;
+  font-family: Georgia, serif;
   font-weight: 600;
   font-size: 0.75rem;
   transition: all 0.2s ease;
@@ -163,8 +217,8 @@ textarea:focus-visible,
 }
 
 .t20-btn-secondary:hover:not(:disabled) {
-  background-color: #292524;
-  border-color: #f59e0b;
+  background-color: var(--color-pedra-borda);
+  border-color: var(--color-dourado);
   transform: scale(1.03);
 }
 
@@ -175,17 +229,23 @@ textarea:focus-visible,
   gap: 0.375rem;
   padding: 0.375rem 0.875rem;
   border-radius: 0.375rem;
-  background-color: #292524;
-  color: #d6d3d1;
-  font-family: serif;
+  background-color: var(--color-pedra-borda);
+  color: var(--color-texto-secundario);
+  font-family: Georgia, serif;
   font-weight: 700;
   font-size: 0.75rem;
   transition: background-color 0.2s ease;
   cursor: pointer;
+  border: 1px solid transparent;
 }
 
 .t20-btn-cancel:hover:not(:disabled) {
-  background-color: #44403c;
+  background-color: var(--color-pedra-borda-clara);
+}
+
+.t20-btn-cancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .t20-btn-dashed {
@@ -198,19 +258,49 @@ textarea:focus-visible,
   border: 1px dashed rgba(245, 158, 11, 0.5);
   background-color: rgba(28, 25, 23, 0.5);
   color: #fcd34d;
-  font-family: serif;
+  font-family: Georgia, serif;
   font-size: 0.75rem;
   font-weight: 600;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
   cursor: pointer;
 }
 
 .t20-btn-dashed:hover:not(:disabled) {
-  background-color: #292524;
-  border-color: #f59e0b;
+  background-color: var(--color-pedra-borda);
+  border-color: var(--color-dourado);
 }
 
-/* Campos de Formulário Padronizados */
+.t20-btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(220, 38, 38, 0.5);
+  background-color: rgba(127, 29, 29, 0.8);
+  color: var(--color-texto-primario);
+  font-family: Georgia, serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.t20-btn-danger:hover:not(:disabled) {
+  background-color: var(--color-rubi);
+  border-color: var(--color-rubi-claro);
+}
+
+.t20-btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Campos de Formulário Padronizados
+   ========================================================================== */
+
 .t20-input {
   width: 100%;
   background-color: rgba(12, 10, 9, 0.85);
@@ -218,18 +308,18 @@ textarea:focus-visible,
   border-radius: 0.5rem;
   padding: 0.625rem 0.875rem;
   font-size: 0.875rem;
-  color: #f5f5f4;
-  transition: all 0.2s ease;
+  color: var(--color-texto-primario);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   outline: none;
 }
 
 .t20-input:focus {
-  border-color: #f59e0b;
+  border-color: var(--color-dourado);
   box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
 }
 
 .t20-input::placeholder {
-  color: #78716c;
+  color: var(--color-texto-sutil);
 }
 
 /* ==========================================================================
@@ -242,9 +332,9 @@ textarea:focus-visible,
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
-  background-color: rgba(6, 78, 59, 0.5); /* emerald-950/50 */
+  background-color: rgba(6, 78, 59, 0.5);
   border: 1px solid rgba(16, 185, 129, 0.4);
-  color: #a7f3d0;
+  color: var(--color-esmeralda-claro);
   font-size: 0.75rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
@@ -255,7 +345,7 @@ textarea:focus-visible,
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
-  background-color: rgba(69, 10, 10, 0.5); /* red-950/50 */
+  background-color: rgba(69, 10, 10, 0.55);
   border: 1px solid rgba(239, 68, 68, 0.4);
   color: #fca5a5;
   font-size: 0.75rem;
@@ -268,16 +358,33 @@ textarea:focus-visible,
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
-  background-color: rgba(69, 26, 3, 0.4); /* amber-950/40 */
+  background-color: rgba(69, 26, 3, 0.4);
   border: 1px solid rgba(245, 158, 11, 0.35);
-  color: #fde68a;
+  color: var(--color-dourado-palido);
   font-size: 0.75rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
 
 /* ==========================================================================
-   Layout Semântico de Seções & Formulários
+   Layout Semântico de Seções, Abas & Estados Vazios
    ========================================================================== */
+
+.t20-page-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+@media (min-width: 640px) {
+  .t20-page-header {
+    flex-direction: row;
+    align-items: center;
+  }
+}
 
 .t20-section-header {
   display: flex;
@@ -293,10 +400,10 @@ textarea:focus-visible,
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: serif;
+  font-family: Georgia, serif;
   font-weight: 900;
   font-size: 1.125rem;
-  color: #f5f5f4;
+  color: var(--color-texto-primario);
   letter-spacing: 0.025em;
   margin: 0;
 }
@@ -304,9 +411,9 @@ textarea:focus-visible,
 .t20-badge-counter {
   font-size: 0.75rem;
   font-family: monospace;
-  color: #a8a29e;
-  background-color: #0c0a09;
-  border: 1px solid #292524;
+  color: var(--color-texto-mutado);
+  background-color: var(--color-pedra-fundo);
+  border: 1px solid var(--color-pedra-borda);
   padding: 0.125rem 0.5rem;
   border-radius: 0.25rem;
 }
@@ -316,8 +423,77 @@ textarea:focus-visible,
   justify-content: flex-end;
   align-items: center;
   gap: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid #292524;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-pedra-borda);
+}
+
+.t20-tabs-nav {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(217, 119, 6, 0.3);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.t20-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-family: Georgia, serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  color: var(--color-texto-mutado);
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.t20-tab-btn:hover {
+  color: var(--color-texto-primario);
+  border-color: var(--color-texto-sutil);
+}
+
+.t20-tab-btn-active {
+  color: var(--color-dourado-claro);
+  border-color: var(--color-dourado);
+  background-color: rgba(41, 37, 36, 0.6);
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.t20-loading-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  text-align: center;
+  color: var(--color-texto-mutado);
+}
+
+.t20-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  background-color: rgba(12, 10, 9, 0.4);
+  border: 1px dashed var(--color-pedra-borda);
+  text-align: center;
+  color: var(--color-texto-mutado);
+}
+
+.t20-prose-box {
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  background-color: rgba(12, 10, 9, 0.6);
+  border: 1px solid rgba(41, 37, 36, 0.8);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 /* Pílula / Filtro Rápido (ex: Categorias de Magias / Poderes) */
@@ -328,19 +504,19 @@ textarea:focus-visible,
   padding: 0.25rem 0.625rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
-  font-family: serif;
+  font-family: Georgia, serif;
   font-weight: 700;
   white-space: nowrap;
-  border: 1px solid #292524;
+  border: 1px solid var(--color-pedra-borda);
   background-color: rgba(12, 10, 9, 0.6);
-  color: #a8a29e;
+  color: var(--color-texto-mutado);
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .t20-filter-pill:hover {
-  color: #e7e5e4;
-  border-color: #44403c;
+  color: var(--color-texto-primario);
+  border-color: var(--color-pedra-borda-clara);
 }
 
 .t20-filter-pill-active {
@@ -351,22 +527,100 @@ textarea:focus-visible,
 }
 
 /* ==========================================================================
-   Recursos Dinâmicos e Badges Artonianos
+   Badges Semânticos e Categorias Artonianas
    ========================================================================== */
 
-/* Badges e Selos */
+.t20-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.4375rem;
+  border-radius: 0.25rem;
+  border: 1px solid transparent;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.t20-badge-amber {
+  background-color: rgba(69, 26, 3, 0.6);
+  color: #fcd34d;
+  border-color: rgba(217, 119, 6, 0.5);
+}
+
+.t20-badge-emerald {
+  background-color: rgba(6, 78, 59, 0.6);
+  color: #6ee7b7;
+  border-color: rgba(5, 150, 105, 0.5);
+}
+
+.t20-badge-red {
+  background-color: rgba(69, 10, 10, 0.6);
+  color: #fca5a5;
+  border-color: rgba(220, 38, 38, 0.5);
+}
+
+.t20-badge-tormenta {
+  background-color: rgba(69, 10, 10, 0.85);
+  color: #fca5a5;
+  border-color: var(--color-rubi);
+  box-shadow: 0 0 8px rgba(220, 38, 38, 0.4);
+}
+
+.t20-badge-blue {
+  background-color: rgba(23, 37, 84, 0.6);
+  color: #93c5fd;
+  border-color: rgba(37, 99, 235, 0.5);
+}
+
+.t20-badge-sky {
+  background-color: rgba(8, 47, 73, 0.6);
+  color: #7dd3fc;
+  border-color: rgba(2, 132, 199, 0.5);
+}
+
+.t20-badge-purple {
+  background-color: rgba(59, 7, 100, 0.6);
+  color: #d8b4fe;
+  border-color: rgba(147, 51, 234, 0.5);
+}
+
+.t20-badge-pink {
+  background-color: rgba(80, 7, 36, 0.6);
+  color: #f9a8d4;
+  border-color: rgba(219, 39, 119, 0.5);
+}
+
+.t20-badge-orange {
+  background-color: rgba(67, 20, 7, 0.6);
+  color: #fdba74;
+  border-color: rgba(234, 88, 12, 0.5);
+}
+
+.t20-badge-cyan {
+  background-color: rgba(8, 51, 68, 0.5);
+  color: #67e8f9;
+  border-color: rgba(21, 94, 117, 0.5);
+}
+
+.t20-badge-stone {
+  background-color: var(--color-pedra-borda);
+  color: var(--color-texto-secundario);
+  border-color: var(--color-pedra-borda-clara);
+}
+
 .t20-badge-dono {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
   padding: 0.125rem 0.5rem;
-  font-family: serif;
+  font-family: Georgia, serif;
   font-size: 0.625rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background-color: #f59e0b;
-  color: #0c0a09;
+  background-color: var(--color-dourado);
+  color: var(--color-pedra-fundo);
   border-radius: 9999px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
@@ -422,9 +676,9 @@ textarea:focus-visible,
 .t20-modal-container {
   position: relative;
   width: 100%;
-  max-width: 48rem; /* 3xl */
+  max-width: 48rem;
   max-height: 90vh;
-  background-color: #0c0a09;
+  background-color: var(--color-pedra-fundo);
   border: 1px solid rgba(245, 158, 11, 0.5);
   border-radius: 0.75rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
@@ -442,12 +696,77 @@ textarea:focus-visible,
   background-color: rgba(28, 25, 23, 0.6);
 }
 
+.t20-modal-toolbar {
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(41, 37, 36, 0.8);
+  background-color: rgba(28, 25, 23, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.t20-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.t20-modal-footer {
+  padding: 0.75rem;
+  border-top: 1px solid var(--color-pedra-borda);
+  background-color: rgba(28, 25, 23, 0.4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.t20-search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.t20-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-texto-sutil);
+  pointer-events: none;
+}
+
+.t20-search-input {
+  width: 100%;
+  background-color: var(--color-pedra-card);
+  border: 1px solid var(--color-pedra-borda-clara);
+  border-radius: 0.5rem;
+  padding: 0.375rem 0.75rem 0.375rem 2.25rem;
+  font-size: 0.75rem;
+  color: var(--color-texto-primario);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.t20-search-input:focus {
+  border-color: var(--color-dourado-claro);
+}
+
+.t20-search-input::placeholder {
+  color: var(--color-texto-sutil);
+}
+
 .t20-compendio-card {
   padding: 0.75rem;
   border-radius: 0.5rem;
   background-color: rgba(28, 25, 23, 0.6);
-  border: 1px solid #292524;
-  transition: all 0.2s ease;
+  border: 1px solid var(--color-pedra-borda);
+  transition: border-color 0.2s ease;
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
@@ -471,55 +790,55 @@ textarea:focus-visible,
 
 .t20-field-label {
   display: block;
-  font-family: serif;
-  font-size: 0.625rem; /* 10px */
+  font-family: Georgia, serif;
+  font-size: 0.625rem;
   text-transform: uppercase;
   font-weight: 700;
-  color: #a8a29e;
+  color: var(--color-texto-mutado);
   margin-bottom: 0.25rem;
   letter-spacing: 0.025em;
 }
 
 .t20-field-input {
   width: 100%;
-  background-color: #1c1917;
-  border: 1px solid #44403c;
+  background-color: var(--color-pedra-card);
+  border: 1px solid var(--color-pedra-borda-clara);
   border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
   font-size: 0.75rem;
-  color: #e7e5e4;
+  color: var(--color-texto-primario);
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .t20-field-input:focus {
-  border-color: #fbbf24;
+  border-color: var(--color-dourado-claro);
   box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.3);
 }
 
 .t20-field-select {
   width: 100%;
-  background-color: #1c1917;
-  border: 1px solid #44403c;
+  background-color: var(--color-pedra-card);
+  border: 1px solid var(--color-pedra-borda-clara);
   border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
   font-size: 0.75rem;
-  color: #e7e5e4;
+  color: var(--color-texto-primario);
   outline: none;
   transition: border-color 0.15s ease;
 }
 
 .t20-field-select:focus {
-  border-color: #fbbf24;
+  border-color: var(--color-dourado-claro);
 }
 
 .t20-empty-card {
   padding: 2rem;
   text-align: center;
   background-color: rgba(12, 10, 9, 0.4);
-  border: 1px solid #292524;
+  border: 1px solid var(--color-pedra-borda);
   border-radius: 0.75rem;
-  color: #78716c;
-  font-family: serif;
+  color: var(--color-texto-sutil);
+  font-family: Georgia, serif;
   font-size: 0.75rem;
 }

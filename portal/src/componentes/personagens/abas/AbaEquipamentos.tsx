@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 
 import { FoundryCompendioRaw } from "@/utilitarios/SanitizadorFoundry";
+import styles from "../personagens.module.css";
 
 interface AbaEquipamentosProps {
   personagem: PersonagemRPG;
@@ -134,6 +135,15 @@ export function AbaEquipamentos({
   useEffect(() => {
     setLimiteExibicao(40);
   }, [buscaCompendio, categoriaCompendio, modalAberto]);
+
+  useEffect(() => {
+    if (!modalAberto) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setModalAberto(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [modalAberto]);
 
   const itensExibidos = useMemo(() => {
     const filtrados =
@@ -307,17 +317,17 @@ export function AbaEquipamentos({
   const getBadgeCategoria = (cat: CategoriaEquipamento) => {
     switch (cat) {
       case "Arma":
-        return "bg-amber-950/60 text-amber-300 border-amber-600/50";
+        return "t20-badge t20-badge-amber";
       case "Armadura":
-        return "bg-blue-950/60 text-blue-300 border-blue-600/50";
+        return "t20-badge t20-badge-blue";
       case "Escudo":
-        return "bg-emerald-950/60 text-emerald-300 border-emerald-600/50";
+        return "t20-badge t20-badge-emerald";
       case "Acessório":
-        return "bg-purple-950/60 text-purple-300 border-purple-600/50";
+        return "t20-badge t20-badge-purple";
       case "Consumível":
-        return "bg-red-950/60 text-red-300 border-red-600/50";
+        return "t20-badge t20-badge-red";
       default:
-        return "bg-stone-800 text-stone-300 border-stone-700";
+        return "t20-badge t20-badge-stone";
     }
   };
 
@@ -363,15 +373,15 @@ export function AbaEquipamentos({
       )}
 
       {/* Painel Diegético de Riquezas (Cofre das 4 Moedas em Destaque) */}
-      <div className="p-3.5 rounded-xl bg-linear-to-b from-stone-900/90 to-stone-950/95 border border-amber-500/30 shadow-xl space-y-2.5">
-        <div className="flex items-center gap-2 text-amber-400/90 font-serif text-[11px] font-bold uppercase tracking-widest">
+      <div className={`${styles.cofreContainer} space-y-2.5`}>
+        <div className={`${styles.cofreTitulo} flex items-center gap-2`}>
           <Coins className="w-4 h-4 text-amber-400" />
           <span>Cofre de Arton</span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-          {/* Platina (TL) - Azul Claro / Cyan Místico */}
-          <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-stone-950/80 border border-cyan-500/30 hover:border-cyan-400/50 shadow-inner transition-colors">
+          {/* Platina (TL) */}
+          <div className={`${styles.moedaCard} ${styles.moedaPlatina}`}>
             {editando ? (
               <input
                 type="number"
@@ -380,20 +390,20 @@ export function AbaEquipamentos({
                 onChange={(e) =>
                   handleMoedaChange("tl", parseInt(e.target.value, 10) || 0)
                 }
-                className="w-24 text-center font-mono font-black text-2xl bg-stone-900/90 border border-cyan-400/50 rounded py-0.5 text-cyan-200 focus:outline-none focus:ring-1 focus:ring-cyan-400"
+                className={`${styles.moedaInput} border-cyan-400/50 text-cyan-200`}
               />
             ) : (
-              <span className="font-mono font-black text-2xl sm:text-3xl text-cyan-200 tracking-tight drop-shadow-[0_0_12px_rgba(34,211,238,0.25)]">
+              <span className={`${styles.moedaValor} text-cyan-200`}>
                 {moedas.tl.toLocaleString("pt-BR")}
               </span>
             )}
-            <span className="mt-1 font-serif text-[11px] uppercase tracking-widest font-bold text-cyan-300/80">
+            <span className={styles.moedaRotulo}>
               Platina
             </span>
           </div>
 
-          {/* Ouro (TO / T$) - Dourado Solar / Âmbar */}
-          <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-stone-950/80 border border-amber-500/40 hover:border-amber-400/60 shadow-inner transition-colors">
+          {/* Ouro (TO / T$) */}
+          <div className={`${styles.moedaCard} ${styles.moedaOuro}`}>
             {editando ? (
               <input
                 type="number"
@@ -402,20 +412,20 @@ export function AbaEquipamentos({
                 onChange={(e) =>
                   handleMoedaChange("to", parseInt(e.target.value, 10) || 0)
                 }
-                className="w-24 text-center font-mono font-black text-2xl bg-stone-900/90 border border-amber-400/50 rounded py-0.5 text-amber-300 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                className={`${styles.moedaInput} border-amber-400/50 text-amber-300`}
               />
             ) : (
-              <span className="font-mono font-black text-2xl sm:text-3xl text-amber-300 tracking-tight drop-shadow-[0_0_12px_rgba(251,191,36,0.3)]">
+              <span className={`${styles.moedaValor} text-amber-300`}>
                 {moedas.to.toLocaleString("pt-BR")}
               </span>
             )}
-            <span className="mt-1 font-serif text-[11px] uppercase tracking-widest font-bold text-amber-400/80">
+            <span className={styles.moedaRotulo}>
               Ouro
             </span>
           </div>
 
-          {/* Prata (TP) - Prata Radiante / Ardósia Suave */}
-          <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-stone-950/80 border border-slate-400/30 hover:border-slate-300/50 shadow-inner transition-colors">
+          {/* Prata (TP) */}
+          <div className={`${styles.moedaCard} ${styles.moedaPrata}`}>
             {editando ? (
               <input
                 type="number"
@@ -424,20 +434,20 @@ export function AbaEquipamentos({
                 onChange={(e) =>
                   handleMoedaChange("tp", parseInt(e.target.value, 10) || 0)
                 }
-                className="w-24 text-center font-mono font-black text-2xl bg-stone-900/90 border border-slate-300/40 rounded py-0.5 text-slate-100 focus:outline-none focus:ring-1 focus:ring-slate-300"
+                className={`${styles.moedaInput} border-slate-300/40 text-slate-100`}
               />
             ) : (
-              <span className="font-mono font-black text-2xl sm:text-3xl text-slate-100 tracking-tight drop-shadow-[0_0_10px_rgba(241,245,249,0.2)]">
+              <span className={`${styles.moedaValor} text-slate-100`}>
                 {moedas.tp.toLocaleString("pt-BR")}
               </span>
             )}
-            <span className="mt-1 font-serif text-[11px] uppercase tracking-widest font-bold text-slate-300/80">
+            <span className={styles.moedaRotulo}>
               Prata
             </span>
           </div>
 
-          {/* Cobre (TC) - Cobre Forjado / Bronze Terroso */}
-          <div className="flex flex-col items-center justify-center p-3 rounded-lg bg-stone-950/80 border border-amber-700/40 hover:border-amber-600/60 shadow-inner transition-colors">
+          {/* Cobre (TC) */}
+          <div className={`${styles.moedaCard} ${styles.moedaCobre}`}>
             {editando ? (
               <input
                 type="number"
@@ -446,14 +456,14 @@ export function AbaEquipamentos({
                 onChange={(e) =>
                   handleMoedaChange("tc", parseInt(e.target.value, 10) || 0)
                 }
-                className="w-24 text-center font-mono font-black text-2xl bg-stone-900/90 border border-orange-500/40 rounded py-0.5 text-orange-300 focus:outline-none focus:ring-1 focus:ring-orange-400"
+                className={`${styles.moedaInput} border-orange-500/40 text-orange-300`}
               />
             ) : (
-              <span className="font-mono font-black text-2xl sm:text-3xl text-amber-600 tracking-tight drop-shadow-[0_0_10px_rgba(217,119,6,0.2)]">
+              <span className={`${styles.moedaValor} text-amber-600`}>
                 {moedas.tc.toLocaleString("pt-BR")}
               </span>
             )}
-            <span className="mt-1 font-serif text-[11px] uppercase tracking-widest font-bold text-amber-600/90">
+            <span className={styles.moedaRotulo}>
               Cobre
             </span>
           </div>
@@ -465,9 +475,8 @@ export function AbaEquipamentos({
         <button
           type="button"
           onClick={() => setCategoriaFiltro("todas")}
-          className={`t20-filter-pill ${
-            categoriaFiltro === "todas" ? "t20-filter-pill-active" : ""
-          }`}
+          className={`t20-filter-pill ${categoriaFiltro === "todas" ? "t20-filter-pill-active" : ""
+            }`}
         >
           <span>Todos</span>
           <span className="text-[10px] font-mono text-stone-500 font-normal">
@@ -484,9 +493,8 @@ export function AbaEquipamentos({
               key={cat}
               type="button"
               onClick={() => setCategoriaFiltro(cat)}
-              className={`t20-filter-pill ${
-                selecionado ? "t20-filter-pill-active" : ""
-              }`}
+              className={`t20-filter-pill ${selecionado ? "t20-filter-pill-active" : ""
+                }`}
             >
               <span>{cat}</span>
               <span className="text-[10px] font-mono text-stone-500 font-normal">
@@ -503,7 +511,7 @@ export function AbaEquipamentos({
           {/* Coluna 1 & 2: Lista dos Itens em 2 colunas */}
           <div className="lg:col-span-7 space-y-2">
             {itensExibidos.length === 0 ? (
-              <div className="p-8 text-center bg-stone-950/50 border border-dashed border-stone-800 rounded-lg">
+              <div className="t20-empty-state">
                 <Package className="w-8 h-8 text-stone-600 mx-auto mb-2" />
                 <p className="font-serif text-xs text-stone-400">
                   {categoriaFiltro === "todas"
@@ -529,30 +537,25 @@ export function AbaEquipamentos({
                     <div
                       key={item.id}
                       onClick={() => setItemSelecionadoId(item.id)}
-                      className={`cursor-pointer group relative p-2.5 rounded-lg border transition-all text-left flex flex-col justify-between gap-1.5 ${
-                        estaAtivo
-                          ? "bg-amber-950/30 border-amber-500/70 shadow-md ring-1 ring-amber-500/30"
-                          : "bg-stone-950/70 border-stone-800/80 hover:border-stone-700 hover:bg-stone-900/60"
-                      }`}
+                      className={`group ${styles.itemListCard} ${estaAtivo ? styles.itemListCardAtivo : ""
+                        }`}
                     >
                       <div className="flex items-start justify-between gap-1">
                         <div className="flex items-center gap-1.5 min-w-0 flex-1">
                           {getIconeCategoria(item.categoria)}
                           <span
-                            className={`font-serif text-xs font-bold truncate ${
-                              estaAtivo ? "text-amber-300" : "text-stone-200"
-                            }`}
+                            className={`font-serif text-xs font-bold truncate ${estaAtivo ? "text-amber-300" : "text-stone-200"
+                              }`}
                           >
                             {item.nome}
                           </span>
                         </div>
 
                         <ChevronRight
-                          className={`w-3.5 h-3.5 shrink-0 transition-transform ${
-                            estaAtivo
+                          className={`w-3.5 h-3.5 shrink-0 transition-transform ${estaAtivo
                               ? "text-amber-400 translate-x-0.5"
                               : "text-stone-600 group-hover:text-stone-400"
-                          }`}
+                            }`}
                         />
                       </div>
 
@@ -576,11 +579,7 @@ export function AbaEquipamentos({
 
                       {/* Badges de Categoria, Equipado e Quantidade */}
                       <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
-                        <span
-                          className={`px-1.5 py-0.2 rounded border font-semibold ${getBadgeCategoria(
-                            item.categoria
-                          )}`}
-                        >
+                        <span className={getBadgeCategoria(item.categoria)}>
                           {item.categoria}
                         </span>
 
@@ -588,38 +587,34 @@ export function AbaEquipamentos({
                         <button
                           type="button"
                           onClick={(e) => handleToggleEquipado(item.id, e)}
-                          className={`px-1.5 py-0.2 rounded border font-mono transition-colors flex items-center gap-0.5 ${
-                            item.equipado
-                              ? "bg-emerald-950/80 border-emerald-500/60 text-emerald-300 font-bold"
-                              : "bg-stone-900 border-stone-800 text-stone-500 hover:text-stone-300"
-                          }`}
+                          className={`${styles.btnToggleEquipado} flex items-center gap-0.5 ${item.equipado ? styles.btnToggleEquipadoAtivo : ""
+                            }`}
                           title={item.equipado ? "Item empunhado/vestido" : "Item na mochila"}
                         >
                           <Check
-                            className={`w-2.5 h-2.5 ${
-                              item.equipado ? "stroke-3" : "opacity-0"
-                            }`}
+                            className={`w-2.5 h-2.5 ${item.equipado ? "stroke-3" : "opacity-0"
+                              }`}
                           />
                           <span>{item.equipado ? "Equipado" : "Mochila"}</span>
                         </button>
 
                         {/* Quantidade */}
-                        <div className="ml-auto flex items-center gap-1 font-mono text-stone-300 bg-stone-900 border border-stone-800 px-1.5 py-0.2 rounded">
+                        <div className={`${styles.stepperQuantidade} ml-auto`}>
                           {editando && (
                             <button
                               type="button"
                               onClick={(e) => handleAlterarQuantidade(item.id, -1, e)}
-                              className="text-stone-400 hover:text-amber-400 px-0.5"
+                              className={styles.btnStepper}
                             >
                               -
                             </button>
                           )}
-                          <span>x{item.quantidade || 1}</span>
+                          <span className="px-1">x{item.quantidade || 1}</span>
                           {editando && (
                             <button
                               type="button"
                               onClick={(e) => handleAlterarQuantidade(item.id, 1, e)}
-                              className="text-stone-400 hover:text-amber-400 px-0.5"
+                              className={styles.btnStepper}
                             >
                               +
                             </button>
@@ -636,8 +631,8 @@ export function AbaEquipamentos({
           {/* Coluna 3: Card Detalhado do Item Selecionado */}
           <div className="lg:col-span-5">
             {itemAtivo ? (
-              <div className="p-4 rounded-xl bg-stone-950/90 border border-amber-500/40 shadow-xl space-y-3 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-bl-full pointer-events-none" />
+              <div className={`${styles.inspectorCard} p-4 space-y-3`}>
+                <div className={styles.inspectorGlow} />
 
                 {editando ? (
                   /* Modo Edição no Card de Detalhes */
@@ -668,7 +663,7 @@ export function AbaEquipamentos({
                         onChange={(e) =>
                           handleItemChange(itemAtivo.id, "nome", e.target.value)
                         }
-                        className="t20-field-input !border-amber-500/40 !text-amber-200 font-serif font-bold"
+                        className="t20-field-input border-amber-500/40 text-amber-200 font-serif font-bold"
                       />
                     </div>
 
@@ -732,7 +727,7 @@ export function AbaEquipamentos({
                             )
                           }
                           placeholder="Ex: T$ 100"
-                          className="t20-field-input !text-amber-300 font-mono"
+                          className="t20-field-input text-amber-300 font-mono"
                         />
                       </div>
 
@@ -749,11 +744,10 @@ export function AbaEquipamentos({
                               !itemAtivo.equipado
                             )
                           }
-                          className={`w-full py-1 px-2 rounded text-xs font-serif font-bold border transition-colors ${
-                            itemAtivo.equipado
+                          className={`w-full py-1 px-2 rounded text-xs font-serif font-bold border transition-colors ${itemAtivo.equipado
                               ? "bg-emerald-950/80 border-emerald-500/60 text-emerald-300"
                               : "bg-stone-900 border-stone-700 text-stone-400"
-                          }`}
+                            }`}
                         >
                           {itemAtivo.equipado ? "✓ Equipado" : "Na Mochila"}
                         </button>
@@ -773,7 +767,7 @@ export function AbaEquipamentos({
                               handleItemChange(itemAtivo.id, "dano", e.target.value)
                             }
                             placeholder="Ex: 1d8"
-                            className="t20-field-input !text-red-300 font-mono"
+                            className="t20-field-input text-red-300 font-mono"
                           />
                         </div>
                         <div>
@@ -787,7 +781,7 @@ export function AbaEquipamentos({
                               handleItemChange(itemAtivo.id, "critico", e.target.value)
                             }
                             placeholder="Ex: 19/x2"
-                            className="t20-field-input !text-amber-300 font-mono"
+                            className="t20-field-input text-amber-300 font-mono"
                           />
                         </div>
                       </div>
@@ -809,7 +803,7 @@ export function AbaEquipamentos({
                                 parseInt(e.target.value, 10) || 0
                               )
                             }
-                            className="t20-field-input !text-cyan-300 font-mono"
+                            className="t20-field-input text-cyan-300 font-mono"
                           />
                         </div>
                         <div>
@@ -864,20 +858,15 @@ export function AbaEquipamentos({
                       </div>
 
                       <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-bold border ${getBadgeCategoria(
-                            itemAtivo.categoria
-                          )}`}
-                        >
+                        <span className={getBadgeCategoria(itemAtivo.categoria)}>
                           {itemAtivo.categoria}
                         </span>
 
                         <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-bold border font-mono ${
-                            itemAtivo.equipado
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold border font-mono ${itemAtivo.equipado
                               ? "bg-emerald-950/80 border-emerald-500/60 text-emerald-300"
                               : "bg-stone-900 border-stone-800 text-stone-400"
-                          }`}
+                            }`}
                         >
                           {itemAtivo.equipado ? "Equipado no Corpo" : "Guardado na Mochila"}
                         </span>
@@ -1010,7 +999,7 @@ export function AbaEquipamentos({
               <button
                 type="submit"
                 disabled={salvando}
-                className="t20-btn-primary !py-1.5 !px-4 !text-xs"
+                className="t20-btn-primary t20-btn-sm"
               >
                 {salvando ? (
                   <>
@@ -1033,7 +1022,15 @@ export function AbaEquipamentos({
       {/* MODAL DO COMPÊNDIO DE EQUIPAMENTOS (FOUNDRY JSON)          */}
       {/* ========================================================= */}
       {modalAberto && (
-        <div className="t20-modal-overlay animate-in fade-in">
+        <div
+          className="t20-modal-overlay animate-fade-in"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Compêndio de Equipamentos de Arton"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setModalAberto(false);
+          }}
+        >
           <div className="t20-modal-container">
             {/* Topo do Modal */}
             <div className="t20-modal-header">
@@ -1042,29 +1039,30 @@ export function AbaEquipamentos({
                 <h3 className="font-serif font-bold text-sm text-stone-100">
                   Compêndio de Equipamentos de Arton
                 </h3>
-                <span className="text-[10px] font-mono text-stone-400 bg-stone-900 border border-stone-800 px-1.5 py-0.5 rounded">
+                <span className="t20-badge t20-badge-stone font-mono">
                   {catalogoFiltrado.length} disponíveis
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setModalAberto(false)}
-                className="p-1 text-stone-400 hover:text-stone-200 transition-colors"
+                className="p-1 text-stone-400 hover:text-stone-200 transition-colors cursor-pointer"
+                aria-label="Fechar modal"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Filtros de Busca */}
-            <div className="p-3 border-b border-stone-800/80 bg-stone-900/30 space-y-2.5">
-              <div className="relative">
-                <Search className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <div className="t20-modal-toolbar">
+              <div className="t20-search-wrapper">
+                <Search className="t20-search-icon" />
                 <input
                   type="text"
                   placeholder="Pesquisar arma, armadura, poção ou item geral..."
                   value={buscaCompendio}
                   onChange={(e) => setBuscaCompendio(e.target.value)}
-                  className="w-full bg-stone-900 border border-stone-700 rounded-lg pl-9 pr-3 py-1.5 text-xs text-stone-200 placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                  className="t20-search-input"
                 />
               </div>
 
@@ -1072,11 +1070,8 @@ export function AbaEquipamentos({
                 <button
                   type="button"
                   onClick={() => setCategoriaCompendio("todas")}
-                  className={`px-2 py-0.5 rounded border transition-colors ${
-                    categoriaCompendio === "todas"
-                      ? "bg-amber-950/80 text-amber-300 border-amber-500/70"
-                      : "bg-stone-900 text-stone-400 border-stone-800 hover:text-stone-200"
-                  }`}
+                  className={`${styles.pillFiltroModal} ${categoriaCompendio === "todas" ? styles.pillFiltroModalAtiva : ""
+                    }`}
                 >
                   Todas as Categorias
                 </button>
@@ -1085,11 +1080,8 @@ export function AbaEquipamentos({
                     key={cat}
                     type="button"
                     onClick={() => setCategoriaCompendio(cat)}
-                    className={`px-2 py-0.5 rounded border transition-colors ${
-                      categoriaCompendio === cat
-                        ? "bg-amber-950/80 text-amber-300 border-amber-500/70"
-                        : "bg-stone-900 text-stone-400 border-stone-800 hover:text-stone-200"
-                    }`}
+                    className={`${styles.pillFiltroModal} ${categoriaCompendio === cat ? styles.pillFiltroModalAtiva : ""
+                      }`}
                   >
                     {cat}
                   </button>
@@ -1098,14 +1090,14 @@ export function AbaEquipamentos({
             </div>
 
             {/* Lista dos Cards do Compêndio */}
-            <div className="flex-1 overflow-y-auto p-3 space-y-2">
+            <div className="t20-modal-body">
               {carregandoCatalogo ? (
-                <div className="p-8 flex items-center justify-center gap-2 text-stone-400 font-serif text-xs">
+                <div className="t20-loading-box py-8">
                   <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
-                  Carregando compêndio de equipamentos...
+                  <span>Carregando compêndio de equipamentos...</span>
                 </div>
               ) : catalogoFiltrado.length === 0 ? (
-                <div className="p-8 text-center text-stone-500 font-serif text-xs">
+                <div className="t20-empty-state">
                   Nenhum equipamento encontrado com esses filtros.
                 </div>
               ) : (
@@ -1115,62 +1107,58 @@ export function AbaEquipamentos({
                       key={item.id}
                       className="t20-compendio-card"
                     >
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {getIconeCategoria(item.categoria)}
-                        <strong className="font-serif text-xs text-amber-300">
-                          {item.nome}
-                        </strong>
-                        <span
-                          className={`text-[10px] px-1.5 py-0.2 rounded border font-semibold ${getBadgeCategoria(
-                            item.categoria
-                          )}`}
-                        >
-                          {item.categoria}
-                        </span>
-                        {item.precoTexto && item.precoTexto !== "-" && (
-                          <span className="text-[10px] font-mono text-amber-400">
-                            {item.precoTexto}
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {getIconeCategoria(item.categoria)}
+                          <strong className="font-serif text-xs text-amber-300">
+                            {item.nome}
+                          </strong>
+                          <span className={getBadgeCategoria(item.categoria)}>
+                            {item.categoria}
                           </span>
-                        )}
-                      </div>
-
-                      {/* Estatísticas resumidas de dano / armadura no Compêndio */}
-                      {(item.dano || item.bonusDefesa !== undefined) && (
-                        <div className="flex items-center gap-2.5 text-[10px] font-mono">
-                          {item.dano && (
-                            <span className="text-red-300 font-bold">
-                              ⚔️ Dano: {item.dano} {item.tipoDano && `(${item.tipoDano})`} | Crítico: {item.critico || "x2"}
-                            </span>
-                          )}
-                          {item.bonusDefesa !== undefined && (
-                            <span className="text-cyan-300 font-bold">
-                              🛡️ Defesa: +{item.bonusDefesa} {item.penalidadeArmadura !== undefined && `| Pen: ${item.penalidadeArmadura}`}
+                          {item.precoTexto && item.precoTexto !== "-" && (
+                            <span className="text-[10px] font-mono text-amber-400">
+                              {item.precoTexto}
                             </span>
                           )}
                         </div>
-                      )}
 
-                      <p className="text-[11px] font-serif text-stone-400 line-clamp-2">
-                        {item.descricao || "Item sem descrição detalhada."}
-                      </p>
+                        {/* Estatísticas resumidas de dano / armadura no Compêndio */}
+                        {(item.dano || item.bonusDefesa !== undefined) && (
+                          <div className="flex items-center gap-2.5 text-[10px] font-mono">
+                            {item.dano && (
+                              <span className="text-red-300 font-bold">
+                                ⚔️ Dano: {item.dano} {item.tipoDano && `(${item.tipoDano})`} | Crítico: {item.critico || "x2"}
+                              </span>
+                            )}
+                            {item.bonusDefesa !== undefined && (
+                              <span className="text-cyan-300 font-bold">
+                                🛡️ Defesa: +{item.bonusDefesa} {item.penalidadeArmadura !== undefined && `| Pen: ${item.penalidadeArmadura}`}
+                              </span>
+                            )}
+                          </div>
+                        )}
+
+                        <p className="text-[11px] font-serif text-stone-400 line-clamp-2">
+                          {item.descricao || "Item sem descrição detalhada."}
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleAdicionarDoCatalogo(item)}
+                        className={styles.btnAprenderCompendio}
+                      >
+                        <Plus className="w-3.5 h-3.5 text-amber-400" />
+                        Adicionar
+                      </button>
                     </div>
-
-                    <button
-                      type="button"
-                      onClick={() => handleAdicionarDoCatalogo(item)}
-                      className="shrink-0 flex items-center justify-center gap-1 px-3 py-1.5 rounded bg-amber-950/60 hover:bg-amber-900/80 border border-amber-600/50 text-amber-300 font-serif text-xs font-bold transition-all hover:scale-105"
-                    >
-                      <Plus className="w-3.5 h-3.5 text-amber-400" />
-                      Adicionar
-                    </button>
-                  </div>
                   ))}
                   {catalogoFiltrado.length > limiteExibicao && (
                     <button
                       type="button"
                       onClick={() => setLimiteExibicao((prev) => prev + 40)}
-                      className="w-full py-2 rounded border border-stone-800 bg-stone-900/70 hover:bg-stone-800 text-amber-300 font-serif text-xs font-semibold transition-colors"
+                      className={styles.btnMostrarMais}
                     >
                       Mostrar mais ({catalogoFiltrado.length - limiteExibicao} restantes)
                     </button>
@@ -1180,11 +1168,11 @@ export function AbaEquipamentos({
             </div>
 
             {/* Rodapé do Modal */}
-            <div className="p-3 border-t border-stone-800 bg-stone-900/40 flex items-center justify-between">
+            <div className="t20-modal-footer">
               <button
                 type="button"
                 onClick={handleCriarItemCustomizado}
-                className="text-xs font-serif text-amber-400 hover:text-amber-300 underline font-semibold flex items-center gap-1"
+                className="text-xs font-serif text-amber-400 hover:text-amber-300 underline font-semibold flex items-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Criar Item Personalizado (Homebrew)
@@ -1193,7 +1181,7 @@ export function AbaEquipamentos({
               <button
                 type="button"
                 onClick={() => setModalAberto(false)}
-                className="px-3 py-1 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 font-serif text-xs font-bold"
+                className="t20-btn-cancel t20-btn-sm"
               >
                 Fechar
               </button>

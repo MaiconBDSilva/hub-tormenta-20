@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 
 import { FoundryCompendioRaw } from "@/utilitarios/SanitizadorFoundry";
+import styles from "../personagens.module.css";
 
 interface AbaPoderesProps {
   personagem: PersonagemRPG;
@@ -164,6 +165,15 @@ export function AbaPoderes({
   useEffect(() => {
     setLimiteExibicao(40);
   }, [buscaCompendio, categoriaCompendio, subcategoriaCompendio, modalAberto]);
+
+  useEffect(() => {
+    if (!modalAberto) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setModalAberto(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [modalAberto]);
 
   // Poderes exibidos na lista principal da aba com filtro de categoria e ordenação alfabética
   const poderesExibidos = useMemo(() => {
@@ -303,19 +313,19 @@ export function AbaPoderes({
   const getBadgeCategoria = (tipo: CategoriaPoder) => {
     switch (tipo) {
       case "Classe":
-        return "bg-amber-950/60 text-amber-300 border-amber-600/50";
+        return "t20-badge t20-badge-amber";
       case "Raça":
-        return "bg-emerald-950/60 text-emerald-300 border-emerald-600/50";
+        return "t20-badge t20-badge-emerald";
       case "Origem":
-        return "bg-stone-800 text-stone-300 border-stone-600";
+        return "t20-badge t20-badge-stone";
       case "Geral":
-        return "bg-blue-950/60 text-blue-300 border-blue-600/50";
+        return "t20-badge t20-badge-blue";
       case "Concedido":
-        return "bg-purple-950/60 text-purple-300 border-purple-600/50";
+        return "t20-badge t20-badge-purple";
       case "Tormenta":
-        return "bg-red-950/80 text-red-300 border-red-600 shadow-[0_0_8px_rgba(220,38,38,0.4)]";
+        return "t20-badge t20-badge-tormenta";
       default:
-        return "bg-stone-800 text-stone-300 border-stone-700";
+        return "t20-badge t20-badge-stone";
     }
   };
 
@@ -365,9 +375,8 @@ export function AbaPoderes({
         <button
           type="button"
           onClick={() => setCategoriaFiltro("todas")}
-          className={`t20-filter-pill ${
-            categoriaFiltro === "todas" ? "t20-filter-pill-active" : ""
-          }`}
+          className={`t20-filter-pill ${categoriaFiltro === "todas" ? "t20-filter-pill-active" : ""
+            }`}
         >
           <span>Todos</span>
           <span className="text-[10px] font-mono text-stone-500 font-normal">
@@ -387,9 +396,8 @@ export function AbaPoderes({
                 setCategoriaFiltro(cat);
                 setSubcategoriaFiltro("todas");
               }}
-              className={`t20-filter-pill ${
-                selecionado ? "t20-filter-pill-active" : ""
-              }`}
+              className={`t20-filter-pill ${selecionado ? "t20-filter-pill-active" : ""
+                }`}
             >
               <span>{cat}</span>
               <span className="text-[10px] font-mono text-stone-500 font-normal">
@@ -402,14 +410,14 @@ export function AbaPoderes({
 
       {/* Seletor secundário para Classe ou Raça na aba */}
       {categoriaFiltro === "Classe" && (
-        <div className="flex items-center gap-2 pt-1 animate-in fade-in">
+        <div className="flex items-center gap-2 pt-1 animate-fade-in">
           <label className="text-xs font-serif text-stone-400 font-semibold">
             Classe:
           </label>
           <select
             value={subcategoriaFiltro}
             onChange={(e) => setSubcategoriaFiltro(e.target.value)}
-            className="bg-stone-900 border border-amber-500/40 text-amber-200 text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:border-amber-400"
+            className={styles.subfiltroSelect}
           >
             <option value="todas">Todas as Classes</option>
             {CLASSES_T20.map((cls) => (
@@ -422,14 +430,14 @@ export function AbaPoderes({
       )}
 
       {categoriaFiltro === "Raça" && (
-        <div className="flex items-center gap-2 pt-1 animate-in fade-in">
+        <div className="flex items-center gap-2 pt-1 animate-fade-in">
           <label className="text-xs font-serif text-stone-400 font-semibold">
             Raça:
           </label>
           <select
             value={subcategoriaFiltro}
             onChange={(e) => setSubcategoriaFiltro(e.target.value)}
-            className="bg-stone-900 border border-amber-500/40 text-amber-200 text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:border-amber-400"
+            className={styles.subfiltroSelect}
           >
             <option value="todas">Todas as Raças</option>
             {RACAS_T20.map((rc) => (
@@ -447,7 +455,7 @@ export function AbaPoderes({
           {/* Coluna 1 & 2: Lista dos poderes em duas colunas (lg:col-span-7) */}
           <div className="lg:col-span-7 space-y-2">
             {poderesExibidos.length === 0 ? (
-              <div className="p-8 text-center bg-stone-950/50 border border-dashed border-stone-800 rounded-lg">
+              <div className="t20-empty-state">
                 <Sparkles className="w-8 h-8 text-stone-600 mx-auto mb-2" />
                 <p className="font-serif text-xs text-stone-400">
                   {categoriaFiltro === "todas"
@@ -473,37 +481,28 @@ export function AbaPoderes({
                     <div
                       key={p.id}
                       onClick={() => setPoderSelecionadoId(p.id)}
-                      className={`cursor-pointer group relative p-2.5 rounded-lg border transition-all text-left flex flex-col justify-between gap-1.5 ${
-                        estaAtivo
-                          ? "bg-amber-950/30 border-amber-500/70 shadow-md ring-1 ring-amber-500/30"
-                          : "bg-stone-950/70 border-stone-800/80 hover:border-stone-700 hover:bg-stone-900/60"
-                      }`}
+                      className={`group ${styles.itemListCard} ${estaAtivo ? styles.itemListCardAtivo : ""
+                        }`}
                     >
                       <div className="flex items-start justify-between gap-1">
                         <span
-                          className={`font-serif text-xs font-bold truncate flex-1 ${
-                            estaAtivo ? "text-amber-300" : "text-stone-200"
-                          }`}
+                          className={`font-serif text-xs font-bold truncate flex-1 ${estaAtivo ? "text-amber-300" : "text-stone-200"
+                            }`}
                         >
                           {p.nome || "Sem Nome"}
                         </span>
 
                         <ChevronRight
-                          className={`w-3.5 h-3.5 shrink-0 transition-transform ${
-                            estaAtivo
+                          className={`w-3.5 h-3.5 shrink-0 transition-transform ${estaAtivo
                               ? "text-amber-400 translate-x-0.5"
                               : "text-stone-600 group-hover:text-stone-400"
-                          }`}
+                            }`}
                         />
                       </div>
 
                       {/* Badges Rápidas */}
                       <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
-                        <span
-                          className={`px-1.5 py-0.2 rounded border font-sans font-semibold ${getBadgeCategoria(
-                            p.tipo
-                          )}`}
-                        >
+                        <span className={getBadgeCategoria(p.tipo)}>
                           {p.tipo}
                         </span>
 
@@ -534,8 +533,8 @@ export function AbaPoderes({
           {/* Coluna 3: Card Detalhado do Poder Selecionado (lg:col-span-5) */}
           <div className="lg:col-span-5">
             {poderAtivo ? (
-              <div className="p-4 rounded-xl bg-stone-950/90 border border-amber-500/40 shadow-xl space-y-3 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-bl-full pointer-events-none" />
+              <div className={`${styles.inspectorCard} p-4 space-y-3`}>
+                <div className={styles.inspectorGlow} />
 
                 {editando ? (
                   /* Modo Edição no Card de Detalhes */
@@ -566,7 +565,7 @@ export function AbaPoderes({
                         onChange={(e) =>
                           handleCampoChange(poderAtivo.id, "nome", e.target.value)
                         }
-                        className="t20-field-input !border-amber-500/40 !text-amber-200 font-serif font-bold"
+                        className="t20-field-input border-amber-500/40 text-amber-200 font-serif font-bold"
                       />
                     </div>
 
@@ -653,7 +652,7 @@ export function AbaPoderes({
                             )
                           }
                           placeholder="Ex: 1 PM, 2 PM, ou -"
-                          className="t20-field-input !text-cyan-300 font-mono focus:!border-cyan-400"
+                          className="t20-field-input text-cyan-300 font-mono"
                         />
                       </div>
                     </div>
@@ -686,11 +685,7 @@ export function AbaPoderes({
                       </h3>
 
                       <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-bold border ${getBadgeCategoria(
-                            poderAtivo.tipo
-                          )}`}
-                        >
+                        <span className={getBadgeCategoria(poderAtivo.tipo)}>
                           {poderAtivo.tipo}
                         </span>
 
@@ -754,7 +749,7 @@ export function AbaPoderes({
               <button
                 type="submit"
                 disabled={salvando}
-                className="t20-btn-primary !py-1.5 !px-4 !text-xs"
+                className="t20-btn-primary t20-btn-sm"
               >
                 {salvando ? (
                   <>
@@ -777,7 +772,15 @@ export function AbaPoderes({
       {/* MODAL DO COMPÊNDIO DE PODERES (PESQUISA + FILTROS DO JSON) */}
       {/* ========================================================= */}
       {modalAberto && (
-        <div className="t20-modal-overlay animate-in fade-in">
+        <div
+          className="t20-modal-overlay animate-fade-in"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Compêndio de Poderes de Arton"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setModalAberto(false);
+          }}
+        >
           <div className="t20-modal-container">
             {/* Topo do Modal */}
             <div className="t20-modal-header">
@@ -786,29 +789,30 @@ export function AbaPoderes({
                 <h3 className="font-serif font-bold text-sm text-stone-100">
                   Compêndio de Poderes de Arton
                 </h3>
-                <span className="text-[10px] font-mono text-stone-400 bg-stone-900 border border-stone-800 px-1.5 py-0.5 rounded">
+                <span className="t20-badge t20-badge-stone font-mono">
                   {catalogoFiltrado.length} disponíveis
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setModalAberto(false)}
-                className="p-1 text-stone-400 hover:text-stone-200 transition-colors"
+                className="p-1 text-stone-400 hover:text-stone-200 transition-colors cursor-pointer"
+                aria-label="Fechar modal"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Filtros de Busca */}
-            <div className="p-3 border-b border-stone-800/80 bg-stone-900/30 space-y-2.5">
-              <div className="relative">
-                <Search className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <div className="t20-modal-toolbar">
+              <div className="t20-search-wrapper">
+                <Search className="t20-search-icon" />
                 <input
                   type="text"
                   placeholder="Pesquisar poder pelo nome, subtipo ou descrição..."
                   value={buscaCompendio}
                   onChange={(e) => setBuscaCompendio(e.target.value)}
-                  className="w-full bg-stone-900 border border-stone-700 rounded-lg pl-9 pr-3 py-1.5 text-xs text-stone-200 placeholder:text-stone-500 focus:outline-none focus:border-amber-400"
+                  className="t20-search-input"
                 />
               </div>
 
@@ -818,11 +822,8 @@ export function AbaPoderes({
                   <button
                     type="button"
                     onClick={() => setCategoriaCompendio("todas")}
-                    className={`px-2 py-0.5 rounded border transition-colors ${
-                      categoriaCompendio === "todas"
-                        ? "bg-amber-950/80 text-amber-300 border-amber-500/70"
-                        : "bg-stone-900 text-stone-400 border-stone-800 hover:text-stone-200"
-                    }`}
+                    className={`${styles.pillFiltroModal} ${categoriaCompendio === "todas" ? styles.pillFiltroModalAtiva : ""
+                      }`}
                   >
                     Todas as Categorias
                   </button>
@@ -834,11 +835,8 @@ export function AbaPoderes({
                         setCategoriaCompendio(cat);
                         setSubcategoriaCompendio("todas");
                       }}
-                      className={`px-2 py-0.5 rounded border transition-colors ${
-                        categoriaCompendio === cat
-                          ? "bg-amber-950/80 text-amber-300 border-amber-500/70"
-                          : "bg-stone-900 text-stone-400 border-stone-800 hover:text-stone-200"
-                      }`}
+                      className={`${styles.pillFiltroModal} ${categoriaCompendio === cat ? styles.pillFiltroModalAtiva : ""
+                        }`}
                     >
                       {cat}
                     </button>
@@ -852,7 +850,7 @@ export function AbaPoderes({
                     <select
                       value={subcategoriaCompendio}
                       onChange={(e) => setSubcategoriaCompendio(e.target.value)}
-                      className="bg-stone-900 border border-stone-700 text-amber-300 text-xs rounded px-2 py-1 focus:outline-none focus:border-amber-400"
+                      className={styles.subfiltroSelect}
                     >
                       <option value="todas">Todas as Classes</option>
                       {CLASSES_T20.map((cls) => (
@@ -870,7 +868,7 @@ export function AbaPoderes({
                     <select
                       value={subcategoriaCompendio}
                       onChange={(e) => setSubcategoriaCompendio(e.target.value)}
-                      className="bg-stone-900 border border-stone-700 text-amber-300 text-xs rounded px-2 py-1 focus:outline-none focus:border-amber-400"
+                      className={styles.subfiltroSelect}
                     >
                       <option value="todas">Todas as Raças</option>
                       {RACAS_T20.map((rc) => (
@@ -885,14 +883,14 @@ export function AbaPoderes({
             </div>
 
             {/* Lista dos Cards do Compêndio */}
-            <div className="flex-1 overflow-y-auto p-3 space-y-2">
+            <div className="t20-modal-body">
               {carregandoCatalogo ? (
-                <div className="p-8 flex items-center justify-center gap-2 text-stone-400 font-serif text-xs">
+                <div className="t20-loading-box py-8">
                   <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
-                  Carregando compêndio de poderes...
+                  <span>Carregando compêndio de poderes...</span>
                 </div>
               ) : catalogoFiltrado.length === 0 ? (
-                <div className="p-8 text-center text-stone-500 font-serif text-xs">
+                <div className="t20-empty-state">
                   Nenhum poder encontrado com esses termos.
                 </div>
               ) : (
@@ -902,52 +900,48 @@ export function AbaPoderes({
                       key={item.id}
                       className="t20-compendio-card"
                     >
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <strong className="font-serif text-xs text-amber-300">
-                          {item.nome}
-                        </strong>
-                        <span
-                          className={`text-[10px] px-1.5 py-0.2 rounded border font-semibold ${getBadgeCategoria(
-                            item.tipo
-                          )}`}
-                        >
-                          {item.tipo}
-                        </span>
-                        {item.subtipo && (
-                          <span className="text-[10px] text-stone-400 bg-stone-950 px-1.5 py-0.5 rounded border border-stone-800">
-                            {item.subtipo}
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <strong className="font-serif text-xs text-amber-300">
+                            {item.nome}
+                          </strong>
+                          <span className={getBadgeCategoria(item.tipo)}>
+                            {item.tipo}
                           </span>
-                        )}
-                        <span className="text-[10px] text-stone-400 font-sans">
-                          {item.tipoAcao}
-                        </span>
-                        {item.custoPm && item.custoPm !== "-" && (
-                          <span className="text-[10px] text-cyan-300 font-mono">
-                            {item.custoPm}
+                          {item.subtipo && (
+                            <span className="text-[10px] text-stone-400 bg-stone-950 px-1.5 py-0.5 rounded border border-stone-800">
+                              {item.subtipo}
+                            </span>
+                          )}
+                          <span className="text-[10px] text-stone-400 font-sans">
+                            {item.tipoAcao}
                           </span>
-                        )}
+                          {item.custoPm && item.custoPm !== "-" && (
+                            <span className="text-[10px] text-cyan-300 font-mono">
+                              {item.custoPm}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[11px] font-serif text-stone-400 line-clamp-2">
+                          {item.descricao}
+                        </p>
                       </div>
-                      <p className="text-[11px] font-serif text-stone-400 line-clamp-2">
-                        {item.descricao}
-                      </p>
-                    </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleAprenderDoCatalogo(item)}
-                      className="shrink-0 flex items-center justify-center gap-1 px-3 py-1.5 rounded bg-amber-950/60 hover:bg-amber-900/80 border border-amber-600/50 text-amber-300 font-serif text-xs font-bold transition-all hover:scale-105"
-                    >
-                      <Plus className="w-3.5 h-3.5 text-amber-400" />
-                      Aprender
-                    </button>
-                  </div>
+                      <button
+                        type="button"
+                        onClick={() => handleAprenderDoCatalogo(item)}
+                        className={styles.btnAprenderCompendio}
+                      >
+                        <Plus className="w-3.5 h-3.5 text-amber-400" />
+                        Aprender
+                      </button>
+                    </div>
                   ))}
                   {catalogoFiltrado.length > limiteExibicao && (
                     <button
                       type="button"
                       onClick={() => setLimiteExibicao((prev) => prev + 40)}
-                      className="w-full py-2 rounded border border-stone-800 bg-stone-900/70 hover:bg-stone-800 text-amber-300 font-serif text-xs font-semibold transition-colors"
+                      className={styles.btnMostrarMais}
                     >
                       Mostrar mais ({catalogoFiltrado.length - limiteExibicao} restantes)
                     </button>
@@ -957,11 +951,11 @@ export function AbaPoderes({
             </div>
 
             {/* Rodapé do Modal com Opção de Poder Customizado */}
-            <div className="p-3 border-t border-stone-800 bg-stone-900/40 flex items-center justify-between">
+            <div className="t20-modal-footer">
               <button
                 type="button"
                 onClick={handleCriarPoderCustomizado}
-                className="text-xs font-serif text-amber-400 hover:text-amber-300 underline font-semibold flex items-center gap-1"
+                className="text-xs font-serif text-amber-400 hover:text-amber-300 underline font-semibold flex items-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Criar Poder Personalizado (Homebrew)
@@ -970,7 +964,7 @@ export function AbaPoderes({
               <button
                 type="button"
                 onClick={() => setModalAberto(false)}
-                className="px-3 py-1 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 font-serif text-xs font-bold"
+                className="t20-btn-cancel t20-btn-sm"
               >
                 Fechar
               </button>

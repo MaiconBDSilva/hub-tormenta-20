@@ -15,6 +15,7 @@
 
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
+import styles from "./HeroSection.module.css";
 
 const PHI = (1 + Math.sqrt(5)) / 2;
 
@@ -451,7 +452,7 @@ export default function D203DCanvas({
       width={240}
       height={240}
       style={{ width: "240px", height: "240px", maxWidth: "100%", maxHeight: "100%" }}
-      className="cursor-pointer touch-none drop-shadow-[0_0_20px_rgba(217,119,6,0.4)] transition-transform hover:scale-105 active:scale-95"
+      className={styles.d20CanvasElement}
     />
   );
 }

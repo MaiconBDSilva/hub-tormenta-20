@@ -42,23 +42,94 @@
   @apply w-full px-4 py-2.5 rounded-lg bg-stone-950 border border-stone-800 text-stone-100 text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors cursor-pointer;
 }
 
-/* ==========================================================================
-   3. ESTADOS DE FEEDBACK (ALERTAS E LOADING)
-   ========================================================================== */
-.alertaSucesso {
-  @apply flex items-center gap-3 p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/50 text-emerald-300 text-sm shadow-lg backdrop-blur-md;
-}
-
-.alertaErro {
-  @apply flex items-center gap-3 p-4 rounded-xl bg-red-950/40 border border-red-500/50 text-red-300 text-sm shadow-lg backdrop-blur-md;
-}
-
 .loadingBox {
   @apply relative bg-stone-900/90 border border-stone-800 rounded-xl shadow-2xl backdrop-blur-md overflow-hidden p-12 flex flex-col items-center justify-center text-center text-stone-400;
 }
 
 /* ==========================================================================
-   4. TELA DE ACESSO NEGADO / GUARDA DE ROTA
+   3. BARRA SUPERIOR E LISTAGENS DOS GERENCIADORES
+   ========================================================================== */
+.toolbarPainel {
+  @apply flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-stone-900/60 border border-stone-800;
+}
+
+.toolbarTitulo {
+  @apply font-serif font-bold text-lg text-amber-400 flex items-center gap-2;
+}
+
+.toolbarSubtitulo {
+  @apply text-xs text-stone-400 mt-0.5;
+}
+
+.subsecaoHeader {
+  @apply flex items-center justify-between pb-2 border-b border-stone-800;
+}
+
+.subsecaoTitulo {
+  @apply font-serif font-bold text-sm text-stone-300 flex items-center gap-2;
+}
+
+.miniCardPersonagem {
+  @apply p-4 flex gap-3 items-center;
+}
+
+.avatarMini {
+  @apply w-12 h-12 rounded-lg bg-stone-950 border border-stone-800 overflow-hidden shrink-0;
+}
+
+.usuarioRow {
+  @apply p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4;
+}
+
+.avatarUsuario {
+  @apply w-10 h-10 rounded-full bg-stone-950 border border-stone-800 overflow-hidden shrink-0;
+}
+
+.avatarIniciais {
+  @apply w-full h-full flex items-center justify-center font-serif text-stone-400 font-bold;
+}
+
+/* ==========================================================================
+   4. MODERAÇÃO DE FICHAS
+   ========================================================================== */
+.moderacaoCard {
+  @apply p-4 mb-3;
+}
+
+.moderacaoHeader {
+  @apply flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-stone-800;
+}
+
+.moderacaoAvatar {
+  @apply w-10 h-10 rounded-lg overflow-hidden bg-stone-950 border border-stone-800 shrink-0;
+}
+
+.moderacaoToggleBtn {
+  @apply text-stone-400 hover:text-stone-200 p-1 rounded cursor-pointer transition-colors;
+}
+
+.boxMotivoRecusa {
+  @apply p-2.5 rounded bg-red-950/30 border border-red-900/40 text-xs text-red-300 flex items-start gap-2;
+}
+
+.tabelaModeracao {
+  @apply w-full text-left text-xs;
+}
+
+.tabelaModeracao th {
+  @apply py-1 px-2 text-stone-400 border-b border-stone-800 font-serif uppercase tracking-wider;
+}
+
+.tabelaModeracao tbody tr {
+  @apply border-b border-stone-800/60 hover:bg-stone-950/40;
+}
+
+.tabelaModeracao td {
+  @apply py-2 px-2;
+}
+
+/* ==========================================================================
+   5. TELA DE ACESSO NEGADO / GUARDA DE ROTA
    ========================================================================== */
 .acessoNegadoMain {
   @apply relative min-h-screen w-full px-4 pt-28 flex flex-col items-center justify-center bg-stone-950 text-stone-100 overflow-hidden;
@@ -70,4 +141,12 @@
 
 .iconeEscudoWrapper {
   @apply w-16 h-16 rounded-full bg-red-950/60 border border-red-600/40 flex items-center justify-center text-red-500 mb-4 shadow-inner;
+}
+
+.acessoNegadoTitulo {
+  @apply text-2xl font-bold font-serif tracking-wide text-stone-100 mb-2;
+}
+
+.acessoNegadoTexto {
+  @apply text-sm text-stone-400 leading-relaxed mb-8;
 }

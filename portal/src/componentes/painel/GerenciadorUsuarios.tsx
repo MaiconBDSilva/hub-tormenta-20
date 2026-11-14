@@ -5,6 +5,7 @@ import { Users, Shield, Loader2, AlertCircle, Save, CheckCircle2 } from "lucide-
 import { DadosUsuario, PersonagemRPG } from "@/tipos/personagem";
 import { listarUsuarios, vincularUsuarioPersonagem } from "@/servicos/usuariosService";
 import { listarPersonagens } from "@/servicos/personagensService";
+import styles from "./painel.module.css";
 
 export function GerenciadorUsuarios() {
   const [usuarios, setUsuarios] = useState<DadosUsuario[]>([]);
@@ -87,42 +88,44 @@ export function GerenciadorUsuarios() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Topo Explicativo */}
-      <div className="p-4 rounded-xl bg-stone-900/60 border border-stone-800">
-        <h2 className="font-serif font-bold text-lg text-amber-400 flex items-center gap-2">
-          <Users className="w-5 h-5 text-amber-500" />
-          Vínculo de Jogadores & Heróis
-        </h2>
-        <p className="text-xs text-stone-400 mt-1">
-          Associe cada jogador cadastrado à sua respectiva ficha de personagem principal.
-          Este vínculo definirá a identidade do usuário na Agenda, Diários e visualizações da campanha.
-        </p>
+      <div className={styles.toolbarPainel}>
+        <div>
+          <h2 className={styles.toolbarTitulo}>
+            <Users className="w-5 h-5 text-amber-500" />
+            Vínculo de Jogadores & Heróis
+          </h2>
+          <p className={styles.toolbarSubtitulo}>
+            Associe cada jogador cadastrado à sua respectiva ficha de personagem principal.
+            Este vínculo definirá a identidade do usuário na Agenda, Diários e visualizações da campanha.
+          </p>
+        </div>
       </div>
 
       {mensagemSucesso && (
-        <div className="p-3 rounded-lg bg-emerald-950/60 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+        <div className="t20-alert-success">
+          <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{mensagemSucesso}</span>
         </div>
       )}
 
       {erro && (
-        <div className="p-3 rounded-lg bg-red-950/60 border border-red-800 text-red-300 text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+        <div className="t20-alert-error">
+          <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{erro}</span>
         </div>
       )}
 
       {carregando ? (
-        <div className="p-12 text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-amber-500 mx-auto mb-2" />
-          <p className="text-xs font-serif text-stone-400 uppercase tracking-wider">
+        <div className="t20-loading-box">
+          <Loader2 className="w-8 h-8 animate-spin text-amber-500 mb-2" />
+          <p className="text-xs font-serif uppercase tracking-wider">
             Consultando registros dos jogadores...
           </p>
         </div>
       ) : (
         <div className="space-y-3">
           {usuarios.length === 0 ? (
-            <div className="p-8 text-center rounded-lg bg-stone-900/40 border border-dashed border-stone-800 text-stone-400 text-xs">
+            <div className="t20-empty-state text-xs">
               Nenhum usuário cadastrado até o momento.
             </div>
           ) : (
@@ -134,11 +137,11 @@ export function GerenciadorUsuarios() {
               return (
                 <div
                   key={usuario.uid}
-                  className="t20-card p-4 border border-stone-800 bg-stone-900/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                  className={`${styles.usuarioRow} t20-card`}
                 >
                   {/* Info do Usuário */}
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-stone-950 border border-stone-800 overflow-hidden shrink-0">
+                    <div className={styles.avatarUsuario}>
                       {usuario.fotoUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -147,7 +150,7 @@ export function GerenciadorUsuarios() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center font-serif text-stone-400 font-bold">
+                        <div className={styles.avatarIniciais}>
                           {usuario.nome.charAt(0)}
                         </div>
                       )}
@@ -158,7 +161,7 @@ export function GerenciadorUsuarios() {
                           {usuario.nome}
                         </span>
                         {usuario.role === "mestre" && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-600/20 text-red-400 border border-red-500/30 uppercase">
+                          <span className="t20-badge t20-badge-red uppercase">
                             Mestre
                           </span>
                         )}
@@ -194,13 +197,10 @@ export function GerenciadorUsuarios() {
                     </div>
 
                     <button
+                      type="button"
                       onClick={() => handleSalvarVinculo(usuario)}
                       disabled={!modificado || isSalvando}
-                      className={`text-xs px-3 py-2 rounded-lg font-serif font-bold flex items-center gap-1 transition-all ${
-                        modificado
-                          ? "t20-btn-primary"
-                          : "bg-stone-800 text-stone-500 border border-stone-700 cursor-not-allowed opacity-60"
-                      }`}
+                      className="t20-btn-primary t20-btn-sm"
                       title={modificado ? "Salvar Vínculo" : "Sem alterações"}
                     >
                       {isSalvando ? (

@@ -158,11 +158,13 @@ export default function PainelMestrePage() {
 
   if (carregandoAuth) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center p-6 pt-28 bg-stone-950 text-stone-100">
-        <Loader2 className="w-10 h-10 animate-spin text-amber-500 mb-4" />
-        <p className="text-sm font-medium tracking-wider text-stone-400 uppercase font-serif">
-          Consultando os Tomos do Mestre...
-        </p>
+      <main className={styles.painelMain}>
+        <div className="t20-loading-box">
+          <Loader2 className="w-10 h-10 animate-spin text-amber-500 mb-4" />
+          <p className="text-sm font-medium tracking-wider text-stone-400 uppercase font-serif">
+            Consultando os Tomos do Mestre...
+          </p>
+        </div>
       </main>
     );
   }
@@ -196,18 +198,11 @@ export default function PainelMestrePage() {
         </div>
 
         {/* Barra de Navegação em Abas do Mestre */}
-        <nav
-          aria-label="Abas do Painel"
-          className="flex border-b border-stone-800 gap-2 mb-8 overflow-x-auto pb-1"
-        >
+        <nav aria-label="Abas do Painel" className="t20-tabs-nav">
           <button
             type="button"
             onClick={() => setAbaAtiva("campanha")}
-            className={`flex items-center gap-2 px-5 py-3 font-serif font-semibold text-sm transition-all duration-200 border-b-2 whitespace-nowrap ${
-              abaAtiva === "campanha"
-                ? "border-amber-500 text-amber-400 bg-stone-900/60"
-                : "border-transparent text-stone-400 hover:text-stone-200 hover:border-stone-700"
-            }`}
+            className={`t20-tab-btn ${abaAtiva === "campanha" ? "t20-tab-btn-active" : ""}`}
           >
             <Compass className="w-4 h-4" />
             Campanha & Sessões
@@ -216,11 +211,7 @@ export default function PainelMestrePage() {
           <button
             type="button"
             onClick={() => setAbaAtiva("personagens")}
-            className={`flex items-center gap-2 px-5 py-3 font-serif font-semibold text-sm transition-all duration-200 border-b-2 whitespace-nowrap ${
-              abaAtiva === "personagens"
-                ? "border-amber-500 text-amber-400 bg-stone-900/60"
-                : "border-transparent text-stone-400 hover:text-stone-200 hover:border-stone-700"
-            }`}
+            className={`t20-tab-btn ${abaAtiva === "personagens" ? "t20-tab-btn-active" : ""}`}
           >
             <Shield className="w-4 h-4" />
             Gestão de Personagens
@@ -229,11 +220,7 @@ export default function PainelMestrePage() {
           <button
             type="button"
             onClick={() => setAbaAtiva("usuarios")}
-            className={`flex items-center gap-2 px-5 py-3 font-serif font-semibold text-sm transition-all duration-200 border-b-2 whitespace-nowrap ${
-              abaAtiva === "usuarios"
-                ? "border-amber-500 text-amber-400 bg-stone-900/60"
-                : "border-transparent text-stone-400 hover:text-stone-200 hover:border-stone-700"
-            }`}
+            className={`t20-tab-btn ${abaAtiva === "usuarios" ? "t20-tab-btn-active" : ""}`}
           >
             <Users className="w-4 h-4" />
             Vínculo de Usuários
@@ -242,17 +229,17 @@ export default function PainelMestrePage() {
 
         {/* Renderização Condicional por Aba */}
         {abaAtiva === "campanha" && (
-          <div>
+          <div className="space-y-4">
             {mensagemSucesso && (
-              <div className={styles.alertaSucesso}>
-                <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
+              <div className="t20-alert-success">
+                <CheckCircle2 className="w-5 h-5 shrink-0" />
                 <span className="font-medium">{mensagemSucesso}</span>
               </div>
             )}
 
             {mensagemErro && (
-              <div className={styles.alertaErro}>
-                <AlertCircle className="w-5 h-5 shrink-0 text-red-400" />
+              <div className="t20-alert-error">
+                <AlertCircle className="w-5 h-5 shrink-0" />
                 <span className="font-medium">{mensagemErro}</span>
               </div>
             )}

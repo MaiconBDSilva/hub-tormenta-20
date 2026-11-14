@@ -15,6 +15,7 @@ import { db } from "@/lib/firebase";
 import { PersonagemRPG } from "@/tipos/personagem";
 import { ModalCriarPersonagem } from "./ModalCriarPersonagem";
 import { CardModeracaoEdicao } from "./CardModeracaoEdicao";
+import styles from "./painel.module.css";
 
 export function GerenciadorPersonagens() {
   const [personagens, setPersonagens] = useState<PersonagemRPG[]>([]);
@@ -58,20 +59,21 @@ export function GerenciadorPersonagens() {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Barra de Ações Superior */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-stone-900/60 border border-stone-800">
+      <div className={styles.toolbarPainel}>
         <div>
-          <h2 className="font-serif font-bold text-lg text-amber-400 flex items-center gap-2">
+          <h2 className={styles.toolbarTitulo}>
             <Shield className="w-5 h-5 text-amber-500" />
             Fichas & Moderação de Arton
           </h2>
-          <p className="text-xs text-stone-400">
+          <p className={styles.toolbarSubtitulo}>
             Cadastre novos heróis e modere solicitações de evolução enviadas pelos aventureiros.
           </p>
         </div>
 
         <button
+          type="button"
           onClick={() => setModalCriacaoAberto(true)}
-          className="t20-btn-primary text-xs flex items-center gap-1.5 self-start sm:self-auto"
+          className="t20-btn-primary t20-btn-sm self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           Novo Personagem
@@ -79,16 +81,16 @@ export function GerenciadorPersonagens() {
       </div>
 
       {erro && (
-        <div className="p-3 rounded-lg bg-red-950/60 border border-red-800 text-red-300 text-sm flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 shrink-0 text-red-400" />
+        <div className="t20-alert-error">
+          <AlertCircle className="w-5 h-5 shrink-0" />
           <span>{erro}</span>
         </div>
       )}
 
       {carregando ? (
-        <div className="p-12 text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-amber-500 mx-auto mb-2" />
-          <p className="text-xs font-serif text-stone-400 uppercase tracking-wider">
+        <div className="t20-loading-box">
+          <Loader2 className="w-8 h-8 animate-spin text-amber-500 mb-2" />
+          <p className="text-xs font-serif uppercase tracking-wider">
             Consultando registros das fichas...
           </p>
         </div>
@@ -96,8 +98,8 @@ export function GerenciadorPersonagens() {
         <>
           {/* Seção 1: Fila de Moderação */}
           <section className="space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-stone-800">
-              <h3 className="font-serif font-bold text-sm text-stone-300 flex items-center gap-2">
+            <div className={styles.subsecaoHeader}>
+              <h3 className={styles.subsecaoTitulo}>
                 <FileText className="w-4 h-4 text-amber-400" />
                 Fila de Moderação ({solicitacoesPendentes.length})
               </h3>
@@ -107,8 +109,8 @@ export function GerenciadorPersonagens() {
             </div>
 
             {solicitacoesPendentes.length === 0 ? (
-              <div className="p-6 rounded-lg bg-stone-900/40 border border-dashed border-stone-800 text-center">
-                <p className="text-xs text-stone-400">
+              <div className="t20-empty-state">
+                <p className="text-xs">
                   Nenhuma alteração aguardando moderação no momento.
                 </p>
               </div>
@@ -127,16 +129,16 @@ export function GerenciadorPersonagens() {
 
           {/* Seção 2: Todas as Fichas Cadastradas */}
           <section className="space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-stone-800">
-              <h3 className="font-serif font-bold text-sm text-stone-300 flex items-center gap-2">
+            <div className={styles.subsecaoHeader}>
+              <h3 className={styles.subsecaoTitulo}>
                 <Shield className="w-4 h-4 text-amber-400" />
                 Fichas Existentes ({personagens.length})
               </h3>
             </div>
 
             {personagens.length === 0 ? (
-              <div className="p-6 rounded-lg bg-stone-900/40 border border-dashed border-stone-800 text-center">
-                <p className="text-xs text-stone-400">
+              <div className="t20-empty-state">
+                <p className="text-xs">
                   Nenhum herói forjado ainda. Clique em &quot;Novo Personagem&quot; acima para começar.
                 </p>
               </div>
@@ -145,9 +147,9 @@ export function GerenciadorPersonagens() {
                 {personagens.map((p) => (
                   <div
                     key={p.id}
-                    className="t20-card p-4 border border-stone-800 bg-stone-900/50 flex gap-3 items-center"
+                    className={`${styles.miniCardPersonagem} t20-card`}
                   >
-                    <div className="w-12 h-12 rounded-lg bg-stone-950 border border-stone-800 overflow-hidden shrink-0">
+                    <div className={styles.avatarMini}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={p.avatarUrl}

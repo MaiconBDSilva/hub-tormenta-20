@@ -40,8 +40,8 @@ export default function LoginPage() {
   if (carregando || (usuario && dadosPerfil)) {
     return (
       <main className={styles.loginContainer}>
-        <div className={styles.ambientGlowRuby} />
-        <div className={styles.ambientGlowAmber} />
+        <div aria-hidden="true" className="t20-glow-ruby" />
+        <div aria-hidden="true" className="t20-glow-amber" />
         <div className="relative z-10 flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-amber-400" />
           <p className="text-xs text-stone-400 font-medium">
@@ -55,11 +55,11 @@ export default function LoginPage() {
   return (
     <main className={styles.loginContainer}>
       {/* Luzes ambiente de fundo */}
-      <div aria-hidden="true" className={styles.ambientGlowRuby} />
-      <div aria-hidden="true" className={styles.ambientGlowAmber} />
+      <div aria-hidden="true" className="t20-glow-ruby" />
+      <div aria-hidden="true" className="t20-glow-amber" />
 
       <section className={styles.loginCard}>
-        <div className={styles.cardStripe} />
+        <div className="t20-stripe" />
 
         <div className={styles.iconWrapper}>
           <Shield className="h-7 w-7 text-amber-400" />
@@ -110,7 +110,7 @@ export default function LoginPage() {
           )}
         </button>
 
-        {erroLogin && <div className={styles.errorMessage}>{erroLogin}</div>}
+        {erroLogin && <div className="t20-alert-error mt-4 w-full justify-center">{erroLogin}</div>}
 
         <p className={styles.footerNote}>
           O acesso é restrito aos membros da mesa. Novos jogadores serão

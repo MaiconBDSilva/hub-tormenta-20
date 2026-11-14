@@ -134,7 +134,7 @@ export function AbaPrincipal({
             <button
               type="submit"
               disabled={salvando}
-              className="t20-btn-primary !py-1.5 !px-4 !text-xs"
+              className="t20-btn-primary t20-btn-sm"
             >
               {salvando ? (
                 <>
@@ -153,11 +153,11 @@ export function AbaPrincipal({
       ) : (
         <div className="space-y-4">
           {descricao ? (
-            <div className="p-5 rounded-lg bg-stone-950/60 border border-stone-800/80 shadow-inner">
+            <div className="t20-prose-box">
               <VisualizadorMarkdownT20 conteudo={descricao} />
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center p-8 rounded-lg bg-stone-950/40 border border-dashed border-stone-800 text-center">
+            <div className="t20-empty-state">
               <Scroll className="w-10 h-10 text-stone-600 mb-2 stroke-[1.2]" />
               <p className="font-serif text-sm text-stone-400">
                 Nenhum relato ou crônica foi inscrito para este aventureiro ainda.

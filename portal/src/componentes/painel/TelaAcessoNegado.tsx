@@ -20,11 +20,9 @@ export function TelaAcessoNegado() {
           <ShieldAlert className="w-8 h-8 drop-shadow-[0_0_12px_rgba(220,38,38,0.5)]" />
         </div>
 
-        <h1 className="text-2xl font-bold font-serif tracking-wide text-stone-100 mb-2">
-          Acesso Restrito
-        </h1>
+        <h1 className={styles.acessoNegadoTitulo}>Acesso Restrito</h1>
 
-        <p className="text-sm text-stone-400 leading-relaxed mb-8">
+        <p className={styles.acessoNegadoTexto}>
           Esta câmara é de uso exclusivo do{" "}
           <span className="text-red-400 font-semibold">Mestre da Campanha</span>.
           Forasteiros e aventureiros comuns não possuem autorização para alterar os tomos de Arton.

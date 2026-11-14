@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Check, X, AlertTriangle, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { AtributosT20, PersonagemRPG } from "@/tipos/personagem";
 import { atualizarPersonagem } from "@/servicos/personagensService";
+import styles from "./painel.module.css";
 
 function formatarValorCampoModeracao(valor: unknown): string {
   if (valor === undefined || valor === null || valor === "") return "—";
@@ -96,21 +97,21 @@ export function CardModeracaoEdicao({
 
   const statusBadge =
     solicitacao.status === "pendente" ? (
-      <span className="px-2 py-0.5 rounded text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+      <span className="t20-badge t20-badge-amber">
         Aguardando Aprovação
       </span>
     ) : (
-      <span className="px-2 py-0.5 rounded text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/30">
+      <span className="t20-badge t20-badge-red">
         Recusada Anteriormente
       </span>
     );
 
   return (
-    <div className="t20-card p-4 border border-stone-800 bg-stone-900/60 mb-3">
+    <div className={`${styles.moderacaoCard} t20-card`}>
       {/* Cabeçalho do Card */}
-      <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-stone-800">
+      <div className={styles.moderacaoHeader}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg overflow-hidden bg-stone-950 border border-stone-800 shrink-0">
+          <div className={styles.moderacaoAvatar}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={personagem.avatarUrl}
@@ -142,8 +143,10 @@ export function CardModeracaoEdicao({
         </div>
 
         <button
+          type="button"
           onClick={() => setExpandido(!expandido)}
-          className="text-stone-400 hover:text-stone-200 p-1 rounded"
+          aria-label={expandido ? "Recolher detalhes" : "Expandir detalhes"}
+          className={styles.moderacaoToggleBtn}
         >
           {expandido ? (
             <ChevronUp className="w-5 h-5" />
@@ -154,7 +157,7 @@ export function CardModeracaoEdicao({
       </div>
 
       {erro && (
-        <div className="my-2 p-2 rounded bg-red-950/50 border border-red-800/80 text-red-300 text-xs">
+        <div className="t20-alert-error my-2">
           {erro}
         </div>
       )}
@@ -163,7 +166,7 @@ export function CardModeracaoEdicao({
         <div className="pt-3 space-y-3">
           {/* Motivo registrado se estiver em status de recusa */}
           {solicitacao.status === "recusada" && solicitacao.motivoRecusa && (
-            <div className="p-2.5 rounded bg-red-950/30 border border-red-900/40 text-xs text-red-300 flex items-start gap-2">
+            <div className={styles.boxMotivoRecusa}>
               <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
               <div>
                 <strong className="block font-serif text-red-200">
@@ -176,28 +179,28 @@ export function CardModeracaoEdicao({
 
           {/* Tabela comparativa dos campos modificados */}
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className={styles.tabelaModeracao}>
               <thead>
-                <tr className="text-stone-400 border-b border-stone-800 font-serif uppercase tracking-wider">
-                  <th className="py-1 px-2">Atributo</th>
-                  <th className="py-1 px-2">Valor Vigente</th>
-                  <th className="py-1 px-2 text-amber-400">Novo Valor Solicitado</th>
+                <tr>
+                  <th scope="col">Atributo</th>
+                  <th scope="col">Valor Vigente</th>
+                  <th scope="col" className="text-amber-400">Novo Valor Solicitado</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stone-800/60 font-sans">
+              <tbody>
                 {camposAlterados.map((campo) => {
                   const valorAtual = personagem[campo as keyof PersonagemRPG];
                   const valorNovo = solicitacao.campos[campo];
 
                   return (
-                    <tr key={campo} className="hover:bg-stone-950/40">
-                      <td className="py-2 px-2 capitalize font-semibold text-stone-300">
+                    <tr key={campo}>
+                      <td className="capitalize font-semibold text-stone-300">
                         {campo}
                       </td>
-                      <td className="py-2 px-2 text-stone-400">
+                      <td className="text-stone-400">
                         {formatarValorCampoModeracao(valorAtual)}
                       </td>
-                      <td className="py-2 px-2 font-bold text-amber-400">
+                      <td className="font-bold text-amber-400">
                         {formatarValorCampoModeracao(valorNovo)}
                       </td>
                     </tr>
@@ -210,7 +213,7 @@ export function CardModeracaoEdicao({
           {/* Modo de preenchimento de justificativa de recusa */}
           {modoRecusa ? (
             <div className="pt-2 border-t border-stone-800 space-y-2">
-              <label className="block text-xs font-serif font-bold text-red-400 uppercase tracking-wider">
+              <label className="t20-field-label text-red-400">
                 Motivo / Instrução para o Jogador:
               </label>
               <textarea
@@ -222,16 +225,18 @@ export function CardModeracaoEdicao({
               />
               <div className="flex justify-end gap-2">
                 <button
+                  type="button"
                   onClick={() => setModoRecusa(false)}
                   disabled={processando}
-                  className="t20-btn-ghost text-xs"
+                  className="t20-btn-ghost t20-btn-sm"
                 >
                   Voltar
                 </button>
                 <button
+                  type="button"
                   onClick={handleRecusar}
                   disabled={processando}
-                  className="px-3 py-1.5 rounded-lg text-xs font-serif font-bold bg-red-800/80 hover:bg-red-700 text-stone-100 transition-colors flex items-center gap-1"
+                  className="t20-btn-danger"
                 >
                   {processando ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -244,19 +249,21 @@ export function CardModeracaoEdicao({
             </div>
           ) : (
             /* Botões de Ação de Moderação */
-            <div className="flex justify-end gap-2 pt-2 border-t border-stone-800">
+            <div className="t20-form-actions">
               <button
+                type="button"
                 onClick={() => setModoRecusa(true)}
                 disabled={processando}
-                className="px-3 py-1.5 rounded-lg text-xs font-serif font-bold bg-stone-900 border border-stone-700 hover:border-red-500/50 hover:text-red-400 text-stone-300 transition-colors flex items-center gap-1"
+                className="t20-btn-cancel"
               >
                 <X className="w-3.5 h-3.5" />
                 Recusar com Justificativa
               </button>
               <button
+                type="button"
                 onClick={handleAprovar}
                 disabled={processando}
-                className="t20-btn-primary text-xs flex items-center gap-1"
+                className="t20-btn-primary t20-btn-sm"
               >
                 {processando ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />

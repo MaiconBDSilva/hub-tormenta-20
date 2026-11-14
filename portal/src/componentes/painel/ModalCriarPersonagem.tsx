@@ -108,18 +108,18 @@ export function ModalCriarPersonagem({
       onClick={(e) => {
         if (e.target === e.currentTarget && !salvando) onFechar();
       }}
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+      className="t20-modal-overlay animate-fade-in"
     >
-      <div className="t20-card w-full max-w-2xl max-h-[90vh] overflow-y-auto border-amber-600/30 p-6 relative">
+      <div className="t20-modal-container max-w-2xl">
         <div className="t20-stripe" />
 
         {/* Topo do Modal */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-stone-800">
+        <div className="t20-modal-header">
           <div className="flex items-center gap-2">
-            <ShieldPlus className="w-6 h-6 text-amber-500" />
+            <ShieldPlus className="w-5 h-5 text-amber-500" />
             <h2
               id="modal-criar-personagem-titulo"
-              className="text-xl font-serif font-bold text-amber-400"
+              className="text-lg font-serif font-bold text-amber-400"
             >
               Forjar Novo Personagem
             </h2>
@@ -129,193 +129,175 @@ export function ModalCriarPersonagem({
             aria-label="Fechar"
             onClick={onFechar}
             disabled={salvando}
-            className="text-stone-400 hover:text-stone-200 transition-colors p-1"
+            className="text-stone-400 hover:text-stone-200 transition-colors p-1 cursor-pointer"
             title="Fechar"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {erro && (
-          <div className="mb-4 p-3 rounded-lg bg-red-950/60 border border-red-800/80 text-red-300 text-sm">
-            {erro}
-          </div>
-        )}
+        <div className="t20-modal-body p-6">
+          {erro && (
+            <div className="t20-alert-error mb-2">
+              {erro}
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Nome (Único campo obrigatório em branco) */}
-          <div>
-            <label className="block text-xs font-serif font-bold text-amber-400 uppercase tracking-wider mb-1">
-              Nome do Herói <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              autoFocus
-              placeholder="Ex: Sir Loras de Valkaria"
-              value={form.nome}
-              onChange={(e) => handleChange("nome", e.target.value)}
-              className="t20-input"
-            />
-          </div>
-
-          {/* Dados Biográficos */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Nome (Único campo obrigatório em branco) */}
             <div>
-              <label className="block text-xs font-serif font-bold text-stone-400 uppercase tracking-wider mb-1">
-                Raça
+              <label className="t20-field-label text-amber-400">
+                Nome do Herói <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                value={form.raca}
-                onChange={(e) => handleChange("raca", e.target.value)}
+                required
+                autoFocus
+                placeholder="Ex: Sir Loras de Valkaria"
+                value={form.nome}
+                onChange={(e) => handleChange("nome", e.target.value)}
                 className="t20-input"
               />
             </div>
-            <div>
-              <label className="block text-xs font-serif font-bold text-stone-400 uppercase tracking-wider mb-1">
-                Classe
-              </label>
-              <input
-                type="text"
-                value={form.classe}
-                onChange={(e) => handleChange("classe", e.target.value)}
-                className="t20-input"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-serif font-bold text-stone-400 uppercase tracking-wider mb-1">
-                Nível
-              </label>
-              <input
-                type="number"
-                min={1}
-                max={20}
-                value={form.nivel}
-                onChange={(e) => handleChange("nivel", parseInt(e.target.value, 10) || 1)}
-                className="t20-input"
-              />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-serif font-bold text-stone-400 uppercase tracking-wider mb-1">
-                Origem
-              </label>
-              <input
-                type="text"
-                value={form.origem}
-                onChange={(e) => handleChange("origem", e.target.value)}
-                className="t20-input"
-              />
+            {/* Dados Biográficos */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="t20-field-label">Raça</label>
+                <input
+                  type="text"
+                  value={form.raca}
+                  onChange={(e) => handleChange("raca", e.target.value)}
+                  className="t20-input"
+                />
+              </div>
+              <div>
+                <label className="t20-field-label">Classe</label>
+                <input
+                  type="text"
+                  value={form.classe}
+                  onChange={(e) => handleChange("classe", e.target.value)}
+                  className="t20-input"
+                />
+              </div>
+              <div>
+                <label className="t20-field-label">Nível</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={20}
+                  value={form.nivel}
+                  onChange={(e) => handleChange("nivel", parseInt(e.target.value, 10) || 1)}
+                  className="t20-input"
+                />
+              </div>
             </div>
-            <div>
-              <label className="block text-xs font-serif font-bold text-stone-400 uppercase tracking-wider mb-1">
-                Divindade
-              </label>
-              <input
-                type="text"
-                value={form.divindade}
-                onChange={(e) => handleChange("divindade", e.target.value)}
-                className="t20-input"
-              />
-            </div>
-          </div>
 
-          {/* Atributos Numéricos Iniciais */}
-          <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="t20-field-label">Origem</label>
+                <input
+                  type="text"
+                  value={form.origem}
+                  onChange={(e) => handleChange("origem", e.target.value)}
+                  className="t20-input"
+                />
+              </div>
+              <div>
+                <label className="t20-field-label">Divindade</label>
+                <input
+                  type="text"
+                  value={form.divindade}
+                  onChange={(e) => handleChange("divindade", e.target.value)}
+                  className="t20-input"
+                />
+              </div>
+            </div>
+
+            {/* Atributos Numéricos Iniciais */}
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className="t20-field-label">PV Máximo</label>
+                <input
+                  type="number"
+                  min={1}
+                  value={form.pvMaximo}
+                  onChange={(e) => handleChange("pvMaximo", parseInt(e.target.value, 10) || 1)}
+                  className="t20-input"
+                />
+              </div>
+              <div>
+                <label className="t20-field-label">PM Máximo</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={form.pmMaximo}
+                  onChange={(e) => handleChange("pmMaximo", parseInt(e.target.value, 10) || 0)}
+                  className="t20-input"
+                />
+              </div>
+              <div>
+                <label className="t20-field-label">Defesa</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={form.defesa}
+                  onChange={(e) => handleChange("defesa", parseInt(e.target.value, 10) || 10)}
+                  className="t20-input"
+                />
+              </div>
+            </div>
+
+            {/* URL da Imagem */}
             <div>
-              <label className="block text-xs font-serif font-bold text-stone-400 uppercase tracking-wider mb-1">
-                PV Máximo
-              </label>
+              <label className="t20-field-label">URL do Avatar (Link externo)</label>
               <input
-                type="number"
-                min={1}
-                value={form.pvMaximo}
-                onChange={(e) => handleChange("pvMaximo", parseInt(e.target.value, 10) || 1)}
+                type="url"
+                value={form.avatarUrl}
+                onChange={(e) => handleChange("avatarUrl", e.target.value)}
+                placeholder="https://i.imgur.com/..."
                 className="t20-input"
               />
             </div>
+
+            {/* Descrição inicial */}
             <div>
-              <label className="block text-xs font-serif font-bold text-stone-400 uppercase tracking-wider mb-1">
-                PM Máximo
-              </label>
-              <input
-                type="number"
-                min={0}
-                value={form.pmMaximo}
-                onChange={(e) => handleChange("pmMaximo", parseInt(e.target.value, 10) || 0)}
-                className="t20-input"
+              <label className="t20-field-label">Descrição / Lore Inicial</label>
+              <textarea
+                rows={2}
+                value={form.descricao}
+                onChange={(e) => handleChange("descricao", e.target.value)}
+                className="t20-input resize-none"
               />
             </div>
-            <div>
-              <label className="block text-xs font-serif font-bold text-stone-400 uppercase tracking-wider mb-1">
-                Defesa
-              </label>
-              <input
-                type="number"
-                min={0}
-                value={form.defesa}
-                onChange={(e) => handleChange("defesa", parseInt(e.target.value, 10) || 10)}
-                className="t20-input"
-              />
+
+            {/* Ações */}
+            <div className="t20-form-actions">
+              <button
+                type="button"
+                onClick={onFechar}
+                disabled={salvando}
+                className="t20-btn-ghost t20-btn-sm"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={salvando}
+                className="t20-btn-primary t20-btn-sm"
+              >
+                {salvando ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Forjando...
+                  </>
+                ) : (
+                  "Cadastrar Ficha"
+                )}
+              </button>
             </div>
-          </div>
-
-          {/* URL da Imagem */}
-          <div>
-            <label className="block text-xs font-serif font-bold text-stone-400 uppercase tracking-wider mb-1">
-              URL do Avatar (Link externo)
-            </label>
-            <input
-              type="url"
-              value={form.avatarUrl}
-              onChange={(e) => handleChange("avatarUrl", e.target.value)}
-              placeholder="https://i.imgur.com/..."
-              className="t20-input"
-            />
-          </div>
-
-          {/* Descrição inicial */}
-          <div>
-            <label className="block text-xs font-serif font-bold text-stone-400 uppercase tracking-wider mb-1">
-              Descrição / Lore Inicial
-            </label>
-            <textarea
-              rows={2}
-              value={form.descricao}
-              onChange={(e) => handleChange("descricao", e.target.value)}
-              className="t20-input resize-none"
-            />
-          </div>
-
-          {/* Ações */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-stone-800">
-            <button
-              type="button"
-              onClick={onFechar}
-              disabled={salvando}
-              className="t20-btn-ghost text-xs"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={salvando}
-              className="t20-btn-primary text-xs"
-            >
-              {salvando ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Forjando...
-                </>
-              ) : (
-                "Cadastrar Ficha"
-              )}
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

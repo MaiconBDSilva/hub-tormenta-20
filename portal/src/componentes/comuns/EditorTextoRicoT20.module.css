@@ -1,0 +1,103 @@
+@reference "../../app/globals.css";
+
+.editorContainer {
+  @apply rounded-xl border border-amber-500/40 bg-stone-950/90 shadow-xl overflow-hidden transition-colors focus-within:border-amber-400/80;
+}
+
+.toolbar {
+  @apply flex flex-wrap items-center justify-between gap-1 p-2 bg-stone-900/80 border-b border-stone-800;
+}
+
+.toolbarGroup {
+  @apply flex flex-wrap items-center gap-0.5;
+}
+
+.toolbarBtn {
+  @apply p-1.5 rounded text-stone-300 transition-colors hover:bg-stone-800 hover:text-amber-300 cursor-pointer min-h-7 min-w-7 flex items-center justify-center;
+}
+
+.toolbarDivider {
+  @apply w-px h-4 bg-stone-800 mx-1;
+}
+
+.modeSwitch {
+  @apply flex items-center gap-1 bg-stone-950 p-0.5 rounded-lg border border-stone-800 text-[11px] font-serif;
+}
+
+.modeBtn {
+  @apply flex items-center gap-1 px-2 py-0.5 rounded text-stone-400 transition-colors hover:text-stone-200 cursor-pointer;
+}
+
+.modeBtnActive {
+  @apply bg-amber-950/80 text-amber-300 font-bold border border-amber-500/50;
+}
+
+.textarea {
+  @apply w-full bg-stone-950/90 p-3.5 font-serif text-stone-200 text-sm leading-relaxed placeholder:text-stone-600 focus:outline-none resize-y selection:bg-amber-500/30 selection:text-amber-200;
+}
+
+.previewArea {
+  @apply p-4 bg-stone-950/90 min-h-[14rem] max-h-[28rem] overflow-y-auto;
+}
+
+.previewEmpty {
+  @apply text-stone-500 italic font-serif text-xs;
+}
+
+/* Estilização tipográfica do Markdown renderizado */
+.markdownProse {
+  @apply max-w-none font-serif text-sm leading-relaxed space-y-2 text-stone-200;
+}
+
+.mdH1 {
+  @apply text-lg font-black text-amber-300 border-b border-amber-500/30 pb-1 mt-3 mb-1;
+}
+
+.mdH2 {
+  @apply text-base font-black text-amber-300/90 mt-2.5 mb-1;
+}
+
+.mdH3 {
+  @apply text-sm font-bold text-amber-400 mt-2 mb-0.5;
+}
+
+.mdStrong {
+  @apply font-bold text-stone-100;
+}
+
+.mdEm {
+  @apply italic text-stone-300;
+}
+
+.mdBlockquote {
+  @apply border-l-2 border-amber-500/60 pl-3 py-1 my-2 bg-amber-950/20 text-stone-300 italic rounded-r;
+}
+
+.mdUl {
+  @apply list-disc list-inside space-y-1 my-1.5 text-stone-300;
+}
+
+.mdOl {
+  @apply list-decimal list-inside space-y-1 my-1.5 text-stone-300;
+}
+
+.mdLi {
+  @apply leading-snug;
+}
+
+.mdHr {
+  @apply border-t border-amber-500/30 my-3;
+}
+
+.mdCode {
+  @apply bg-stone-900 border border-stone-800 text-amber-300 font-mono text-xs px-1.5 py-0.5 rounded;
+}
+
+.mdLink {
+  @apply text-amber-400 underline hover:text-amber-300 transition-colors;
+}
+
+.mdP {
+  @apply mb-2 leading-relaxed;
+}
+

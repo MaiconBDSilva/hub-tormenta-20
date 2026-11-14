@@ -1,5 +1,5 @@
-import { ItemEquipamento, CategoriaEquipamento } from "@/tipos/personagem";
-import { FoundryItemRaw, sanitizarTextoFoundry } from "./SanitizadorFoundry";
+import type { ItemEquipamento, CategoriaEquipamento } from "@/tipos/personagem";
+import { type FoundryItemRaw, sanitizarTextoFoundry } from "./SanitizadorFoundry.ts";
 
 export const MAPA_CATEGORIAS_EQUIPAMENTO: Record<string, CategoriaEquipamento> = {
   arma: "Arma",

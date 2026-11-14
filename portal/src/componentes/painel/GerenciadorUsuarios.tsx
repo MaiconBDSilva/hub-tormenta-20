@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
-import { Users, UserCheck, Shield, Loader2, AlertCircle, Save, CheckCircle2 } from "lucide-react";
+import { Users, Shield, Loader2, AlertCircle, Save, CheckCircle2 } from "lucide-react";
 import { DadosUsuario, PersonagemRPG } from "@/tipos/personagem";
 import { listarUsuarios, vincularUsuarioPersonagem } from "@/servicos/usuariosService";
 import { listarPersonagens } from "@/servicos/personagensService";

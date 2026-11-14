@@ -70,6 +70,39 @@ const PERICIAS_PADRAO_T20: Omit<ItemPericia, "treinada" | "total">[] = [
   { id: "vontade", nome: "Vontade", atributoChave: "SAB" },
 ];
 
+function construirListaPericias(periciasSalvas: ItemPericia[] = []): ItemPericia[] {
+  const mapaSalvas = new Map(periciasSalvas.map((p) => [p.id, p]));
+
+  // 1. Perícias canônicas
+  const lista = PERICIAS_PADRAO_T20.map((padrao) => {
+    const existente = mapaSalvas.get(padrao.id);
+    return {
+      id: padrao.id,
+      nome: padrao.nome,
+      atributoChave: existente?.atributoChave || padrao.atributoChave,
+      treinada: Boolean(existente?.treinada),
+      total: existente?.total ?? 0,
+      ehOficioPersonalizado: false,
+    };
+  });
+
+  // 2. Ofícios customizados salvos
+  periciasSalvas.forEach((p) => {
+    if (p.ehOficioPersonalizado) {
+      lista.push({
+        id: p.id,
+        nome: p.nome,
+        atributoChave: p.atributoChave || "INT",
+        treinada: Boolean(p.treinada),
+        total: p.total ?? 0,
+        ehOficioPersonalizado: true,
+      });
+    }
+  });
+
+  return lista;
+}
+
 export function AbaPericias({
   personagem,
   ehDono,
@@ -82,46 +115,12 @@ export function AbaPericias({
   const [mensagemSucesso, setMensagemSucesso] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);
 
-  // Inicializa mesclando as perícias já salvas com a base padrão
-  const inicializarPericias = (): ItemPericia[] => {
-    const periciasSalvas = personagem.pericias || [];
-    const mapaSalvas = new Map(periciasSalvas.map((p) => [p.id, p]));
-
-    // 1. Perícias canônicas
-    const lista = PERICIAS_PADRAO_T20.map((padrao) => {
-      const existente = mapaSalvas.get(padrao.id);
-      return {
-        id: padrao.id,
-        nome: padrao.nome,
-        atributoChave: existente?.atributoChave || padrao.atributoChave,
-        treinada: Boolean(existente?.treinada),
-        total: existente?.total ?? 0,
-        ehOficioPersonalizado: false,
-      };
-    });
-
-    // 2. Ofícios customizados salvos
-    periciasSalvas.forEach((p) => {
-      if (p.ehOficioPersonalizado) {
-        lista.push({
-          id: p.id,
-          nome: p.nome,
-          atributoChave: p.atributoChave || "INT",
-          treinada: Boolean(p.treinada),
-          total: p.total ?? 0,
-          ehOficioPersonalizado: true,
-        });
-      }
-    });
-
-    return lista;
-  };
-
-  const [listaPericias, setListaPericias] = useState<ItemPericia[]>(inicializarPericias);
+  const [listaPericias, setListaPericias] = useState<ItemPericia[]>(() =>
+    construirListaPericias(personagem.pericias)
+  );
 
   useEffect(() => {
-    setListaPericias(inicializarPericias());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setListaPericias(construirListaPericias(personagem.pericias));
   }, [personagem.pericias]);
 
   const handleTreinadaToggle = (id: string) => {
@@ -170,7 +169,7 @@ export function AbaPericias({
   };
 
   const handleCancelar = () => {
-    setListaPericias(inicializarPericias());
+    setListaPericias(construirListaPericias(personagem.pericias));
     setEditando(false);
     setErro(null);
     setMensagemSucesso(null);

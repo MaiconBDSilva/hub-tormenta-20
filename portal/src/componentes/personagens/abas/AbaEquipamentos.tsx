@@ -95,8 +95,8 @@ export function AbaEquipamentos({
   useEffect(() => {
     const lista = personagem.equipamentos || [];
     setItens(lista);
-    if (!itemSelecionadoId && lista.length > 0) {
-      setItemSelecionadoId(lista[0].id);
+    if (lista.length > 0) {
+      setItemSelecionadoId((atual) => atual || lista[0].id);
     }
     setMoedas({
       tl: personagem.moedas?.tl ?? 0,
@@ -169,7 +169,7 @@ export function AbaEquipamentos({
   const handleItemChange = (
     id: string,
     campo: keyof ItemEquipamento,
-    valor: any
+    valor: ItemEquipamento[keyof ItemEquipamento]
   ) => {
     setItens((prev) =>
       prev.map((item) => (item.id === id ? { ...item, [campo]: valor } : item))

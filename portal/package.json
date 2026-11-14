@@ -6,7 +6,10 @@
     "build:wiki": "cd wiki-quartz && npx quartz build -d content -o ../public/wiki",
     "build": "next build",
     "dev": "next dev",
-    "start": "next start"
+    "lint": "eslint .",
+    "start": "next start",
+    "test": "node --test src/utilitarios/__tests__/compendio.test.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@react-three/fiber": "^9.8.0",

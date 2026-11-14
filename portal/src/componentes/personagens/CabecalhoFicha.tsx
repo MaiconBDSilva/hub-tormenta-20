@@ -17,7 +17,6 @@ import {
   Loader2,
   CheckCircle2,
   Camera,
-  Swords,
 } from "lucide-react";
 import {
   PersonagemRPG,

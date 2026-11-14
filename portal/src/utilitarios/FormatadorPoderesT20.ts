@@ -1,5 +1,5 @@
-import { ItemPoder, CategoriaPoder, TipoAcaoPoder } from "@/tipos/personagem";
-import { FoundryItemRaw, sanitizarTextoFoundry } from "./SanitizadorFoundry";
+import type { ItemPoder, CategoriaPoder, TipoAcaoPoder } from "@/tipos/personagem";
+import { type FoundryItemRaw, sanitizarTextoFoundry } from "./SanitizadorFoundry.ts";
 
 export const MAPA_CATEGORIAS_PODER: Record<string, CategoriaPoder> = {
   classe: "Classe",

@@ -131,8 +131,8 @@ export function AbaPoderes({
   useEffect(() => {
     const lista = personagem.poderes || [];
     setPoderes(lista);
-    if (!poderSelecionadoId && lista.length > 0) {
-      setPoderSelecionadoId(lista[0].id);
+    if (lista.length > 0) {
+      setPoderSelecionadoId((atual) => atual || lista[0].id);
     }
   }, [personagem.poderes]);
 

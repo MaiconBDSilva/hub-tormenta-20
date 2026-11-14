@@ -11,8 +11,6 @@ import {
 } from "@/tipos/personagem";
 import {
   converterItemFoundryParaMagia,
-  MAPA_ESCOLAS,
-  MAPA_TIPOS,
 } from "@/utilitarios/FormatadorMagiasT20";
 import {
   Scroll,
@@ -32,7 +30,6 @@ import {
   Target,
   Hourglass,
   Shield,
-  Layers,
 } from "lucide-react";
 
 import { FoundryCompendioRaw } from "@/utilitarios/SanitizadorFoundry";
@@ -104,8 +101,8 @@ export function AbaMagias({
   useEffect(() => {
     const lista = personagem.magias || [];
     setMagias(lista);
-    if (!magiaSelecionadaId && lista.length > 0) {
-      setMagiaSelecionadaId(lista[0].id);
+    if (lista.length > 0) {
+      setMagiaSelecionadaId((atual) => atual || lista[0].id);
     }
   }, [personagem.magias]);
 
@@ -178,7 +175,7 @@ export function AbaMagias({
   const handleCampoChange = (
     id: string,
     campo: keyof ItemMagiaPersonagem,
-    valor: any
+    valor: ItemMagiaPersonagem[keyof ItemMagiaPersonagem]
   ) => {
     setMagias((prev) =>
       prev.map((item) => (item.id === id ? { ...item, [campo]: valor } : item))

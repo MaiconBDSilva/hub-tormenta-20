@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import styles from "./MenuFixo.module.css";
 
 export default function FoundryStatusButton() {
@@ -28,7 +29,7 @@ export default function FoundryStatusButton() {
   };
 
   return (
-    <a
+    <Link
       href="/#acessofoundry"
       title={isOnline ? "Foundry Online" : "Mesa Offline"}
       className={styles.btnFoundry}
@@ -41,6 +42,6 @@ export default function FoundryStatusButton() {
             ? "Foundry Online"
             : "Mesa Offline"}
       </span>
-    </a>
+    </Link>
   );
 }

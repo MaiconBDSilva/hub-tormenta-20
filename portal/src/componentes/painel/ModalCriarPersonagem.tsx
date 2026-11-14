@@ -35,6 +35,15 @@ export function ModalCriarPersonagem({
     anotacoes: "",
   });
 
+  useEffect(() => {
+    if (!aberto) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !salvando) onFechar();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [aberto, salvando, onFechar]);
+
   if (!aberto) return null;
 
   const handleChange = (campo: string, valor: string | number) => {
@@ -90,15 +99,6 @@ export function ModalCriarPersonagem({
       setSalvando(false);
     }
   };
-
-  useEffect(() => {
-    if (!aberto) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !salvando) onFechar();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [aberto, salvando, onFechar]);
 
   return (
     <div

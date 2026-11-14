@@ -1,10 +1,10 @@
-import {
+import type {
   ItemMagiaPersonagem,
   EscolaMagiaT20,
   TipoMagiaT20,
   AprimoramentoMagia,
 } from "@/tipos/personagem";
-import { FoundryItemRaw, sanitizarTextoFoundry } from "./SanitizadorFoundry";
+import { type FoundryItemRaw, sanitizarTextoFoundry } from "./SanitizadorFoundry.ts";
 
 // Mapeia códigos de escola do Foundry T20
 export const MAPA_ESCOLAS: Record<string, EscolaMagiaT20> = {

@@ -2,15 +2,9 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import { Users, UserCheck, Shield, Loader2, AlertCircle, Save, CheckCircle2 } from "lucide-react";
-import {
-  collection,
-  getDocs,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { DadosUsuario } from "@/contextos/AuthContext";
-import { PersonagemRPG } from "@/tipos/personagem";
+import { DadosUsuario, PersonagemRPG } from "@/tipos/personagem";
+import { listarUsuarios, vincularUsuarioPersonagem } from "@/servicos/usuariosService";
+import { listarPersonagens } from "@/servicos/personagensService";
 
 export function GerenciadorUsuarios() {
   const [usuarios, setUsuarios] = useState<DadosUsuario[]>([]);
@@ -28,26 +22,14 @@ export function GerenciadorUsuarios() {
       setCarregando(true);
       setErro(null);
 
-      // 1. Carrega todos os usuários
-      const snapUsuarios = await getDocs(collection(db, "usuarios"));
-      const listaUsuarios: DadosUsuario[] = [];
+      const [listaUsuarios, listaPersonagens] = await Promise.all([
+        listarUsuarios(),
+        listarPersonagens(),
+      ]);
+
       const mapaVinculos: Record<string, string> = {};
-
-      snapUsuarios.forEach((d) => {
-        const u = d.data() as DadosUsuario;
-        listaUsuarios.push(u);
+      listaUsuarios.forEach((u) => {
         mapaVinculos[u.uid] = u.personagemId || "";
-      });
-
-      // 2. Carrega todos os personagens
-      const snapPersonagens = await getDocs(collection(db, "personagens"));
-      const listaPersonagens: PersonagemRPG[] = [];
-
-      snapPersonagens.forEach((d) => {
-        listaPersonagens.push({
-          id: d.id,
-          ...(d.data() as Omit<PersonagemRPG, "id">),
-        });
       });
 
       setUsuarios(listaUsuarios);
@@ -82,31 +64,7 @@ export function GerenciadorUsuarios() {
     setErro(null);
 
     try {
-      // 1. Atualiza o documento do usuário
-      const userRef = doc(db, "usuarios", usuario.uid);
-      await updateDoc(userRef, {
-        personagemId: novoPersonagemId ? novoPersonagemId : null,
-      });
-
-      // 2. Se tinha personagem antigo e mudou, desvincula a ficha antiga
-      if (personagemIdAntigo && personagemIdAntigo !== novoPersonagemId) {
-        const persAntigoRef = doc(db, "personagens", personagemIdAntigo);
-        await updateDoc(persAntigoRef, {
-          donoUid: null,
-          donoNome: null,
-          atualizadoEm: new Date().toISOString(),
-        });
-      }
-
-      // 3. Se selecionou uma nova ficha, atribui este usuário como dono
-      if (novoPersonagemId) {
-        const persNovoRef = doc(db, "personagens", novoPersonagemId);
-        await updateDoc(persNovoRef, {
-          donoUid: usuario.uid,
-          donoNome: usuario.nome,
-          atualizadoEm: new Date().toISOString(),
-        });
-      }
+      await vincularUsuarioPersonagem({ usuario, novoPersonagemId });
 
       // Atualiza estado local do usuário
       setUsuarios((prev) =>

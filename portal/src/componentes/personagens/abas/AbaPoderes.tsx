@@ -27,8 +27,7 @@ import {
   BookOpen,
 } from "lucide-react";
 
-// Importa o compêndio de poderes do Foundry
-import compendioPoderesRaw from "@/dados/poderes.json";
+import { FoundryCompendioRaw } from "@/utilitarios/SanitizadorFoundry";
 
 interface AbaPoderesProps {
   personagem: PersonagemRPG;
@@ -90,6 +89,7 @@ const TIPOS_ACAO: TipoAcaoPoder[] = [
   "Completa",
   "Livre",
   "Reação",
+  "Especial",
 ];
 
 export function AbaPoderes({
@@ -123,6 +123,9 @@ export function AbaPoderes({
   const [categoriaCompendio, setCategoriaCompendio] = useState<string>("todas");
   const [subcategoriaFiltro, setSubcategoriaFiltro] = useState<string>("todas");
   const [subcategoriaCompendio, setSubcategoriaCompendio] = useState<string>("todas");
+  const [catalogoPoderes, setCatalogoPoderes] = useState<ItemPoder[]>([]);
+  const [carregandoCatalogo, setCarregandoCatalogo] = useState(false);
+  const [limiteExibicao, setLimiteExibicao] = useState(40);
 
   // Sincroniza se o personagem mudar externamente
   useEffect(() => {
@@ -133,16 +136,34 @@ export function AbaPoderes({
     }
   }, [personagem.poderes]);
 
-  // Carrega e normaliza os poderes do arquivo JSON na montagem
-  const catalogoPoderes = useMemo<ItemPoder[]>(() => {
-    try {
-      const items = (compendioPoderesRaw as any)?.items || [];
-      return items.map((rawItem: any) => converterItemFoundryParaPoder(rawItem));
-    } catch (err) {
-      console.error("Falha ao carregar compêndio de poderes:", err);
-      return [];
-    }
-  }, []);
+  // Carrega e normaliza os poderes sob demanda ao abrir o modal
+  useEffect(() => {
+    if (!modalAberto || catalogoPoderes.length > 0) return;
+    let ativo = true;
+    setCarregandoCatalogo(true);
+
+    import("@/dados/poderes.json")
+      .then((mod) => {
+        if (!ativo) return;
+        const raw = (mod.default ?? mod) as FoundryCompendioRaw;
+        const items = raw?.items || [];
+        setCatalogoPoderes(items.map((rawItem) => converterItemFoundryParaPoder(rawItem)));
+      })
+      .catch((err) => {
+        console.error("Falha ao carregar compêndio de poderes:", err);
+      })
+      .finally(() => {
+        if (ativo) setCarregandoCatalogo(false);
+      });
+
+    return () => {
+      ativo = false;
+    };
+  }, [modalAberto, catalogoPoderes.length]);
+
+  useEffect(() => {
+    setLimiteExibicao(40);
+  }, [buscaCompendio, categoriaCompendio, subcategoriaCompendio, modalAberto]);
 
   // Poderes exibidos na lista principal da aba com filtro de categoria e ordenação alfabética
   const poderesExibidos = useMemo(() => {
@@ -865,16 +886,22 @@ export function AbaPoderes({
 
             {/* Lista dos Cards do Compêndio */}
             <div className="flex-1 overflow-y-auto p-3 space-y-2">
-              {catalogoFiltrado.length === 0 ? (
+              {carregandoCatalogo ? (
+                <div className="p-8 flex items-center justify-center gap-2 text-stone-400 font-serif text-xs">
+                  <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
+                  Carregando compêndio de poderes...
+                </div>
+              ) : catalogoFiltrado.length === 0 ? (
                 <div className="p-8 text-center text-stone-500 font-serif text-xs">
                   Nenhum poder encontrado com esses termos.
                 </div>
               ) : (
-                catalogoFiltrado.map((item) => (
-                  <div
-                    key={item.id}
-                    className="t20-compendio-card"
-                  >
+                <>
+                  {catalogoFiltrado.slice(0, limiteExibicao).map((item) => (
+                    <div
+                      key={item.id}
+                      className="t20-compendio-card"
+                    >
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         <strong className="font-serif text-xs text-amber-300">
@@ -915,7 +942,17 @@ export function AbaPoderes({
                       Aprender
                     </button>
                   </div>
-                ))
+                  ))}
+                  {catalogoFiltrado.length > limiteExibicao && (
+                    <button
+                      type="button"
+                      onClick={() => setLimiteExibicao((prev) => prev + 40)}
+                      className="w-full py-2 rounded border border-stone-800 bg-stone-900/70 hover:bg-stone-800 text-amber-300 font-serif text-xs font-semibold transition-colors"
+                    >
+                      Mostrar mais ({catalogoFiltrado.length - limiteExibicao} restantes)
+                    </button>
+                  )}
+                </>
               )}
             </div>
 

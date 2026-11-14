@@ -12,7 +12,7 @@ const LINKS_MENU = [
   { nome: "Mapas", href: "/mapas" },
   { nome: "Livros", href: "/livros" },
   { nome: "Agenda", href: "/agenda" },
-  { nome: "Wiki", href: "/wikitormenta" },
+  { nome: "Wiki", href: "/wiki/wiki.html" },
 ];
 
 export default function MenuFixo() {
@@ -64,11 +64,17 @@ export default function MenuFixo() {
 
       {/* Navegação Desktop */}
       <nav className={styles.navDesktop}>
-        {LINKS_MENU.map((item) => (
-          <Link key={item.nome} href={item.href} className={styles.navLink}>
-            {item.nome}
-          </Link>
-        ))}
+        {LINKS_MENU.map((item) =>
+          item.href.endsWith(".html") ? (
+            <a key={item.nome} href={item.href} className={styles.navLink}>
+              {item.nome}
+            </a>
+          ) : (
+            <Link key={item.nome} href={item.href} className={styles.navLink}>
+              {item.nome}
+            </Link>
+          )
+        )}
       </nav>
 
       {/* Canto Direito */}
@@ -168,16 +174,27 @@ export default function MenuFixo() {
             </div>
           )}
 
-          {LINKS_MENU.map((item) => (
-            <Link
-              key={item.nome}
-              href={item.href}
-              className={styles.mobileNavLink}
-              onClick={() => setMenuAberto(false)}
-            >
-              {item.nome}
-            </Link>
-          ))}
+          {LINKS_MENU.map((item) =>
+            item.href.endsWith(".html") ? (
+              <a
+                key={item.nome}
+                href={item.href}
+                className={styles.mobileNavLink}
+                onClick={() => setMenuAberto(false)}
+              >
+                {item.nome}
+              </a>
+            ) : (
+              <Link
+                key={item.nome}
+                href={item.href}
+                className={styles.mobileNavLink}
+                onClick={() => setMenuAberto(false)}
+              >
+                {item.nome}
+              </Link>
+            )
+          )}
 
           {ehMestre && (
             <Link

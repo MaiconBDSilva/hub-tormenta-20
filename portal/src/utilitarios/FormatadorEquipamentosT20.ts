@@ -1,4 +1,5 @@
 import { ItemEquipamento, CategoriaEquipamento } from "@/tipos/personagem";
+import { FoundryItemRaw, sanitizarTextoFoundry } from "./SanitizadorFoundry";
 
 export const MAPA_CATEGORIAS_EQUIPAMENTO: Record<string, CategoriaEquipamento> = {
   arma: "Arma",
@@ -66,41 +67,14 @@ export const MAPA_TIPOS_DANO: Record<string, string> = {
   essencia: "Essência",
 };
 
-export function sanitizarTextoEquipamento(html: string): string {
-  if (!html) return "";
-  return html
-    .replace(/@UUID\[[^\]]+\]\{([^}]+)\}/gi, "$1")
-    .replace(/<br\s*[\/]?>/gi, "\n")
-    .replace(/<\/p>/gi, "\n\n")
-    .replace(/<[^>]+>/gi, "")
-    .replace(/&ecirc;/g, "ê")
-    .replace(/&eacute;/g, "é")
-    .replace(/&agrave;/g, "à")
-    .replace(/&aacute;/g, "á")
-    .replace(/&atilde;/g, "ã")
-    .replace(/&ccedil;/g, "ç")
-    .replace(/&ocirc;/g, "ô")
-    .replace(/&oacute;/g, "ó")
-    .replace(/&iacute;/g, "í")
-    .replace(/&uacute;/g, "ú")
-    .replace(/&ndash;/g, "–")
-    .replace(/&mdash;/g, "—")
-    .replace(/&ordm;/g, "º")
-    .replace(/&ordf;/g, "ª")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, "&")
-    .trim();
-}
-
-export function formatarPrecoT20(preco: any): string {
+export function formatarPrecoT20(preco: unknown): string {
   if (preco === undefined || preco === null) return "-";
   const num = Number(preco);
   if (isNaN(num) || num <= 0) return "-";
   return `T$ ${num.toLocaleString("pt-BR")}`;
 }
 
-export function converterItemFoundryParaEquipamento(item: any): ItemEquipamento {
+export function converterItemFoundryParaEquipamento(item: FoundryItemRaw): ItemEquipamento {
   const sys = item.system || {};
   const tipoBruto = (sys.tipo || "").toLowerCase();
   const itemType = (item.type || "").toLowerCase();
@@ -141,7 +115,7 @@ export function converterItemFoundryParaEquipamento(item: any): ItemEquipamento 
   let alcance: string | undefined;
 
   if (categoria === "Arma") {
-    const danoRoll = (sys.rolls || []).find((r: any) => r.type === "dano");
+    const danoRoll = (sys.rolls || []).find((r) => r.type === "dano");
     if (danoRoll?.parts?.[0]?.[0]) {
       dano = danoRoll.parts[0][0];
     }
@@ -158,8 +132,9 @@ export function converterItemFoundryParaEquipamento(item: any): ItemEquipamento 
       empunhadura = MAPA_EMPUNHADURA[sys.empunhadura] || sys.empunhadura;
     }
 
-    if (sys.alcance) {
-      alcance = MAPA_ALCANCE_EQUIPAMENTO[sys.alcance] || sys.alcance;
+    const alcanceBruto = (sys.alcance || "").trim().toLowerCase();
+    if (alcanceBruto && alcanceBruto !== "-" && alcanceBruto !== "none") {
+      alcance = MAPA_ALCANCE_EQUIPAMENTO[alcanceBruto] || sys.alcance;
     } else {
       alcance = "Corpo a corpo";
     }
@@ -188,7 +163,7 @@ export function converterItemFoundryParaEquipamento(item: any): ItemEquipamento 
     categoria,
     quantidade: Number(sys.qtd) > 0 ? Number(sys.qtd) : 1,
     equipado: Boolean(sys.equipado),
-    descricao: sanitizarTextoEquipamento(sys.description?.value || ""),
+    descricao: sanitizarTextoFoundry(sys.description?.value || ""),
     ehCustomizado: false,
   };
 

@@ -2,14 +2,68 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Função auxiliar: verifica se o usuário autenticado possui o cargo de "mestre"
+    // ===============================================================
+    // Funções Auxiliares de Autenticação e Autorização
+    // ===============================================================
+
+    // Verifica se a requisição possui usuário autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Verifica se o usuário autenticado é o dono do documento pelo ID
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Verifica se o usuário autenticado possui o cargo de "mestre"
     function ehMestre() {
-      return request.auth != null &&
+      return isAuthenticated() &&
         exists(/databases/$(database)/documents/usuarios/$(request.auth.uid)) &&
         get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.role == "mestre";
     }
 
+    // Verifica se o usuário autenticado é o dono da ficha de personagem
+    function ehDonoDoPersonagem(personagemId) {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/personagens/$(personagemId)) &&
+        get(/databases/$(database)/documents/personagens/$(personagemId)).data.donoUid == request.auth.uid;
+    }
+
+    // Valida estrutura e tipos básicos do perfil de usuário na criação
+    function isValidUsuarioCreate(userId) {
+      let data = request.resource.data;
+      return data.keys().hasAll(["uid", "nome", "email", "role"]) &&
+        data.keys().hasOnly(["uid", "nome", "email", "fotoUrl", "role", "personagemId"]) &&
+        data.uid is string &&
+        data.uid == userId &&
+        data.nome is string &&
+        data.nome.size() >= 1 &&
+        data.nome.size() <= 200 &&
+        data.email is string &&
+        data.email.size() <= 254 &&
+        (!('fotoUrl' in data) || data.fotoUrl == null || (data.fotoUrl is string && data.fotoUrl.size() <= 2048)) &&
+        data.role == "jogador" &&
+        (!('personagemId' in data) || data.personagemId == null);
+    }
+
+    // Valida campos editáveis pelo próprio usuário na atualização
+    function isValidUsuarioSelfUpdate() {
+      let data = request.resource.data;
+      return !data.diff(resource.data).affectedKeys().hasAny(["role", "uid", "personagemId"]) &&
+        data.role == resource.data.role &&
+        data.uid == resource.data.uid &&
+        data.nome is string &&
+        data.nome.size() >= 1 &&
+        data.nome.size() <= 200 &&
+        data.email is string &&
+        data.email.size() <= 254 &&
+        (!('fotoUrl' in data) || data.fotoUrl == null || (data.fotoUrl is string && data.fotoUrl.size() <= 2048));
+    }
+
+    // ===============================================================
     // 1. Configurações da Campanha (substitui campanha.json)
+    // ===============================================================
     // Leitura: pública (qualquer visitante pode ver a próxima sessão na Home)
     // Escrita: exclusiva do Mestre
     match /configuracoes/{documento} {
@@ -17,39 +71,73 @@ service cloud.firestore {
       allow write: if ehMestre();
     }
 
+    // ===============================================================
     // 2. Coleção de Usuários (Blindagem contra escalação de privilégios)
+    // ===============================================================
     match /usuarios/{userId} {
       // Leitura: cada um lê o seu; o Mestre lê todos.
-      allow read: if request.auth != null && (request.auth.uid == userId || ehMestre());
+      allow read: if isAuthenticated() && (isOwner(userId) || ehMestre());
 
-      // Criação: o próprio usuário cria seu perfil, MAS a role tem que ser obrigatoriamente "jogador"
-      allow create: if request.auth != null 
-        && request.auth.uid == userId 
-        && request.resource.data.role == "jogador";
+      // Criação: o próprio usuário cria seu perfil inicial com role "jogador" e sem personagemId vinculado
+      allow create: if isOwner(userId) && isValidUsuarioCreate(userId);
 
       // Atualização:
-      // - O Mestre pode atualizar tudo (inclusive promover cargos).
-      // - O jogador só pode atualizar o seu próprio documento E a role não pode sofrer alteração!
-      allow update: if request.auth != null && (
-        ehMestre() || 
-        (
-          request.auth.uid == userId && 
-          request.resource.data.role == resource.data.role
-        )
+      // - O Mestre pode atualizar tudo (inclusive promover cargos e vincular personagemId).
+      // - O jogador só pode atualizar o seu próprio documento, sem alterar role, uid ou personagemId.
+      allow update: if isAuthenticated() && (
+        ehMestre() ||
+        (isOwner(userId) && isValidUsuarioSelfUpdate())
       );
+
+      // Exclusão: exclusiva do Mestre
+      allow delete: if ehMestre();
     }
 
-    // 3. Fichas de Personagens (Preparação para os próximos módulos)
-    // Leitura: qualquer membro autenticado pode ver o grupo
-    // Escrita: permitida apenas para o dono da ficha ou para o Mestre
+    // ===============================================================
+    // 3. Fichas de Personagens (Vitrine Pública + Edição Moderada)
+    // ===============================================================
     match /personagens/{personagemId} {
+      // Leitura: pública para a vitrine; notas secretas ficam na subcoleção /privado
       allow read: if true;
-      allow write: if request.auth != null && (
-        ehMestre() || 
-        (resource != null && resource.data.donoUid == request.auth.uid) ||
-        (resource == null && request.resource.data.donoUid == request.auth.uid)
+
+      // Criação e exclusão: exclusivas do Mestre
+      allow create, delete: if ehMestre();
+
+      // Atualização:
+      // - O Mestre pode atualizar qualquer campo (incluindo atributos protegidos e donoUid).
+      // - O dono da ficha pode atualizar apenas os campos livres e solicitações pendentes.
+      allow update: if isAuthenticated() && (
+        ehMestre() ||
+        (
+          resource.data.donoUid == request.auth.uid &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            "pvAtual",
+            "pmAtual",
+            "avatarUrl",
+            "descricao",
+            "pericias",
+            "poderes",
+            "magias",
+            "equipamentos",
+            "moedas",
+            "solicitacaoPendente",
+            "atualizadoEm"
+          ])
+        )
       );
+
+      // Subcoleção privada (ex.: notas secretas do personagem)
+      match /privado/{docId} {
+        allow read, write: if isAuthenticated() && (
+          ehMestre() ||
+          ehDonoDoPersonagem(personagemId)
+        );
+      }
+    }
+
+    // Negação padrão explícita para qualquer outra coleção
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
-

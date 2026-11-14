@@ -35,8 +35,7 @@ import {
   Layers,
 } from "lucide-react";
 
-// Importa o compêndio do Foundry
-import compendioMagiasRaw from "@/dados/magias.json";
+import { FoundryCompendioRaw } from "@/utilitarios/SanitizadorFoundry";
 
 interface AbaMagiasProps {
   personagem: PersonagemRPG;
@@ -97,6 +96,9 @@ export function AbaMagias({
   const [buscaCompendio, setBuscaCompendio] = useState("");
   const [circuloCompendio, setCirculoCompendio] = useState<number>(0);
   const [escolaCompendio, setEscolaCompendio] = useState<string>("todas");
+  const [catalogoMagias, setCatalogoMagias] = useState<ItemMagiaPersonagem[]>([]);
+  const [carregandoCatalogo, setCarregandoCatalogo] = useState(false);
+  const [limiteExibicao, setLimiteExibicao] = useState(40);
 
   // Sincroniza quando os dados do personagem mudarem no Firestore
   useEffect(() => {
@@ -107,16 +109,34 @@ export function AbaMagias({
     }
   }, [personagem.magias]);
 
-  // Carrega e normaliza todas as magias do arquivo JSON na primeira montagem
-  const catalogoMagias = useMemo<ItemMagiaPersonagem[]>(() => {
-    try {
-      const items = (compendioMagiasRaw as any)?.items || [];
-      return items.map((rawItem: any) => converterItemFoundryParaMagia(rawItem));
-    } catch (err) {
-      console.error("Falha ao carregar compêndio de magias:", err);
-      return [];
-    }
-  }, []);
+  // Carrega e normaliza as magias sob demanda ao abrir o modal
+  useEffect(() => {
+    if (!modalAberto || catalogoMagias.length > 0) return;
+    let ativo = true;
+    setCarregandoCatalogo(true);
+
+    import("@/dados/magias.json")
+      .then((mod) => {
+        if (!ativo) return;
+        const raw = (mod.default ?? mod) as FoundryCompendioRaw;
+        const items = raw?.items || [];
+        setCatalogoMagias(items.map((rawItem) => converterItemFoundryParaMagia(rawItem)));
+      })
+      .catch((err) => {
+        console.error("Falha ao carregar compêndio de magias:", err);
+      })
+      .finally(() => {
+        if (ativo) setCarregandoCatalogo(false);
+      });
+
+    return () => {
+      ativo = false;
+    };
+  }, [modalAberto, catalogoMagias.length]);
+
+  useEffect(() => {
+    setLimiteExibicao(40);
+  }, [buscaCompendio, circuloCompendio, escolaCompendio, modalAberto]);
 
   // Filtra as magias da ficha pelo círculo ativo com ordenação alfabética
   const magiasExibidas = useMemo(() => {
@@ -835,16 +855,22 @@ export function AbaMagias({
 
             {/* Lista dos Cards do Compêndio */}
             <div className="flex-1 overflow-y-auto p-3 space-y-2">
-              {catalogoFiltrado.length === 0 ? (
+              {carregandoCatalogo ? (
+                <div className="p-8 flex items-center justify-center gap-2 text-stone-400 font-serif text-xs">
+                  <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
+                  Carregando grimório de magias...
+                </div>
+              ) : catalogoFiltrado.length === 0 ? (
                 <div className="p-8 text-center text-stone-500 font-serif text-xs">
                   Nenhuma magia encontrada com esses termos.
                 </div>
               ) : (
-                catalogoFiltrado.map((item) => (
-                  <div
-                    key={item.id}
-                    className="t20-compendio-card"
-                  >
+                <>
+                  {catalogoFiltrado.slice(0, limiteExibicao).map((item) => (
+                    <div
+                      key={item.id}
+                      className="t20-compendio-card"
+                    >
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-center gap-2">
                         <strong className="font-serif text-xs text-amber-300">
@@ -878,7 +904,17 @@ export function AbaMagias({
                       Aprender
                     </button>
                   </div>
-                ))
+                  ))}
+                  {catalogoFiltrado.length > limiteExibicao && (
+                    <button
+                      type="button"
+                      onClick={() => setLimiteExibicao((prev) => prev + 40)}
+                      className="w-full py-2 rounded border border-stone-800 bg-stone-900/70 hover:bg-stone-800 text-amber-300 font-serif text-xs font-semibold transition-colors"
+                    >
+                      Mostrar mais ({catalogoFiltrado.length - limiteExibicao} restantes)
+                    </button>
+                  )}
+                </>
               )}
             </div>
 

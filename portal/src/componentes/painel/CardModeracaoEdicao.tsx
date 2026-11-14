@@ -2,9 +2,29 @@
 
 import React, { useState } from "react";
 import { Check, X, AlertTriangle, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { PersonagemRPG } from "@/tipos/personagem";
+import { AtributosT20, PersonagemRPG } from "@/tipos/personagem";
+import { atualizarPersonagem } from "@/servicos/personagensService";
+
+function formatarValorCampoModeracao(valor: unknown): string {
+  if (valor === undefined || valor === null || valor === "") return "—";
+  if (typeof valor === "object") {
+    const attrs = valor as Partial<AtributosT20>;
+    const mapa: Array<[keyof AtributosT20, string]> = [
+      ["forca", "FOR"],
+      ["destreza", "DES"],
+      ["constituicao", "CON"],
+      ["inteligencia", "INT"],
+      ["sabedoria", "SAB"],
+      ["carisma", "CAR"],
+    ];
+    const partes = mapa
+      .filter(([k]) => attrs[k] !== undefined)
+      .map(([k, sigla]) => `${sigla}: ${attrs[k]}`);
+    if (partes.length > 0) return partes.join(", ");
+    return JSON.stringify(valor);
+  }
+  return String(valor);
+}
 
 interface CardModeracaoEdicaoProps {
   personagem: PersonagemRPG;
@@ -43,8 +63,7 @@ export function CardModeracaoEdicao({
         updates[campo] = solicitacao.campos[campo];
       });
 
-      const refDoc = doc(db, "personagens", personagem.id);
-      await updateDoc(refDoc, updates);
+      await atualizarPersonagem(personagem.id, updates);
       onAtualizacao();
     } catch (err) {
       console.error("Erro ao aprovar ficha:", err);
@@ -60,8 +79,7 @@ export function CardModeracaoEdicao({
     setErro(null);
 
     try {
-      const refDoc = doc(db, "personagens", personagem.id);
-      await updateDoc(refDoc, {
+      await atualizarPersonagem(personagem.id, {
         "solicitacaoPendente.status": "recusada",
         "solicitacaoPendente.motivoRecusa": motivoRecusa.trim() || "Alteração não aprovada pelo Mestre.",
         atualizadoEm: new Date().toISOString(),
@@ -177,10 +195,10 @@ export function CardModeracaoEdicao({
                         {campo}
                       </td>
                       <td className="py-2 px-2 text-stone-400">
-                        {String(valorAtual ?? "—")}
+                        {formatarValorCampoModeracao(valorAtual)}
                       </td>
                       <td className="py-2 px-2 font-bold text-amber-400">
-                        {String(valorNovo)}
+                        {formatarValorCampoModeracao(valorNovo)}
                       </td>
                     </tr>
                   );

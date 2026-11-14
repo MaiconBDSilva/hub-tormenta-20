@@ -5,7 +5,7 @@ configuration:
   enableSPA: true,
   enablePopovers: true,
   analytics: null,
-  locale: en-US
+  locale: pt-BR
   baseUrl: "invocacaodoheroi.vercel.app/wiki/"
   #baseUrl: "localhost:8080"
   ignorePatterns:

@@ -1,8 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import D203DCanvas from "./D203DCanvas";
+import dynamic from "next/dynamic";
 import styles from "./HeroSection.module.css";
+
+const D203DCanvas = dynamic(() => import("./D203DCanvas"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-[240px] h-[240px] rounded-full bg-stone-900/60 border border-stone-800/70 animate-pulse" />
+  ),
+});
 
 export interface FoundryChallengeCardProps {
   cd: number;
@@ -47,7 +54,19 @@ export default function FoundryChallengeCard({
       </div>
 
       {/* D20 3D Renderizado em Canvas com Interação */}
-      <div onClick={handleStartRoll} className={styles.canvasWrapper}>
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="Rolar d20 para liberar o acesso ao Foundry VTT"
+        onClick={handleStartRoll}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleStartRoll();
+          }
+        }}
+        className={styles.canvasWrapper}
+      >
         <D203DCanvas
           isRolling={isRolling}
           targetValue={null}

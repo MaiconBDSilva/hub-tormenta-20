@@ -55,13 +55,15 @@ export default (() => {
             href.startsWith('/livros') ||
             href.startsWith('/agenda') ||
             href.startsWith('/painel') ||
+            href.startsWith('/login') ||
+            href.startsWith('/wikitormenta') ||
             link.hasAttribute('data-portal-link');
 
           if (ehLinkDoPortal) {
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation();
-            window.location.assign(link.href);
+            (window.top || window).location.assign(link.href);
           }
         }, true);
 
@@ -85,7 +87,7 @@ export default (() => {
               <a href="/mapas" class="portal-link" data-portal-link="true">Mapas</a>
               <a href="/livros" class="portal-link" data-portal-link="true">Livros</a>
               <a href="/agenda" class="portal-link" data-portal-link="true">Agenda</a>
-              <a href="/wikitormenta" class="portal-link portal-link-ativo" data-portal-link="true">Wiki</a>
+              <a href="/wiki/wiki.html" class="portal-link portal-link-ativo" data-portal-link="true">Wiki</a>
             </nav>
 
             <div class="portal-right-spacer"></div>

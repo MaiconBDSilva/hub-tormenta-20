@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { PersonagemRPG } from "@/tipos/personagem";
 import {
@@ -29,16 +29,48 @@ interface AbaNotasProps {
 export function AbaNotas({ personagem, onAtualizacao }: AbaNotasProps) {
   const [editando, setEditando] = useState(false);
   const [anotacoes, setAnotacoes] = useState(personagem.anotacoes || "");
+  const [notasPersistidas, setNotasPersistidas] = useState(personagem.anotacoes || "");
+  const [carregandoNotas, setCarregandoNotas] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [mensagemSucesso, setMensagemSucesso] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);
 
   useEffect(() => {
-    setAnotacoes(personagem.anotacoes || "");
-  }, [personagem.anotacoes]);
+    let ativo = true;
+
+    async function carregarNotasPrivadas() {
+      setCarregandoNotas(true);
+      try {
+        const refNotas = doc(db, "personagens", personagem.id, "privado", "notas");
+        const snap = await getDoc(refNotas);
+        if (!ativo) return;
+
+        if (snap.exists()) {
+          const conteudo = typeof snap.data().conteudo === "string" ? snap.data().conteudo : "";
+          setAnotacoes(conteudo);
+          setNotasPersistidas(conteudo);
+        } else {
+          const legado = personagem.anotacoes || "";
+          setAnotacoes(legado);
+          setNotasPersistidas(legado);
+        }
+      } catch (err) {
+        if (!ativo) return;
+        console.error("Erro ao carregar anotações privadas:", err);
+        setErro("Não foi possível carregar as anotações confidenciais.");
+      } finally {
+        if (ativo) setCarregandoNotas(false);
+      }
+    }
+
+    carregarNotasPrivadas();
+    return () => {
+      ativo = false;
+    };
+  }, [personagem.id, personagem.anotacoes]);
 
   const handleCancelar = () => {
-    setAnotacoes(personagem.anotacoes || "");
+    setAnotacoes(notasPersistidas);
     setEditando(false);
     setErro(null);
     setMensagemSucesso(null);
@@ -51,12 +83,17 @@ export function AbaNotas({ personagem, onAtualizacao }: AbaNotasProps) {
     setErro(null);
 
     try {
-      const refDoc = doc(db, "personagens", personagem.id);
-      await updateDoc(refDoc, {
-        anotacoes: anotacoes.trim(),
-        atualizadoEm: new Date().toISOString(),
-      });
+      const conteudoLimpo = anotacoes.trim();
+      const refNotas = doc(db, "personagens", personagem.id, "privado", "notas");
+      const payloadLimpo = JSON.parse(
+        JSON.stringify({
+          conteudo: conteudoLimpo,
+          atualizadoEm: new Date().toISOString(),
+        })
+      );
+      await setDoc(refNotas, payloadLimpo, { merge: true });
 
+      setNotasPersistidas(conteudoLimpo);
       setMensagemSucesso("Anotações confidenciais seladas no diário!");
       setEditando(false);
       onAtualizacao();
@@ -152,6 +189,11 @@ export function AbaNotas({ personagem, onAtualizacao }: AbaNotasProps) {
             </button>
           </div>
         </form>
+      ) : carregandoNotas ? (
+        <div className="flex items-center justify-center gap-2 p-8 rounded-lg bg-stone-950/40 border border-stone-800 text-stone-400 text-sm font-serif">
+          <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
+          <span>Consultando diário confidencial...</span>
+        </div>
       ) : (
         <div className="space-y-4">
           {anotacoes ? (

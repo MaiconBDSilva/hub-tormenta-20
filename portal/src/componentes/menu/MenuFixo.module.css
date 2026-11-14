@@ -2,7 +2,7 @@
 
 /* Container do Header Fixo */
 .headerFixo {
-@apply fixed top-0 left-0 right-0 z-50 flex items-center justify-between gap-2 border-b border-amber-400/80 bg-stone-950/90 px-3 py-2.5 backdrop-blur-md md:px-8;
+@apply fixed top-0 left-0 right-0 z-40 flex items-center justify-between gap-2 border-b border-amber-400/80 bg-stone-950/90 px-3 py-2.5 backdrop-blur-md md:px-8;
 }
 
 .brandLink {
@@ -19,7 +19,7 @@
 
 /* Navegação Desktop */
 .navDesktop {
-@apply hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 pointer-events-auto;;
+@apply hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 pointer-events-auto;
 }
 
 .navLink {

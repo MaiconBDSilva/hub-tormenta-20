@@ -1,17 +1,16 @@
 import { Timestamp } from "firebase/firestore";
 
-export type PapelUsuario = "jogador" | "mestre";
+export type RoleUsuario = "mestre" | "jogador";
 
-export interface PerfilUsuario {
+export interface DadosUsuario {
   uid: string;
   nome: string;
   email: string;
-  papel: PapelUsuario;
-  fotoUrl?: string;
+  fotoUrl?: string | null;
+  role: RoleUsuario;
   personagemId?: string | null;
-  criadoEm?: string;
-  atualizadoEm?: string;
 }
+
 
 export type AbaFicha = "principal" | "poderes" | "pericias" | "magias" | "equipamentos" | "notas";
 
@@ -65,7 +64,8 @@ export type TipoAcaoPoder =
   | "Movimento"
   | "Completa"
   | "Livre"
-  | "Reação";
+  | "Reação"
+  | "Especial";
 
 export interface ItemPoder {
   id: string;
@@ -179,8 +179,8 @@ export interface BlocoLivrePersonagem {
 
 export interface PersonagemRPG extends BlocoProtegidoPersonagem, BlocoLivrePersonagem {
   id: string;
-  donoUid?: string;
-  donoNome?: string;
+  donoUid?: string | null;
+  donoNome?: string | null;
   criadoEm?: string | Timestamp;
   atualizadoEm?: string | Timestamp;
   solicitacaoPendente?: SolicitacaoPendentePersonagem | null;

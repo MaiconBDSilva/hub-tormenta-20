@@ -31,8 +31,7 @@ import {
   Check,
 } from "lucide-react";
 
-// Compêndio de Equipamentos (Foundry VTT)
-import compendioEquipamentosRaw from "@/dados/equipamentos.json";
+import { FoundryCompendioRaw } from "@/utilitarios/SanitizadorFoundry";
 
 interface AbaEquipamentosProps {
   personagem: PersonagemRPG;
@@ -89,6 +88,9 @@ export function AbaEquipamentos({
   const [modalAberto, setModalAberto] = useState(false);
   const [buscaCompendio, setBuscaCompendio] = useState("");
   const [categoriaCompendio, setCategoriaCompendio] = useState<string>("todas");
+  const [catalogoEquipamentos, setCatalogoEquipamentos] = useState<ItemEquipamento[]>([]);
+  const [carregandoCatalogo, setCarregandoCatalogo] = useState(false);
+  const [limiteExibicao, setLimiteExibicao] = useState(40);
 
   useEffect(() => {
     const lista = personagem.equipamentos || [];
@@ -104,16 +106,34 @@ export function AbaEquipamentos({
     });
   }, [personagem.equipamentos, personagem.moedas]);
 
-  // Carrega compêndio estático
-  const catalogoEquipamentos = useMemo<ItemEquipamento[]>(() => {
-    try {
-      const items = (compendioEquipamentosRaw as any)?.items || [];
-      return items.map((raw: any) => converterItemFoundryParaEquipamento(raw));
-    } catch (err) {
-      console.error("Falha ao carregar compêndio de equipamentos:", err);
-      return [];
-    }
-  }, []);
+  // Carrega compêndio sob demanda apenas quando o modal é aberto
+  useEffect(() => {
+    if (!modalAberto || catalogoEquipamentos.length > 0) return;
+    let ativo = true;
+    setCarregandoCatalogo(true);
+
+    import("@/dados/equipamentos.json")
+      .then((mod) => {
+        if (!ativo) return;
+        const raw = (mod.default ?? mod) as FoundryCompendioRaw;
+        const items = raw?.items || [];
+        setCatalogoEquipamentos(items.map((item) => converterItemFoundryParaEquipamento(item)));
+      })
+      .catch((err) => {
+        console.error("Falha ao carregar compêndio de equipamentos:", err);
+      })
+      .finally(() => {
+        if (ativo) setCarregandoCatalogo(false);
+      });
+
+    return () => {
+      ativo = false;
+    };
+  }, [modalAberto, catalogoEquipamentos.length]);
+
+  useEffect(() => {
+    setLimiteExibicao(40);
+  }, [buscaCompendio, categoriaCompendio, modalAberto]);
 
   const itensExibidos = useMemo(() => {
     const filtrados =
@@ -1079,16 +1099,22 @@ export function AbaEquipamentos({
 
             {/* Lista dos Cards do Compêndio */}
             <div className="flex-1 overflow-y-auto p-3 space-y-2">
-              {catalogoFiltrado.length === 0 ? (
+              {carregandoCatalogo ? (
+                <div className="p-8 flex items-center justify-center gap-2 text-stone-400 font-serif text-xs">
+                  <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
+                  Carregando compêndio de equipamentos...
+                </div>
+              ) : catalogoFiltrado.length === 0 ? (
                 <div className="p-8 text-center text-stone-500 font-serif text-xs">
                   Nenhum equipamento encontrado com esses filtros.
                 </div>
               ) : (
-                catalogoFiltrado.map((item) => (
-                  <div
-                    key={item.id}
-                    className="t20-compendio-card"
-                  >
+                <>
+                  {catalogoFiltrado.slice(0, limiteExibicao).map((item) => (
+                    <div
+                      key={item.id}
+                      className="t20-compendio-card"
+                    >
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         {getIconeCategoria(item.categoria)}
@@ -1139,7 +1165,17 @@ export function AbaEquipamentos({
                       Adicionar
                     </button>
                   </div>
-                ))
+                  ))}
+                  {catalogoFiltrado.length > limiteExibicao && (
+                    <button
+                      type="button"
+                      onClick={() => setLimiteExibicao((prev) => prev + 40)}
+                      className="w-full py-2 rounded border border-stone-800 bg-stone-900/70 hover:bg-stone-800 text-amber-300 font-serif text-xs font-semibold transition-colors"
+                    >
+                      Mostrar mais ({catalogoFiltrado.length - limiteExibicao} restantes)
+                    </button>
+                  )}
+                </>
               )}
             </div>
 

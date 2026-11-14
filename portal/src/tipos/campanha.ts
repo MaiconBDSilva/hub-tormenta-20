@@ -4,7 +4,7 @@ export interface DadosCampanha {
   proximaSessao: {
     titulo: string;
     data: string;
-    status: StatusSessao | string;
+    status: StatusSessao;
     dtTesteFoundry: number;
   };
   ultimaSessao: {

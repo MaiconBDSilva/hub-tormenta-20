@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X, ShieldPlus, Loader2 } from "lucide-react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -91,8 +91,25 @@ export function ModalCriarPersonagem({
     }
   };
 
+  useEffect(() => {
+    if (!aberto) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !salvando) onFechar();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [aberto, salvando, onFechar]);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-criar-personagem-titulo"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && !salvando) onFechar();
+      }}
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+    >
       <div className="t20-card w-full max-w-2xl max-h-[90vh] overflow-y-auto border-amber-600/30 p-6 relative">
         <div className="t20-stripe" />
 
@@ -100,12 +117,18 @@ export function ModalCriarPersonagem({
         <div className="flex items-center justify-between pb-4 mb-4 border-b border-stone-800">
           <div className="flex items-center gap-2">
             <ShieldPlus className="w-6 h-6 text-amber-500" />
-            <h2 className="text-xl font-serif font-bold text-amber-400">
+            <h2
+              id="modal-criar-personagem-titulo"
+              className="text-xl font-serif font-bold text-amber-400"
+            >
               Forjar Novo Personagem
             </h2>
           </div>
           <button
+            type="button"
+            aria-label="Fechar"
             onClick={onFechar}
+            disabled={salvando}
             className="text-stone-400 hover:text-stone-200 transition-colors p-1"
             title="Fechar"
           >

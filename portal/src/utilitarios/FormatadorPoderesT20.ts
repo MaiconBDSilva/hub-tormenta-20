@@ -1,7 +1,9 @@
 import { ItemPoder, CategoriaPoder, TipoAcaoPoder } from "@/tipos/personagem";
+import { FoundryItemRaw, sanitizarTextoFoundry } from "./SanitizadorFoundry";
 
 export const MAPA_CATEGORIAS_PODER: Record<string, CategoriaPoder> = {
   classe: "Classe",
+  ability: "Classe",
   raca: "Raça",
   raça: "Raça",
   racial: "Raça",
@@ -18,6 +20,7 @@ export const MAPA_ACOES_PODER: Record<string, TipoAcaoPoder> = {
   passive: "Passiva",
   passiva: "Passiva",
   standard: "Padrão",
+  action: "Padrão",
   padrao: "Padrão",
   move: "Movimento",
   movimento: "Movimento",
@@ -27,36 +30,17 @@ export const MAPA_ACOES_PODER: Record<string, TipoAcaoPoder> = {
   reacao: "Reação",
   free: "Livre",
   livre: "Livre",
+  special: "Especial",
+  hour: "Especial",
 };
 
-export function sanitizarTextoFoundry(html: string): string {
-  if (!html) return "";
-  return html
-    .replace(/@UUID\[[^\]]+\]\{([^}]+)\}/gi, "$1") // Remove referências UUID do Foundry mantendo o nome do item
-    .replace(/<br\s*[\/]?>/gi, "\n")
-    .replace(/<\/p>/gi, "\n\n")
-    .replace(/<[^>]+>/gi, "")
-    .replace(/&ecirc;/g, "ê")
-    .replace(/&eacute;/g, "é")
-    .replace(/&agrave;/g, "à")
-    .replace(/&aacute;/g, "á")
-    .replace(/&atilde;/g, "ã")
-    .replace(/&ccedil;/g, "ç")
-    .replace(/&ocirc;/g, "ô")
-    .replace(/&oacute;/g, "ó")
-    .replace(/&iacute;/g, "í")
-    .replace(/&uacute;/g, "ú")
-    .replace(/&ndash;/g, "–")
-    .replace(/&mdash;/g, "—")
-    .replace(/&ordm;/g, "º")
-    .replace(/&ordf;/g, "ª")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, "&")
-    .trim();
+function normalizarSubtipo(subtipo: string): string {
+  const limpo = subtipo.trim();
+  if (!limpo) return "";
+  return limpo.charAt(0).toUpperCase() + limpo.slice(1);
 }
 
-export function converterItemFoundryParaPoder(item: any): ItemPoder {
+export function converterItemFoundryParaPoder(item: FoundryItemRaw): ItemPoder {
   const sys = item.system || {};
   const ativacao = sys.ativacao || {};
 
@@ -97,7 +81,7 @@ export function converterItemFoundryParaPoder(item: any): ItemPoder {
   };
 
   if (item._id) poderLimpo.origemId = item._id;
-  if (sys.subtipo) poderLimpo.subtipo = sys.subtipo;
+  if (sys.subtipo) poderLimpo.subtipo = normalizarSubtipo(sys.subtipo);
 
   return poderLimpo;
 }

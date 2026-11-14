@@ -7,24 +7,17 @@ import {
   signInWithPopup,
   signOut as firebaseSignOut,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, googleProvider, db } from "../lib/firebase";
+import { auth, googleProvider } from "../lib/firebase";
+import { DadosUsuario, RoleUsuario } from "@/tipos/personagem";
+import { buscarOuCriarPerfilUsuario } from "@/servicos/usuariosService";
 
-export type RoleUsuario = "mestre" | "jogador";
-
-export interface DadosUsuario {
-  uid: string;
-  nome: string;
-  email: string;
-  fotoUrl?: string;
-  role: RoleUsuario;
-  personagemId?: string | null;
-}
+export type { DadosUsuario, RoleUsuario };
 
 export interface AuthContextType {
   usuario: User | null;
   dadosPerfil: DadosUsuario | null;
   carregando: boolean;
+  erroPerfil: string | null;
   loginComGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   ehMestre: boolean;
@@ -34,6 +27,7 @@ const AuthContext = createContext<AuthContextType>({
   usuario: null,
   dadosPerfil: null,
   carregando: true,
+  erroPerfil: null,
   loginComGoogle: async () => {},
   logout: async () => {},
   ehMestre: false,
@@ -43,35 +37,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [usuario, setUsuario] = useState<User | null>(null);
   const [dadosPerfil, setDadosPerfil] = useState<DadosUsuario | null>(null);
   const [carregando, setCarregando] = useState<boolean>(true);
+  const [erroPerfil, setErroPerfil] = useState<string | null>(null);
 
   useEffect(() => {
     // Escuta ativamente mudanças de autenticação do Firebase
     const cancelarInscricao = onAuthStateChanged(auth, async (user) => {
       setUsuario(user);
+      setErroPerfil(null);
 
       if (user) {
         try {
-          const userDocRef = doc(db, "usuarios", user.uid);
-          const docSnap = await getDoc(userDocRef);
-
-          if (docSnap.exists()) {
-            // Perfil existente recuperado do Firestore
-            setDadosPerfil(docSnap.data() as DadosUsuario);
-          } else {
-            // Primeiro login: cria o perfil inicial com a role "jogador"
-            const novoPerfil: DadosUsuario = {
-              uid: user.uid,
-              nome: user.displayName || "Aventureiro sem Nome",
-              email: user.email || "",
-              fotoUrl: user.photoURL || undefined,
-              role: "jogador",
-              personagemId: null,
-            };
-            await setDoc(userDocRef, novoPerfil);
-            setDadosPerfil(novoPerfil);
-          }
+          const perfil = await buscarOuCriarPerfilUsuario(user);
+          setDadosPerfil(perfil);
         } catch (erro) {
           console.error("Erro ao sincronizar perfil no Firestore:", erro);
+          setErroPerfil("Falha ao carregar seu perfil de aventureiro.");
         }
       } else {
         // Usuário deslogado
@@ -110,6 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         usuario,
         dadosPerfil,
         carregando,
+        erroPerfil,
         loginComGoogle,
         logout,
         ehMestre,

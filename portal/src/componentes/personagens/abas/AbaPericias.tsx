@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import {
@@ -119,6 +119,11 @@ export function AbaPericias({
 
   const [listaPericias, setListaPericias] = useState<ItemPericia[]>(inicializarPericias);
 
+  useEffect(() => {
+    setListaPericias(inicializarPericias());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [personagem.pericias]);
+
   const handleTreinadaToggle = (id: string) => {
     setListaPericias((prev) =>
       prev.map((item) =>
@@ -179,10 +184,13 @@ export function AbaPericias({
 
     try {
       const refDoc = doc(db, "personagens", personagem.id);
-      await updateDoc(refDoc, {
-        pericias: listaPericias,
-        atualizadoEm: new Date().toISOString(),
-      });
+      const payloadLimpo = JSON.parse(
+        JSON.stringify({
+          pericias: listaPericias,
+          atualizadoEm: new Date().toISOString(),
+        })
+      );
+      await updateDoc(refDoc, payloadLimpo);
 
       setMensagemSucesso("Perícias gravadas com sucesso!");
       setEditando(false);

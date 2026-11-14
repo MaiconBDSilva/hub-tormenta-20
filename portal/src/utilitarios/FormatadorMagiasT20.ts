@@ -4,6 +4,7 @@ import {
   TipoMagiaT20,
   AprimoramentoMagia,
 } from "@/tipos/personagem";
+import { FoundryItemRaw, sanitizarTextoFoundry } from "./SanitizadorFoundry";
 
 // Mapeia códigos de escola do Foundry T20
 export const MAPA_ESCOLAS: Record<string, EscolaMagiaT20> = {
@@ -27,6 +28,7 @@ export const MAPA_TIPOS: Record<string, TipoMagiaT20> = {
 // Mapeia códigos de execução
 export const MAPA_EXECUCAO: Record<string, string> = {
   standard: "Padrão",
+  action: "Padrão",
   padrao: "Padrão",
   move: "Movimento",
   movimento: "Movimento",
@@ -36,15 +38,22 @@ export const MAPA_EXECUCAO: Record<string, string> = {
   reacao: "Reação",
   free: "Livre",
   livre: "Livre",
+  special: "Especial",
+  hour: "1 hora",
+  minute: "1 minuto",
 };
 
 // Mapeia códigos de alcance
 export const MAPA_ALCANCE: Record<string, string> = {
   personal: "Pessoal",
+  self: "Pessoal",
   touch: "Toque",
   short: "Curto (9m)",
   medium: "Médio (30m)",
   long: "Longo (90m)",
+  km: "Quilômetros",
+  any: "Qualquer",
+  spec: "Especial",
   unlimited: "Ilimitado",
 };
 
@@ -54,49 +63,28 @@ export const MAPA_DURACAO: Record<string, string> = {
   sust: "Sustentada",
   scene: "Cena",
   turn: "1 rodada",
+  round: "Rodadas",
   day: "1 dia",
   perm: "Permanente",
+  special: "Especial",
 };
 
-// Remove tags HTML vindas do Foundry (<p>, </p>, etc.) e decodifica entidades
-export function sanitizarTextoHtml(html: string): string {
-  if (!html) return "";
-  return html
-    .replace(/<br\s*[\/]?>/gi, "\n")
-    .replace(/<\/p>/gi, "\n\n")
-    .replace(/<[^>]+>/gi, "")
-    .replace(/&ecirc;/g, "ê")
-    .replace(/&eacute;/g, "é")
-    .replace(/&agrave;/g, "à")
-    .replace(/&aacute;/g, "á")
-    .replace(/&atilde;/g, "ã")
-    .replace(/&ccedil;/g, "ç")
-    .replace(/&ocirc;/g, "ô")
-    .replace(/&oacute;/g, "ó")
-    .replace(/&iacute;/g, "í")
-    .replace(/&uacute;/g, "ú")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, "&")
-    .trim();
-}
-
 // Converte um item do Foundry para a tipagem interna do nosso portal
-export function converterItemFoundryParaMagia(item: any): ItemMagiaPersonagem {
+export function converterItemFoundryParaMagia(item: FoundryItemRaw): ItemMagiaPersonagem {
   const sys = item.system || {};
   const ativacao = sys.ativacao || {};
   const duracao = sys.duracao || {};
   const resistencia = sys.resistencia || {};
 
   const aprimoramentos: AprimoramentoMagia[] = (item.effects || [])
-    .filter((ef: any) => ef.name && ef.name.trim().length > 0)
-    .map((ef: any, idx: number) => {
+    .filter((ef) => ef.name && ef.name.trim().length > 0)
+    .map((ef, idx) => {
       const custo = ef.flags?.tormenta20?.custo || "";
       const prefixoCusto = custo ? `+${custo} PM` : "";
       return {
         id: ef._id || `apr_${idx}`,
         custoPm: prefixoCusto,
-        descricao: ef.name.trim(),
+        descricao: (ef.name || "").trim(),
       };
     });
 
@@ -106,22 +94,29 @@ export function converterItemFoundryParaMagia(item: any): ItemMagiaPersonagem {
   const alcanceSigla = (sys.alcance || "").toLowerCase();
   const duracaoSigla = (duracao.units || "").toLowerCase();
 
-  const custoNum = ativacao.custo ?? (sys.circulo === 1 ? 1 : sys.circulo * 3 - 3);
+  const circuloNum = Number(sys.circulo) || 1;
+  const custoNum = ativacao.custo ?? (circuloNum === 1 ? 1 : circuloNum * 3 - 3);
+
+  let duracaoFormatada = MAPA_DURACAO[duracaoSigla] || duracao.units || "Instantânea";
+  if (duracaoSigla === "round" && duracao.value) {
+    const val = Number(duracao.value);
+    duracaoFormatada = val === 1 ? "1 rodada" : `${val} rodadas`;
+  }
 
   return {
     id: item._id || `magia_${Date.now()}`,
     origemId: item._id,
     nome: item.name || "Magia sem Nome",
-    circulo: Number(sys.circulo) || 1,
+    circulo: circuloNum,
     tipo: MAPA_TIPOS[tipoSigla] || "Arcana",
     escola: MAPA_ESCOLAS[escolaSigla] || "Evocação",
     execucao: MAPA_EXECUCAO[execucaoSigla] || ativacao.execucao || "Padrão",
     alcance: MAPA_ALCANCE[alcanceSigla] || sys.alcance || "Curto",
     alvoOuArea: sys.alvo || sys.area || sys.efeito || "",
-    duracao: MAPA_DURACAO[duracaoSigla] || duracao.units || "Instantânea",
+    duracao: duracaoFormatada,
     resistencia: resistencia.txt || (resistencia.atributo ? `${resistencia.atributo.toUpperCase()}` : "Nenhuma"),
     custoPm: `${custoNum} PM`,
-    descricao: sanitizarTextoHtml(sys.description?.value || ""),
+    descricao: sanitizarTextoFoundry(sys.description?.value || ""),
     aprimoramentos,
     ehCustomizada: false,
   };

@@ -2,6 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: "/wikitormenta",
+        destination: "/wiki/wiki.html",
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return [
       {

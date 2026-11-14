@@ -18,7 +18,7 @@ export async function GET(
   context: { params: Promise<{ slug?: string[] }> }
 ) {
   const { slug = [] } = await context.params;
-  const wikiRoot = path.join(process.cwd(), "public", "wiki");
+  const wikiRoot = path.resolve(process.cwd(), "public", "wiki");
 
   const decodedSegments = slug.map((segment) => {
     try {
@@ -39,10 +39,11 @@ export async function GET(
         ];
 
   for (const candidate of candidates) {
-    if (!candidate.startsWith(wikiRoot)) continue;
+    const resolvedCandidate = path.resolve(candidate);
+    if (!resolvedCandidate.startsWith(wikiRoot + path.sep)) continue;
 
-    if (await fileExists(candidate)) {
-      const htmlContent = await fs.readFile(candidate, "utf-8");
+    if (await fileExists(resolvedCandidate)) {
+      const htmlContent = await fs.readFile(resolvedCandidate, "utf-8");
       return new NextResponse(htmlContent, {
         status: 200,
         headers: {
